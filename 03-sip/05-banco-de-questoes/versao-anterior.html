@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Protótipo — SIP · Banco de Questões</title>
+<style>
+  :root{
+    --orange:#EC7117;
+    --orange-dark:#C85D0F;
+    --dark:#17181A;
+    --text:#20211F;
+    --text-secondary:#6B6B6B;
+    --text-muted:#9A9A94;
+    --border:#E4E2DC;
+    --bg-page:#F5F4EF;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg-page);
+    color:var(--text);
+  }
+  .topbar{
+    height:56px; background:var(--dark); display:flex; align-items:center; justify-content:space-between;
+    padding:0 20px; position:sticky; top:0; z-index:20;
+  }
+  .brand{color:#fff; font-weight:700; font-size:17px; display:flex; align-items:baseline; gap:5px;}
+  .brand .dot{color:var(--orange);}
+  .brand .app-tag{font-weight:400; color:#B9B8B4; font-size:14px;}
+  .avatar{
+    width:32px; height:32px; border-radius:50%; background:#fff; color:var(--dark);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12.5px;
+    cursor:pointer;
+  }
+
+  .shell{display:flex; min-height:calc(100vh - 56px);}
+
+  .sidebar{width:230px; flex-shrink:0; background:var(--dark); padding:18px 12px;}
+  .nav-group{margin-bottom:2px;}
+  .nav-head{
+    display:flex; align-items:center; justify-content:space-between; padding:11px 10px;
+    color:#D8D6D1; font-size:14.5px; font-weight:600; cursor:pointer; border-radius:8px;
+  }
+  .nav-head:hover{background:rgba(255,255,255,0.05);}
+  .nav-head .left{display:flex; align-items:center; gap:10px;}
+  .nav-head svg{width:17px; height:17px; flex-shrink:0;}
+  .chev{transition:transform .15s ease; font-size:11px; color:#8E8C88;}
+  .nav-group.open .chev{transform:rotate(180deg);}
+  .nav-group.active .nav-head{color:#fff;}
+  .nav-group.active .nav-head .left svg{color:var(--orange);}
+
+  .submenu{display:none; padding:2px 0 6px 40px;}
+  .nav-group.open .submenu{display:block;}
+  .sub-item{
+    padding:8px 10px; font-size:13.5px; color:#B0AEA9; border-radius:7px; cursor:pointer; margin-bottom:1px;
+  }
+  .sub-item:hover{background:rgba(255,255,255,0.05); color:#fff;}
+  .sub-item.active{background:rgba(236,113,23,0.15); color:var(--orange); font-weight:600;}
+
+  .main{flex:1; padding:28px 34px; max-width:1240px;}
+
+  .page-header{margin-bottom:22px;}
+  .eyebrow{font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--orange); text-transform:uppercase; margin:0 0 6px;}
+  .page-title{font-size:24px; font-weight:700; margin:0 0 6px;}
+  .page-desc{font-size:14px; color:var(--text-secondary); margin:0;}
+
+  .tabbar{display:flex; gap:4px; border-bottom:1px solid var(--border); margin-bottom:24px;}
+  .tabbtn{
+    padding:10px 4px; margin-right:22px; font-size:14.5px; font-weight:600; color:var(--text-secondary);
+    border-bottom:2.5px solid transparent; cursor:pointer;
+  }
+  .tabbtn.active{color:var(--orange); border-color:var(--orange);}
+
+  .stat-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-bottom:24px;}
+  .stat-card{
+    background:#fff; border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px;
+  }
+  .stat-label{font-size:12.5px; color:var(--text-secondary); margin:0 0 8px;}
+  .stat-value{font-size:23px; font-weight:700; margin:0;}
+  .stat-sub{font-size:12px; color:var(--text-muted); margin-top:4px;}
+  .stat-sub.up{color:#2E7D46;}
+
+  .panel{background:#fff; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;}
+  .panel-toolbar{
+    display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid var(--border);
+    gap:12px; flex-wrap:wrap;
+  }
+  .search-input{
+    flex:1; max-width:280px; padding:9px 12px; border:1px solid var(--border); border-radius:8px; font-size:13.5px;
+  }
+  .btn-primary{
+    background:var(--orange); color:#fff; border:none; padding:10px 18px; border-radius:8px;
+    font-size:13.5px; font-weight:600; cursor:pointer; white-space:nowrap;
+  }
+  .btn-primary:hover{background:var(--orange-dark);}
+  .btn-outline{
+    background:#fff; border:1px solid var(--border); color:var(--text); padding:10px 16px; border-radius:8px;
+    font-size:13.5px; font-weight:600; cursor:pointer; white-space:nowrap;
+  }
+  .btn-outline:hover{background:var(--bg-page);}
+
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  th{
+    text-align:left; padding:11px 18px; color:var(--text-secondary); font-size:12px; font-weight:600;
+    text-transform:uppercase; letter-spacing:0.02em; border-bottom:1px solid var(--border); background:#FAF9F5;
+  }
+  td{padding:13px 18px; border-bottom:1px solid var(--border); color:var(--text);}
+  tr:last-child td{border-bottom:none;}
+  .cell-muted{color:var(--text-secondary);}
+
+  .badge{
+    display:inline-block; font-size:11.5px; font-weight:600; padding:3px 10px; border-radius:20px;
+  }
+  .badge.green{background:#E7F4EA; color:#2E7D46;}
+  .badge.gray{background:#EFEEEA; color:var(--text-secondary);}
+  .badge.orange{background:#FDEDE0; color:var(--orange-dark);}
+  .badge.red{background:#FAE6E6; color:#B23B3B;}
+
+  .row-actions{display:flex; gap:14px;}
+  .row-actions a{font-size:12.5px; color:var(--orange); cursor:pointer; text-decoration:none;}
+  .row-actions a.danger{color:#B23B3B;}
+
+  .pkg-manage-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; padding:20px;}
+  .pkg-manage-card{
+    border:1px solid var(--border); border-radius:9px; padding:14px 16px; position:relative;
+  }
+  .pkg-manage-card .pmc-qty{font-size:16px; font-weight:700; margin:0 0 4px;}
+  .pkg-manage-card .pmc-price{font-size:13px; color:var(--text-secondary); margin:0 0 8px;}
+  .pmc-toggle{position:absolute; top:14px; right:14px;}
+  .switch{
+    width:34px; height:19px; border-radius:20px; background:var(--border); position:relative; cursor:pointer; display:inline-block;
+  }
+  .switch.on{background:var(--orange);}
+  .switch .dot{
+    width:15px; height:15px; border-radius:50%; background:#fff; position:absolute; top:2px; left:2px; transition:left .15s;
+  }
+  .switch.on .dot{left:17px;}
+  .pmc-discount{font-size:11.5px; font-weight:600; color:var(--orange-dark); background:#FDEDE0; padding:2px 8px; border-radius:5px; display:inline-block;}
+  .pmc-promo-check{display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text-secondary); margin-top:10px; cursor:pointer;}
+  .pmc-promo-check input{accent-color:var(--orange); cursor:pointer;}
+  .pmc-promo-badge{
+    font-size:10.5px; font-weight:700; color:#fff; background:var(--orange); padding:2px 7px; border-radius:5px;
+    vertical-align:middle; margin-left:6px;
+  }
+
+  .config-section{padding:20px; border-top:1px solid var(--border);}
+  .config-row{display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border);}
+  .config-row:last-child{border-bottom:none;}
+  .config-label{font-size:14px; font-weight:600; margin:0 0 3px;}
+  .config-desc{font-size:12.5px; color:var(--text-secondary); margin:0;}
+  .config-input-inline{display:flex; align-items:center; gap:8px;}
+  .config-input-inline input{width:80px; padding:8px 10px; border:1px solid var(--border); border-radius:7px; font-size:13.5px;}
+
+  .empty-note{padding:40px 20px; text-align:center; color:var(--text-muted); font-size:13.5px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Pro<span class="dot">l</span>uno<span class="app-tag">/SIP</span></div>
+  <div class="avatar">JF</div>
+</div>
+
+<div class="shell">
+  <div class="sidebar">
+    <div class="nav-group">
+      <div class="nav-head">
+        <div class="left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          Financeiro e vendas
+        </div>
+        <span class="chev">▾</span>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-head">
+        <div class="left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Usuários
+        </div>
+        <span class="chev">▾</span>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-head">
+        <div class="left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Contatos
+        </div>
+        <span class="chev">▾</span>
+      </div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-head">
+        <div class="left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Planos
+        </div>
+        <span class="chev">▾</span>
+      </div>
+    </div>
+
+    <div class="nav-group open active" id="navBanco">
+      <div class="nav-head" onclick="toggleGroup('navBanco')">
+        <div class="left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Banco de questões
+        </div>
+        <span class="chev">▾</span>
+      </div>
+      <div class="submenu">
+        <div class="sub-item active" onclick="showTab('questoes')">Gestão de questões</div>
+        <div class="sub-item" onclick="showTab('checkout')">Gestão de checkout</div>
+        <div class="sub-item" onclick="showTab('transacoes')">Dashboard e Transações</div>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-head">
+        <div class="left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 5.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+          Suporte
+        </div>
+        <span class="chev">▾</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div id="view-questoes">
+      <div class="page-header">
+        <p class="eyebrow">Banco de questões</p>
+        <h1 class="page-title">Gestão de questões</h1>
+        <p class="page-desc">Curadoria do acervo central. Alterações aqui refletem automaticamente em todas as plataformas.</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <p class="stat-label">Total no acervo</p>
+          <p class="stat-value">3.104.552</p>
+          <p class="stat-sub">questões cadastradas</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Adicionadas este mês</p>
+          <p class="stat-value">12.480</p>
+          <p class="stat-sub up">↑ 8% vs. mês anterior</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Provas em processamento</p>
+          <p class="stat-value">6</p>
+          <p class="stat-sub">enviadas por colaboradores externos</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Colaboradores ativos</p>
+          <p class="stat-value">9</p>
+          <p class="stat-sub">alimentando o banco este mês</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-toolbar">
+          <input class="search-input" type="text" placeholder="Buscar por prova, disciplina ou banca">
+          <div style="display:flex; gap:10px;">
+            <button class="btn-outline">Importar prova</button>
+            <button class="btn-primary">+ Adicionar questão</button>
+          </div>
+        </div>
+        <div style="padding:10px 18px; font-size:12px; color:var(--text-muted); border-bottom:1px solid var(--border); background:#FAF9F5;">
+          Desativar "Visível no banco" impede novas compras dessa questão, mas mantém o acesso de quem já a adquiriu.
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Disciplina</th><th>Banca / instituição</th><th>Escolaridade</th><th>Origem</th><th>Status</th><th>Visível no banco</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>#3.104.552</td><td>Direito Constitucional</td><td class="cell-muted">CESPE · TRF 2ª Região</td><td>Superior</td><td class="cell-muted">Ana R. (freelancer)</td><td><span class="badge green">Publicada</span></td>
+              <td><div class="switch on" onclick="this.classList.toggle('on')"><div class="dot"></div></div></td>
+              <td><div class="row-actions"><a>Editar</a><a class="danger">Remover</a></div></td>
+            </tr>
+            <tr>
+              <td>#3.104.551</td><td>Engenharia Civil</td><td class="cell-muted">FGV · IBGE</td><td>Superior</td><td class="cell-muted">Ana R. (freelancer)</td><td><span class="badge green">Publicada</span></td>
+              <td><div class="switch on" onclick="this.classList.toggle('on')"><div class="dot"></div></div></td>
+              <td><div class="row-actions"><a>Editar</a><a class="danger">Remover</a></div></td>
+            </tr>
+            <tr>
+              <td>#3.104.550</td><td>Português</td><td class="cell-muted">VUNESP · Pref. Campinas</td><td>Médio</td><td class="cell-muted">Diego M. (estagiário)</td><td><span class="badge orange">Em revisão</span></td>
+              <td><div class="switch" onclick="this.classList.toggle('on')"><div class="dot"></div></div></td>
+              <td><div class="row-actions"><a>Editar</a><a class="danger">Remover</a></div></td>
+            </tr>
+            <tr>
+              <td>#3.104.549</td><td>Matemática</td><td class="cell-muted">CESGRANRIO · BB</td><td>Médio</td><td class="cell-muted">Diego M. (estagiário)</td><td><span class="badge gray">Rascunho</span></td>
+              <td><div class="switch" onclick="this.classList.toggle('on')"><div class="dot"></div></div></td>
+              <td><div class="row-actions"><a>Editar</a><a class="danger">Remover</a></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="view-checkout" style="display:none;">
+      <div class="page-header">
+        <p class="eyebrow">Banco de questões</p>
+        <h1 class="page-title">Gestão de checkout</h1>
+        <p class="page-desc">Configure os pacotes, preços de unidade e promoções pontuais para a venda de questões.</p>
+      </div>
+
+      <div class="panel" style="margin-bottom:20px;">
+        <div class="config-section" style="border-top:none; padding-top:20px;">
+          <div class="config-row" style="border-bottom:1px solid var(--border);">
+            <div>
+              <p class="config-label">Preço por questão (unidade)</p>
+              <p class="config-desc">Preço unitário base — usado no cálculo automático de todos os pacotes</p>
+            </div>
+            <div class="config-input-inline">
+              <span class="cell-muted">R$</span>
+              <input type="number" value="0,50" step="0.01">
+            </div>
+          </div>
+        </div>
+        <div class="panel-toolbar">
+          <div>
+            <p class="config-label" style="margin-bottom:2px;">Pacotes disponíveis</p>
+            <p class="config-desc">Preço final calculado automaticamente (preço unitário × quantidade × desconto)</p>
+          </div>
+          <button class="btn-primary">+ Novo pacote</button>
+        </div>
+        <div class="pkg-manage-grid">
+          <div class="pkg-manage-card">
+            <div class="pmc-toggle"><div class="switch on" onclick="this.classList.toggle('on')"><div class="dot"></div></div></div>
+            <p class="pmc-qty">50 questões</p>
+            <p class="pmc-price">R$ 22,50 <span class="cell-muted" style="font-size:11.5px;">(base R$ 25,00)</span></p>
+            <span class="pmc-discount">Desconto: 10%</span>
+            <label class="pmc-promo-check"><input type="checkbox"> Marcar como Promoção</label>
+          </div>
+          <div class="pkg-manage-card">
+            <div class="pmc-toggle"><div class="switch on" onclick="this.classList.toggle('on')"><div class="dot"></div></div></div>
+            <p class="pmc-qty">100 questões</p>
+            <p class="pmc-price">R$ 42,50 <span class="cell-muted" style="font-size:11.5px;">(base R$ 50,00)</span></p>
+            <span class="pmc-discount">Desconto: 15%</span>
+            <label class="pmc-promo-check"><input type="checkbox"> Marcar como Promoção</label>
+          </div>
+          <div class="pkg-manage-card">
+            <div class="pmc-toggle"><div class="switch on" onclick="this.classList.toggle('on')"><div class="dot"></div></div></div>
+            <p class="pmc-qty">250 questões</p>
+            <p class="pmc-price">R$ 100,00 <span class="cell-muted" style="font-size:11.5px;">(base R$ 125,00)</span></p>
+            <span class="pmc-discount">Desconto: 20%</span>
+            <label class="pmc-promo-check"><input type="checkbox"> Marcar como Promoção</label>
+          </div>
+          <div class="pkg-manage-card">
+            <div class="pmc-toggle"><div class="switch on" onclick="this.classList.toggle('on')"><div class="dot"></div></div></div>
+            <p class="pmc-qty">1.000 questões <span class="pmc-promo-badge">Promoção</span></p>
+            <p class="pmc-price">R$ 350,00 <span class="cell-muted" style="font-size:11.5px;">(base R$ 500,00)</span></p>
+            <span class="pmc-discount">Desconto: 30%</span>
+            <label class="pmc-promo-check"><input type="checkbox" checked> Marcar como Promoção</label>
+          </div>
+        </div>
+
+        <div class="config-section">
+          <div class="config-row">
+            <div>
+              <p class="config-label">Quantidade mínima por unidade</p>
+              <p class="config-desc">Abaixo deste valor, apenas pacotes ficam disponíveis</p>
+            </div>
+            <div class="config-input-inline">
+              <input type="number" value="5">
+              <span class="cell-muted">questões</span>
+            </div>
+          </div>
+          <div class="config-row">
+            <div>
+              <p class="config-label">Meios de pagamento aceitos</p>
+              <p class="config-desc">Cartão de crédito (à vista) e Pix — sem cupom nem split payment neste checkout</p>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <span class="badge gray">Cartão</span>
+              <span class="badge gray">Pix</span>
+            </div>
+          </div>
+          <div class="config-row">
+            <div>
+              <p class="config-label">Permitir compra por unidade</p>
+              <p class="config-desc">O professor pode comprar uma quantidade livre, respeitando o mínimo acima</p>
+            </div>
+            <div class="switch on" onclick="this.classList.toggle('on')"><div class="dot"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="view-transacoes" style="display:none;">
+      <div class="page-header">
+        <p class="eyebrow">Banco de questões</p>
+        <h1 class="page-title">Dashboard e Transações</h1>
+        <p class="page-desc">Histórico de vendas de pacotes e unidades de questões.</p>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <p class="stat-label">Receita este mês</p>
+          <p class="stat-value">R$ 4.230</p>
+          <p class="stat-sub up">↑ 22% vs. mês anterior</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Transações</p>
+          <p class="stat-value">58</p>
+          <p class="stat-sub">no período</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Ticket médio</p>
+          <p class="stat-value">R$ 72,90</p>
+          <p class="stat-sub">por compra</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Pacote mais vendido</p>
+          <p class="stat-value">100 questões</p>
+          <p class="stat-sub">42% das vendas</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-toolbar">
+          <input class="search-input" type="text" placeholder="Buscar por professor ou plataforma">
+          <button class="btn-outline">Exportar CSV</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th><th>Professor</th><th>Tipo</th><th>Quantidade</th><th>Valor</th><th>Pagamento</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>19/08/2026</td><td>Marcos Alessi</td><td class="cell-muted">Pacote</td><td>100</td><td>R$ 42,50</td><td class="cell-muted">Cartão</td><td><span class="badge green">Pago</span></td>
+            </tr>
+            <tr>
+              <td>18/08/2026</td><td>Renata Duque</td><td class="cell-muted">Unidade</td><td>12</td><td>R$ 6,00</td><td class="cell-muted">Pix</td><td><span class="badge green">Pago</span></td>
+            </tr>
+            <tr>
+              <td>18/08/2026</td><td>Prof. Pelé Souza</td><td class="cell-muted">Pacote</td><td>1.000</td><td>R$ 350,00</td><td class="cell-muted">Cartão</td><td><span class="badge green">Pago</span></td>
+            </tr>
+            <tr>
+              <td>17/08/2026</td><td>Camila Torres</td><td class="cell-muted">Pacote</td><td>50</td><td>R$ 22,50</td><td class="cell-muted">Pix</td><td><span class="badge red">Falhou</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel" style="margin-top:20px;">
+        <div class="panel-toolbar">
+          <div>
+            <p class="config-label" style="margin-bottom:2px;">Clientes que mais compraram</p>
+            <p class="config-desc">Ordenado por valor total transacionado</p>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Professor</th><th>Compras</th><th>Questões adquiridas</th><th>Valor total transacionado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td><td>Prof. Pelé Souza</td><td class="cell-muted">3</td><td class="cell-muted">2.400</td><td>R$ 890,00</td>
+            </tr>
+            <tr>
+              <td>2</td><td>Marcos Alessi</td><td class="cell-muted">5</td><td class="cell-muted">650</td><td>R$ 312,50</td>
+            </tr>
+            <tr>
+              <td>3</td><td>Camila Torres</td><td class="cell-muted">4</td><td class="cell-muted">400</td><td>R$ 180,00</td>
+            </tr>
+            <tr>
+              <td>4</td><td>Renata Duque</td><td class="cell-muted">8</td><td class="cell-muted">96</td><td>R$ 48,00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function toggleGroup(id){
+    document.getElementById(id).classList.toggle('open');
+  }
+
+  function showTab(tab){
+    ['questoes','checkout','transacoes'].forEach(t => {
+      document.getElementById('view-' + t).style.display = (t === tab) ? 'block' : 'none';
+    });
+    document.querySelectorAll('.sub-item').forEach(el => el.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
