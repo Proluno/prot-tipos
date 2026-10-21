@@ -1,16 +1,4345 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Biblioteca · Protótipos Proluno</title>
-<link rel="stylesheet" href="../../../../assets/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biblioteca de Questões</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #ffffff;
+      color: #1a1a1a;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ---------- Sidebar ---------- */
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background-color: #F1F1F1;
+      padding: 28px 20px;
+    }
+
+    .content-col {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ---------- Topbar ---------- */
+
+    .topbar {
+      width: 100%;
+      height: 56px;
+      flex-shrink: 0;
+      background-color: #F1F1F1;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #6b7280;
+      text-decoration: none;
+      margin-bottom: 18px;
+    }
+
+    .back-link svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .sidebar-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: #18181b;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 13px;
+      font-weight: 400;
+      color: #9a9a9f;
+      margin-bottom: 26px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #3f3f46;
+      text-decoration: none;
+    }
+
+    .nav-item svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+
+    .nav-item.active {
+      background-color: #ffffff;
+      color: #E8761A;
+      font-weight: 600;
+    }
+
+    /* ---------- Main ---------- */
+
+    .main {
+      flex: 1 1 auto;
+      background-color: #ffffff;
+      padding: 44px 48px 60px;
+    }
+
+    .page-title {
+      font-size: 30px;
+      font-weight: 700;
+      color: #18181b;
+    }
+
+    .page-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: #20212380;
+      width: 100%;
+      line-height: 1.5;
+      margin: 20px 0 22px;
+    }
+
+    .page-subtitle strong {
+      color: #1a1a1a;
+    }
+
+    /* ---------- Library actions row ---------- */
+
+    .library-actions-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 30px;
+    }
+
+    .btn-add-question,
+    .btn-import-questions {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex: 1;
+      padding: 13px 22px;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .btn-add-question svg,
+    .btn-import-questions svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .btn-add-question {
+      border: 1.5px solid #E8761A;
+      background-color: #ffffff;
+      color: #E8761A;
+      cursor: pointer;
+    }
+
+    .btn-import-questions {
+      border: 1px solid #e4e4e7;
+      background-color: #ffffff;
+      color: #52525b;
+      cursor: pointer;
+    }
+
+    .btn-import-questions:hover {
+      background-color: #fafafa;
+      border-color: #d4d4d8;
+    }
+
+    .btn-toggle-filters {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      padding: 0;
+      color: #E8761A;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .btn-toggle-filters svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .btn-toggle-filters .toggle-chevron {
+      transform: rotate(180deg);
+      transition: transform 0.15s ease;
+    }
+
+    .btn-toggle-filters.filters-hidden .toggle-chevron {
+      transform: rotate(0deg);
+    }
+
+    /* ---------- Filter card ---------- */
+
+    .filter-panel {
+      background-color: #fafafa;
+      border: 1px solid #e4e4e7;
+      border-radius: 14px;
+      padding: 26px 28px 24px;
+      margin-bottom: 20px;
+    }
+
+    .results-count {
+      font-size: 14.5px;
+      color: #71717a;
+      margin-bottom: 16px;
+    }
+
+    .results-count strong {
+      color: #1a1a1a;
+      font-weight: 700;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px 24px;
+      margin-bottom: 32px;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field > label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 400;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .input-with-icon,
+    .select {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13.5px;
+      color: #a1a1aa;
+    }
+
+    .input-with-icon svg,
+    .select svg {
+      width: 15px;
+      height: 15px;
+      color: #a1a1aa;
+      flex-shrink: 0;
+    }
+
+    .select svg {
+      margin-left: auto;
+    }
+
+    .input-with-icon input {
+      border: none;
+      outline: none;
+      background: none;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      color: #1a1a1a;
+      width: 100%;
+    }
+
+    .input-with-icon input::placeholder {
+      color: #a1a1aa;
+    }
+
+    .select span {
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    button.select {
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .select svg {
+      transition: transform 0.15s ease;
+    }
+
+    .multiselect {
+      position: relative;
+    }
+
+    .multiselect.open .select svg {
+      transform: rotate(180deg);
+    }
+
+    .select .multiselect-label.has-value {
+      color: #52525b;
+      font-weight: 400;
+    }
+
+    .multiselect-panel {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+      z-index: 60;
+    }
+
+    .multiselect.open .multiselect-panel {
+      display: block;
+    }
+
+    .multiselect-search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #e4e4e7;
+      background-color: #fafafa;
+    }
+
+    .multiselect-search svg {
+      width: 15px;
+      height: 15px;
+      color: #a1a1aa;
+      flex-shrink: 0;
+    }
+
+    .multiselect-search input {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      outline: none;
+      background: none;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      color: #1a1a1a;
+    }
+
+    .multiselect-search input::placeholder {
+      color: #a1a1aa;
+    }
+
+    .multiselect-options {
+      max-height: 220px;
+      overflow-y: auto;
+      padding: 4px 0;
+    }
+
+    .multiselect-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      font-size: 13.5px;
+      line-height: 1.3;
+      color: #3f3f46;
+      cursor: pointer;
+      transition: background-color 0.12s ease;
+    }
+
+    .multiselect-option:nth-child(even) {
+      background-color: #fafafa;
+    }
+
+    .multiselect-option:hover {
+      background-color: #FFF4EC;
+    }
+
+    .multiselect-option span {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .multiselect-option input {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid #d4d4d8;
+      accent-color: #E8761A;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ---------- Filter footer ---------- */
+
+    .filter-footer-row {
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .active-filters {
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .active-filters.has-tags {
+      display: flex;
+    }
+
+    .active-filters-label {
+      flex-shrink: 0;
+      padding-top: 6px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #27272a;
+      white-space: nowrap;
+    }
+
+    .active-filters-tags {
+      display: flex;
+      flex: 1 1 auto;
+      min-width: 0;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-tag {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      gap: 7px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background-color: #F4F4F5;
+      border: 1px solid #e4e4e7;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12.5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.12s ease, border-color 0.12s ease;
+    }
+
+    .filter-tag:hover {
+      background-color: #FFF4EC;
+      border-color: #F3C79A;
+    }
+
+    .filter-tag .tag-remove {
+      width: 14px;
+      height: 14px;
+      color: #E8761A;
+      flex-shrink: 0;
+    }
+
+    .filter-tag .tag-category {
+      color: #71717a;
+      font-weight: 500;
+    }
+
+    .filter-tag .tag-value {
+      color: #27272a;
+      font-weight: 600;
+    }
+
+    .filter-tag-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      padding: 4px 4px 4px 12px;
+      border-radius: 999px;
+      background-color: #F4F4F5;
+      border: 1px solid #e4e4e7;
+    }
+
+    .filter-tag-group-clear {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #71717a;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .filter-tag-group-clear .tag-remove {
+      width: 14px;
+      height: 14px;
+      color: #E8761A;
+      flex-shrink: 0;
+    }
+
+    .filter-tag-value-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #27272a;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.12s ease, border-color 0.12s ease;
+    }
+
+    .filter-tag-value-chip:hover {
+      background-color: #FFF4EC;
+      border-color: #F3C79A;
+    }
+
+    .filter-tag-value-chip .tag-remove {
+      width: 12px;
+      height: 12px;
+      color: #E8761A;
+      flex-shrink: 0;
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    .btn-filtrar {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: #E8761A;
+      border: none;
+      border-radius: 6px;
+      padding: 11px 32px;
+      cursor: pointer;
+    }
+
+    .btn-limpar-filtro {
+      display: none;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #71717a;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-limpar-filtro:hover {
+      color: #3f3f46;
+      text-decoration: underline;
+    }
+
+    .btn-limpar-filtro.visible {
+      display: inline-flex;
+    }
+
+    /* ---------- Pill filters ---------- */
+
+    .pill-filters {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .pill-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .pill-filter-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #27272a;
+      white-space: nowrap;
+    }
+
+    .switch-options {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      border: 1.5px solid #e4e4e7;
+      background-color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #3f3f46;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+    }
+
+    .chip-option input {
+      display: none;
+    }
+
+    .chip-option .chip-check {
+      display: none;
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+
+    .chip-option:not(:has(input:checked)):hover {
+      border-color: #d4d4d8;
+      background-color: #fafafa;
+    }
+
+    .chip-option:has(input:checked) {
+      background-color: #FFF4EC;
+      border-color: #E8761A;
+      color: #E8761A;
+    }
+
+    .chip-option:has(input:checked) .chip-check {
+      display: inline-flex;
+    }
+
+    /* ---------- Question cards ---------- */
+
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .question-card {
+      border: 1px solid #ececee;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .question-card-band {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 20px;
+      background-color: #fafafa;
+      border-bottom: 1px solid #ececee;
+    }
+
+    .band-breadcrumb {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-width: 0;
+      font-size: 13.5px;
+    }
+
+    .card-index {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 24px;
+      padding: 0 6px;
+      border-radius: 6px;
+      background-color: #ececee;
+      color: #55555A;
+      font-size: 12.5px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .breadcrumb-item {
+      color: #E8761A;
+      font-weight: 400;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .breadcrumb-item:hover {
+      text-decoration: underline;
+    }
+
+    .breadcrumb-chevron {
+      width: 13px;
+      height: 13px;
+      color: #c4c4c9;
+      flex-shrink: 0;
+    }
+
+    .question-card-body {
+      padding: 18px 20px 20px;
+    }
+
+    .question-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: 22px;
+      row-gap: 4px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .meta-label {
+      color: #1a1a1a;
+      font-weight: 700;
+    }
+
+    .meta-value {
+      color: #E8761A;
+      font-weight: 400;
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      color: #8b8b93;
+      cursor: pointer;
+    }
+
+    .icon-btn:hover {
+      background-color: #f4f4f5;
+      color: #3f3f46;
+    }
+
+    .icon-btn svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .expand-toggle svg {
+      transition: transform 0.15s ease;
+    }
+
+    .question-card.expanded .expand-toggle svg {
+      transform: rotate(180deg);
+    }
+
+    /* ---------- Editor de questão (expandido) ---------- */
+
+    .question-editor {
+      margin-top: 16px;
+    }
+
+    .question-card:not(.expanded) .question-editor {
+      display: none;
+    }
+
+    .btn-add-aux {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      padding: 0;
+      background: none;
+      border: none;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      font-weight: 400;
+      color: #E8761A;
+      cursor: pointer;
+    }
+
+    .btn-add-aux:hover {
+      text-decoration: underline;
+    }
+
+    .btn-add-aux svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+
+    .aux-text-field {
+      margin-bottom: 18px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #e4e4e7;
+    }
+
+    .aux-text-field.hidden {
+      display: none;
+    }
+
+    .editor-toolbar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 2px;
+      padding: 6px 8px;
+      background-color: #fafafa;
+      border: 1px solid #e4e4e7;
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .editor-format {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12.5px;
+      color: #3f3f46;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 5px;
+      padding: 4px 6px;
+      margin-right: 4px;
+      cursor: pointer;
+    }
+
+    .editor-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      background: none;
+      border: none;
+      border-radius: 5px;
+      color: #3f3f46;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .editor-btn:hover {
+      background-color: #ececee;
+    }
+
+    .editor-btn.italic {
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .editor-btn.underline {
+      text-decoration: underline;
+      font-weight: 400;
+    }
+
+    .editor-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .editor-divider {
+      width: 1px;
+      height: 18px;
+      background-color: #e4e4e7;
+      margin: 0 5px;
+      flex-shrink: 0;
+    }
+
+    .editor-body {
+      min-height: 74px;
+      padding: 14px 16px;
+      border: 1px solid #e4e4e7;
+      border-radius: 0 0 8px 8px;
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: #27272a;
+      outline: none;
+    }
+
+    .editor-body:focus {
+      border-color: #E8761A;
+    }
+
+    .options-hint {
+      font-size: 13px;
+      color: #71717a;
+      margin: 16px 0 10px;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .option-checkbox {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      border-radius: 4px;
+      border: 1.5px solid #d4d4d8;
+      accent-color: #E8761A;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .option-text {
+      flex: 1 1 auto;
+      padding-top: 2px;
+      font-size: 14px;
+      color: #27272a;
+      cursor: text;
+    }
+
+    .option-remove {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      border-radius: 5px;
+      color: #a1a1aa;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .option-remove:hover {
+      background-color: #f4f4f5;
+      color: #3f3f46;
+    }
+
+    .option-row.active .option-text {
+      display: none;
+    }
+
+    .option-editor {
+      flex: 1 1 auto;
+      min-width: 0;
+      border: 1.5px solid #E8761A;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .option-editor .editor-toolbar {
+      border: none;
+      border-radius: 0;
+      padding: 6px 10px;
+    }
+
+    .option-editor .editor-body {
+      border: none;
+      border-radius: 0;
+      min-height: 44px;
+      padding: 0 14px 12px;
+    }
+
+    .add-option-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      color: #a1a1aa;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .add-option-row .option-checkbox {
+      pointer-events: none;
+      margin-top: 0;
+    }
+
+    .editor-tabs {
+      display: flex;
+      gap: 22px;
+      margin: 22px 0 14px;
+      border-bottom: 1px solid #e4e4e7;
+    }
+
+    .editor-tab {
+      padding-bottom: 10px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #a1a1aa;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .editor-tab.active {
+      color: #E8761A;
+      border-bottom-color: #E8761A;
+    }
+
+    .editor-tab-panel {
+      display: none;
+    }
+
+    .editor-tab-panel.active {
+      display: block;
+    }
+
+    .editor-empty {
+      font-size: 13.5px;
+      color: #a1a1aa;
+      padding: 10px 2px;
+    }
+
+    .editor-footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .save-menu-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .btn-save-question {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: #E8761A;
+      border: none;
+      border-radius: 6px;
+      padding: 11px 24px;
+      cursor: pointer;
+    }
+
+    .btn-save-question svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .save-menu {
+      position: absolute;
+      bottom: calc(100% + 6px);
+      right: 0;
+      min-width: 170px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      padding: 6px;
+      z-index: 70;
+    }
+
+    .save-menu.hidden {
+      display: none;
+    }
+
+    .save-menu-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 9px 12px;
+      border-radius: 6px;
+      background: none;
+      border: none;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #27272a;
+      cursor: pointer;
+    }
+
+    .save-menu-item:hover:not(:disabled) {
+      background-color: #f4f4f5;
+    }
+
+    .save-menu-item:disabled {
+      color: #c4c4c9;
+      cursor: not-allowed;
+    }
+
+    /* ---------- Classificação da questão (grid de taxonomia) ---------- */
+
+    .qedit-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px 18px;
+      margin-bottom: 18px;
+    }
+
+    .tag-draft {
+      background-color: #FEF3C7;
+      color: #92400E;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .tag-id {
+      background-color: #FCE4CC;
+      color: #B4600F;
+      flex-shrink: 0;
+    }
+
+    .tag-integrated {
+      background-color: #D8F3E3;
+      color: #1F9254;
+    }
+
+    .question-preview {
+      font-size: 15px;
+      color: #3459AD;
+      margin-bottom: 4px;
+    }
+
+    .question-card.expanded .question-preview {
+      display: none;
+    }
+
+    /* ---------- Pagination ---------- */
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .page-btn {
+      min-width: 40px;
+      height: 40px;
+      padding: 0 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #3f3f46;
+      cursor: pointer;
+    }
+
+    .page-btn.active {
+      background-color: #E8761A;
+      border-color: #E8761A;
+      color: #ffffff;
+    }
+
+    .page-btn.page-nav {
+      color: #E8761A;
+      border-color: transparent;
+    }
+
+    .page-ellipsis {
+      color: #a1a1aa;
+      font-size: 14.5px;
+      padding: 0 4px;
+    }
+
+    /* ---------- Menu mobile (topbar + drawer) ---------- */
+
+    .mobile-topbar {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      height: 56px;
+      background-color: #F1F1F1;
+      padding: 0 16px;
+    }
+
+    .mobile-menu-toggle {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: none;
+      border: none;
+      color: #18181b;
+      cursor: pointer;
+    }
+
+    .mobile-menu-toggle svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .mobile-logo {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: #18181b;
+      white-space: nowrap;
+    }
+
+    .mobile-logo .orange {
+      color: #E8761A;
+    }
+
+    .mobile-logo-dots {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .mobile-logo-dots .dot {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .mobile-logo-dots .dot-teal { width: 5px; height: 5px; background-color: #35C6C1; top: 0; left: 5px; }
+    .mobile-logo-dots .dot-pink { width: 5px; height: 5px; background-color: #E85AA0; top: 7px; left: 0; }
+    .mobile-logo-dots .dot-orange { width: 5px; height: 5px; background-color: #E8761A; top: 8px; left: 13px; }
+    .mobile-logo-dots .dot-blue { width: 4px; height: 4px; background-color: #4C6FE0; top: 14px; left: 7px; }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.45);
+      z-index: 250;
+    }
+
+    .sidebar-backdrop.open {
+      display: block;
+    }
+
+    .sidebar-close {
+      display: none;
+      position: absolute;
+      top: 22px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #18181b;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .sidebar-close svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ---------- Modal de importação de questões ---------- */
+
+    .import-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(17, 19, 23, 0.5);
+      z-index: 400;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 48px 20px;
+      overflow-y: auto;
+    }
+
+    .import-modal-overlay.open {
+      display: flex;
+    }
+
+    .import-modal {
+      width: 100%;
+      max-width: 720px;
+      height: 640px;
+      max-height: calc(100vh - 96px);
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .import-modal-header {
+      padding: 24px 28px 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .import-modal-heading {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .import-modal-title {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 21px;
+      font-weight: 600;
+      color: #18181b;
+    }
+
+    .import-modal-subtitle {
+      font-size: 14px;
+      color: #71717a;
+    }
+
+    .import-modal-close {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      border: 1px solid #e4e4e7;
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #1a1a1a;
+    }
+
+    .import-modal-close:hover {
+      background-color: #f4f4f5;
+    }
+
+    .import-modal-close svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Etapas */
+
+    .import-stepper {
+      padding: 24px 28px 8px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .import-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .import-step-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+      background-color: #ececee;
+      color: #55555A;
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+
+    .import-step-circle svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .import-step-label {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #a1a1aa;
+      white-space: nowrap;
+    }
+
+    .import-step.done .import-step-circle,
+    .import-step.current .import-step-circle {
+      background-color: #E8761A;
+      color: #ffffff;
+    }
+
+    .import-step.done .import-step-label,
+    .import-step.current .import-step-label {
+      color: #27272a;
+    }
+
+    .import-step-line {
+      flex: 1 1 72px;
+      max-width: 160px;
+      min-width: 40px;
+      height: 2px;
+      margin: 19px 12px 0;
+      border-radius: 1px;
+      background-color: #ececee;
+    }
+
+    .import-step-line.done {
+      background-color: #E8761A;
+    }
+
+    /* Corpo */
+
+    .import-modal-body {
+      padding: 20px 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .import-step-panel {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .import-step-panel.active {
+      display: flex;
+    }
+
+    .import-model-link {
+      font-size: 14px;
+      color: #1a1a1a;
+    }
+
+    .import-model-link a {
+      color: #E8761A;
+      text-decoration: underline;
+    }
+
+    .import-dropzone {
+      border: 1.5px dashed #d4d4d8;
+      border-radius: 10px;
+      background-color: #fafafa;
+      padding: 36px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .import-dropzone.dragover {
+      border-color: #E8761A;
+      background-color: #FFF4EC;
+    }
+
+    .import-dropzone svg {
+      width: 36px;
+      height: 36px;
+      color: #a1a1aa;
+    }
+
+    .import-dropzone-text {
+      font-size: 15px;
+      color: #1a1a1a;
+    }
+
+    .import-dropzone-hint {
+      font-size: 13px;
+      color: #71717a;
+    }
+
+    .import-pick-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 18px;
+      height: 40px;
+      border-radius: 8px;
+      border: 1.5px solid #E8761A;
+      background-color: #ffffff;
+      color: #E8761A;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .import-pick-btn:hover {
+      background-color: #FFF9F5;
+    }
+
+    .import-filecard {
+      border: 1px solid #e4e4e7;
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .import-filecard-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      background-color: #D8F3E3;
+      color: #1F9254;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .import-filecard-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .import-filecard-info {
+      flex-grow: 1;
+      min-width: 160px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .import-filecard-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: #1a1a1a;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .import-filecard-meta {
+      font-size: 13px;
+      color: #71717a;
+    }
+
+    .import-filecard-valid {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #1F9254;
+      font-weight: 500;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .import-filecard-valid svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .import-filecard-remove {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border: none;
+      background: none;
+      border-radius: 8px;
+      color: #71717a;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .import-filecard-remove:hover {
+      background-color: #f4f4f5;
+      color: #3f3f46;
+    }
+
+    .import-filecard-remove svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Modo de importação */
+
+    .import-section-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    .import-mode-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .import-mode-card {
+      text-align: left;
+      font-family: 'Montserrat', sans-serif;
+      cursor: pointer;
+      border-radius: 10px;
+      padding: 16px;
+      border: 2px solid #e4e4e7;
+      background-color: #ffffff;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      color: #1a1a1a;
+    }
+
+    .import-mode-card.selected {
+      border-color: #E8761A;
+      background-color: #FFF9F5;
+    }
+
+    .import-mode-radio {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      border: 2px solid #d4d4d8;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+
+    .import-mode-card.selected .import-mode-radio {
+      border-color: #E8761A;
+    }
+
+    .import-mode-radio-dot {
+      display: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 5px;
+      background-color: #E8761A;
+    }
+
+    .import-mode-card.selected .import-mode-radio-dot {
+      display: block;
+    }
+
+    .import-mode-body {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .import-mode-title-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .import-mode-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .import-mode-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: #1F9254;
+      background-color: #D8F3E3;
+      padding: 3px 8px;
+      border-radius: 10px;
+    }
+
+    .import-mode-desc {
+      font-size: 13px;
+      line-height: 1.45;
+      color: #71717a;
+    }
+
+    /* Avisos */
+
+    .import-banner {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .import-banner svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .import-obs-text {
+      font-size: 13px;
+      line-height: 1.45;
+      color: #52525b;
+    }
+
+    .import-banner-info {
+      background-color: #EFF4FC;
+      color: #2C5EA8;
+    }
+
+    .import-banner-warning {
+      background-color: #FFF4EC;
+      color: #9A4A12;
+    }
+
+    /* Filtros em massa */
+
+    .import-filters-block {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      border-top: 1px solid #ececee;
+      padding-top: 18px;
+    }
+
+    .import-filters-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .import-filters-count {
+      font-size: 13px;
+      color: #71717a;
+    }
+
+    .import-filters-clear {
+      border: none;
+      background: none;
+      color: #E8761A;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 4px;
+      margin-left: 12px;
+    }
+
+    .import-filters-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px 16px;
+    }
+
+    .import-filter-field .select:disabled {
+      cursor: not-allowed;
+      color: #a1a1aa;
+      background-color: #fafafa;
+    }
+
+    .import-filter-hint {
+      display: block;
+      font-size: 12px;
+      color: #71717a;
+      margin-top: 6px;
+    }
+
+    .import-filter-empty {
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #a1a1aa;
+    }
+
+    .import-more-toggle {
+      align-self: flex-start;
+      border: none;
+      background: none;
+      padding: 6px 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: #E8761A;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .import-more-toggle svg {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.15s ease;
+    }
+
+    .import-more-toggle.open svg {
+      transform: rotate(180deg);
+    }
+
+    /* Revisão */
+
+    .import-review-card {
+      border: 1px solid #e4e4e7;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .import-review-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 14px 16px;
+      border-bottom: 1px solid #ececee;
+    }
+
+    .import-review-row:last-child {
+      border-bottom: none;
+    }
+
+    .import-review-label {
+      font-size: 14px;
+      color: #71717a;
+    }
+
+    .import-review-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a1a1a;
+    }
+
+    .import-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 10px;
+      background-color: #D8F3E3;
+      color: #1F9254;
+      white-space: nowrap;
+    }
+
+    .import-status-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 3px;
+      background-color: currentColor;
+    }
+
+    .import-status-badge.neutral {
+      background-color: #F4F4F5;
+      color: #52525b;
+    }
+
+    .import-filters-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .import-alter-link {
+      border: none;
+      background: none;
+      color: #E8761A;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .import-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .import-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 6px 6px 12px;
+      border-radius: 16px;
+      background-color: #FFF4EC;
+      border: 1px solid #F3C79A;
+      font-size: 13px;
+    }
+
+    .import-chip-label {
+      color: #9A4A12;
+    }
+
+    .import-chip-value {
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .import-chip-remove {
+      width: 22px;
+      height: 22px;
+      border-radius: 11px;
+      border: none;
+      background: none;
+      color: #9A4A12;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .import-chip-remove svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .import-review-nofilters {
+      font-size: 13px;
+      color: #9A4A12;
+    }
+
+    /* Sucesso */
+
+    .import-success {
+      padding: 12px 0 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .import-success-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 32px;
+      background-color: #D8F3E3;
+      color: #1F9254;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .import-success-icon svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .import-success-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .import-success-text {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #71717a;
+      max-width: 460px;
+    }
+
+    .import-success-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    /* Rodapé */
+
+    .import-modal-footer {
+      border-top: 1px solid #ececee;
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .import-footer-hint {
+      font-size: 13px;
+      color: #71717a;
+    }
+
+    .import-footer-actions {
+      display: flex;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .btn-import-secondary,
+    .btn-import-primary {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      padding: 0 20px;
+      height: 44px;
+      cursor: pointer;
+    }
+
+    .btn-import-secondary {
+      background-color: #F4F4F5;
+      color: #1a1a1a;
+    }
+
+    .btn-import-secondary:hover {
+      background-color: #ececee;
+    }
+
+    .btn-import-primary {
+      background-color: #E8761A;
+      color: #ffffff;
+    }
+
+    .btn-import-primary:disabled {
+      background-color: #F3C79A;
+      cursor: not-allowed;
+    }
+
+    /* ---------- Responsivo ---------- */
+
+    @media (max-width: 768px) {
+      .mobile-topbar {
+        display: flex;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 85vw;
+        max-width: 320px;
+        height: 100vh;
+        padding: 24px 20px;
+        z-index: 300;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        overflow-y: auto;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-close {
+        display: flex;
+      }
+
+      .topbar {
+        display: none;
+      }
+
+      .main {
+        padding: 24px 20px 40px;
+      }
+
+      .page-title {
+        font-size: 22px;
+      }
+
+      .library-actions-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .btn-toggle-filters {
+        margin-left: 0;
+        justify-content: center;
+      }
+
+      .page-subtitle {
+        font-size: 15px;
+      }
+
+      .filter-panel {
+        padding: 20px;
+      }
+
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .qedit-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .import-modal-overlay {
+        padding: 0;
+      }
+
+      .import-modal {
+        max-width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+      }
+
+      .import-mode-grid,
+      .import-filters-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pill-filter-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .filter-actions {
+        width: 100%;
+      }
+
+      .filter-actions .btn-filtrar {
+        flex: 1 1 auto;
+        justify-content: center;
+      }
+
+      .question-card-band {
+        padding: 10px 16px;
+      }
+
+      .question-card-body {
+        padding: 14px 16px 16px;
+      }
+
+      .pagination {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
 </head>
 <body>
-<main>
-<nav class="crumbs"><a href="../../../../">Início</a> / <a href="../../../">Área do Assinante</a> / <a href="../../">Ferramentas</a> / <a href="../">Hub de questões</a></nav>
-<span class="badge">Protótipo em construção</span>
-<h1>Biblioteca</h1>
-</main>
+
+  <header class="mobile-topbar">
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="mobile-logo">
+      Prol<span class="mobile-logo-dots"><span class="dot dot-teal"></span><span class="dot dot-pink"></span><span class="dot dot-orange"></span><span class="dot dot-blue"></span></span><span class="orange">uno.</span>
+    </div>
+  </header>
+
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <div class="app">
+
+    <aside class="sidebar">
+      <button class="sidebar-close" id="sidebar-close" aria-label="Fechar menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <a class="back-link" href="../../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Voltar
+      </a>
+
+      <h1 class="sidebar-title">Hub de Questões</h1>
+      <p class="sidebar-subtitle">Crie e venda suas questões</p>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item active" href="../01-biblioteca/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h9"/></svg>
+          Biblioteca
+        </a>
+        <a class="nav-item" href="../02-banco-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>
+          Banco de questões
+        </a>
+        <a class="nav-item" href="../03-questoes-externas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-5Z"/><path d="M14 3v6h6"/></svg>
+          Questões externas
+        </a>
+        <a class="nav-item" href="../04-estatisticas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Estatísticas
+        </a>
+        <a class="nav-item" href="../05-pagamentos/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+          Pagamentos
+        </a>
+        <a class="nav-item" href="../06-plano-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          Plano de Questões
+        </a>
+        <a class="nav-item" href="../07-simulados/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 3.5h6a1 1 0 0 1 1 1V6H8V4.5a1 1 0 0 1 1-1Z"/><path d="M9 12.5l2 2 4-4"/></svg>
+          Simulados
+        </a>
+      </nav>
+    </aside>
+
+    <div class="content-col">
+      <header class="topbar"></header>
+
+    <main class="main">
+      <h2 class="page-title">Biblioteca de questões</h2>
+      <p class="page-subtitle">Cadastre suas próprias questões para usar na plataforma ou integrá-las aos seus produtos.</p>
+
+      <div class="library-actions-row">
+        <button type="button" class="btn-add-question" id="btn-add-question">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Adicionar questão
+        </button>
+        <button type="button" class="btn-import-questions" id="btn-import-questions">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0-12 4 4m-4-4-4 4M5 17v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
+          Importar questões
+        </button>
+        <button type="button" class="btn-toggle-filters" id="btn-toggle-filters">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3Z"/></svg>
+          <span id="toggle-filters-label">Ocultar filtros</span>
+          <svg class="toggle-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </div>
+
+      <div class="filter-panel">
+        <div class="filter-grid">
+          <div class="field">
+            <label>Pesquisa</label>
+            <div class="input-with-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" placeholder="Busque pelo título da questão">
+            </div>
+          </div>
+          <div class="field">
+            <label>Disciplina</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Disciplina</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Direito"><span>Direito</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Direito Administrativo"><span>Direito Administrativo</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Direito Constitucional"><span>Direito Constitucional</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Direito Tributário"><span>Direito Tributário</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Português"><span>Português</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Matemática"><span>Matemática</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Matemática Financeira"><span>Matemática Financeira</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Raciocínio Lógico"><span>Raciocínio Lógico</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Farmacologia"><span>Farmacologia</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Informática"><span>Informática</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Atualidades"><span>Atualidades</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Contabilidade"><span>Contabilidade</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Administração Pública"><span>Administração Pública</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Assunto</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Assunto</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Atos administrativos"><span>Atos administrativos</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Controle de constitucionalidade"><span>Controle de constitucionalidade</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Interpretação de texto"><span>Interpretação de texto</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Proposições"><span>Proposições</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Proposições lógicas"><span>Proposições lógicas</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Juros compostos"><span>Juros compostos</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Obrigação tributária"><span>Obrigação tributária</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Metabolização de fármacos"><span>Metabolização de fármacos</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Licitações e contratos"><span>Licitações e contratos</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Concordância verbal"><span>Concordância verbal</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Banca</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Banca</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="CEBRASPE"><span>CEBRASPE</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="FGV"><span>FGV</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="FCC"><span>FCC</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="CESGRANRIO"><span>CESGRANRIO</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="VUNESP"><span>VUNESP</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="IBFC"><span>IBFC</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="AOCP"><span>AOCP</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="IADES"><span>IADES</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Instituição</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Instituição</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="INSS"><span>INSS</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Receita Federal"><span>Receita Federal</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Polícia Federal"><span>Polícia Federal</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Tribunal de Justiça"><span>Tribunal de Justiça</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="TRF"><span>TRF</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="TRT"><span>TRT</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="TCU"><span>TCU</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Prefeitura Municipal"><span>Prefeitura Municipal</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Ano</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Ano</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="2026"><span>2026</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2025"><span>2025</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2024"><span>2024</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2023"><span>2023</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2022"><span>2022</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2021"><span>2021</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2020"><span>2020</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Cargo</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Cargo</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Analista"><span>Analista</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Técnico"><span>Técnico</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Auditor"><span>Auditor</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Escrivão"><span>Escrivão</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Agente"><span>Agente</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Perito"><span>Perito</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Procurador"><span>Procurador</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Área de Formação</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Área de Formação</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Direito"><span>Direito</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Administração"><span>Administração</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Contabilidade"><span>Contabilidade</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Tecnologia da Informação"><span>Tecnologia da Informação</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Engenharia"><span>Engenharia</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Saúde"><span>Saúde</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Educação"><span>Educação</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Carreiras</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Carreira</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira Fiscal"><span>Carreira Fiscal</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira Policial"><span>Carreira Policial</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira Jurídica"><span>Carreira Jurídica</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira Administrativa"><span>Carreira Administrativa</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira de Controle"><span>Carreira de Controle</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Escolaridade</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Escolaridade</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Fundamental"><span>Fundamental</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Médio"><span>Médio</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Superior"><span>Superior</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Dificuldade</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Dificuldade</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Fácil"><span>Fácil</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Médio"><span>Médio</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Difícil"><span>Difícil</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Tipo de Questão</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Tipo de Questão</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Múltipla escolha"><span>Múltipla escolha</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Certo e errado"><span>Certo e errado</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pill-filters">
+          <div class="pill-filter-row">
+            <span class="pill-filter-label">Status</span>
+            <div class="switch-options" data-mode="multi">
+              <label class="chip-option">
+                <input type="checkbox" checked>
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Ativas</span>
+              </label>
+              <label class="chip-option">
+                <input type="checkbox" checked>
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Rascunhos</span>
+              </label>
+              <label class="chip-option">
+                <input type="checkbox" checked>
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Bloqueadas</span>
+              </label>
+            </div>
+          </div>
+          <div class="pill-filter-row">
+            <span class="pill-filter-label">Incluir questões</span>
+            <div class="switch-options" data-mode="multi">
+              <label class="chip-option">
+                <input type="checkbox" checked>
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Inéditas</span>
+              </label>
+              <label class="chip-option">
+                <input type="checkbox">
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Anuladas</span>
+              </label>
+              <label class="chip-option">
+                <input type="checkbox">
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Desatualizadas</span>
+              </label>
+            </div>
+          </div>
+          <div class="pill-filter-row">
+            <span class="pill-filter-label">Questões com</span>
+            <div class="switch-options" data-mode="multi">
+              <label class="chip-option">
+                <input type="checkbox">
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Gabarito comentado</span>
+              </label>
+              <label class="chip-option">
+                <input type="checkbox">
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Aula</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-footer-row">
+          <div class="active-filters" id="active-filters">
+            <span class="active-filters-label">Filtrar por:</span>
+            <div class="active-filters-tags" id="active-filters-tags"></div>
+          </div>
+
+          <div class="filter-actions">
+            <button type="button" class="btn-limpar-filtro" id="btn-limpar-filtro">Limpar Filtro</button>
+            <button class="btn-filtrar">Filtrar</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="results-count">Foram encontradas <strong>2323</strong> questões.</p>
+
+      <div class="question-list">
+        <div class="question-card">
+          <div class="question-card-band">
+            <div class="band-breadcrumb">
+              <span class="card-index">1</span>
+              <span class="tag tag-id">#612</span>
+              <a class="breadcrumb-item" href="#" data-field="disciplina">Direito Administrativo</a>
+              <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+              <a class="breadcrumb-item" href="#" data-field="assunto">Atos administrativos</a>
+              <span class="tag tag-integrated">Integrada em 3 produtos</span>
+            </div>
+            <div class="card-actions">
+              <button class="icon-btn expand-toggle" type="button" title="Expandir">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <button class="icon-btn" type="button" title="Duplicar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+              <button class="icon-btn" type="button" title="Apagar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12Z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="question-card-body">
+            <div class="question-meta-row">
+              <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">2023</span></span>
+              <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">CEBRASPE</span></span>
+              <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">CEBRASPE - 2023 - PF - Agente Administrativo</span></span>
+            </div>
+            <p class="question-preview">Acerca dos atos administrativos, julgue o item: os atos vinculados não admitem apreciação de conveniência e oportunidade por parte do administrador.</p>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="question-card-band">
+            <div class="band-breadcrumb">
+              <span class="card-index">2</span>
+              <span class="tag tag-id">#611</span>
+              <a class="breadcrumb-item" href="#" data-field="disciplina">Direito Constitucional</a>
+              <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+              <a class="breadcrumb-item" href="#" data-field="assunto">Controle de constitucionalidade</a>
+            </div>
+            <div class="card-actions">
+              <button class="icon-btn expand-toggle" type="button" title="Expandir">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <button class="icon-btn" type="button" title="Duplicar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+              <button class="icon-btn" type="button" title="Apagar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12Z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="question-card-body">
+            <div class="question-meta-row">
+              <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">2022</span></span>
+              <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">CEBRASPE</span></span>
+              <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">CEBRASPE - 2022 - TCU - Auditor Federal de Controle Externo</span></span>
+            </div>
+            <p class="question-preview">No que se refere ao controle de constitucionalidade, assinale a alternativa que apresenta corretamente a diferença entre controle difuso e concentrado.</p>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="question-card-band">
+            <div class="band-breadcrumb">
+              <span class="card-index">3</span>
+              <span class="tag tag-id">#609</span>
+              <a class="breadcrumb-item" href="#" data-field="disciplina">Português</a>
+              <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+              <a class="breadcrumb-item" href="#" data-field="assunto">Interpretação de texto</a>
+              <span class="tag tag-integrated">Integrada em 1 produto</span>
+            </div>
+            <div class="card-actions">
+              <button class="icon-btn expand-toggle" type="button" title="Expandir">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <button class="icon-btn" type="button" title="Duplicar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+              <button class="icon-btn" type="button" title="Apagar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12Z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="question-card-body">
+            <div class="question-meta-row">
+              <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">2024</span></span>
+              <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">FGV</span></span>
+              <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">FGV - 2024 - TJ-SP - Analista Judiciário</span></span>
+            </div>
+            <p class="question-preview">Com base no texto apresentado, é correto afirmar que o autor defende a tese de que a linguagem escrita reflete diretamente o pensamento do falante.</p>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="question-card-band">
+            <div class="band-breadcrumb">
+              <span class="card-index">4</span>
+              <span class="tag tag-id">#607</span>
+              <a class="breadcrumb-item" href="#" data-field="disciplina">Raciocínio Lógico</a>
+              <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+              <a class="breadcrumb-item" href="#" data-field="assunto">Proposições</a>
+            </div>
+            <div class="card-actions">
+              <button class="icon-btn expand-toggle" type="button" title="Expandir">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <button class="icon-btn" type="button" title="Duplicar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+              <button class="icon-btn" type="button" title="Apagar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12Z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="question-card-body">
+            <div class="question-meta-row">
+              <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">2021</span></span>
+              <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">CEBRASPE</span></span>
+              <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">CEBRASPE - 2021 - PF - Escrivão</span></span>
+            </div>
+            <p class="question-preview">Considere a proposição &quot;Se chove, então a rua fica molhada&quot;. Assinale a alternativa que apresenta corretamente sua negação lógica.</p>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="question-card-band">
+            <div class="band-breadcrumb">
+              <span class="card-index">5</span>
+              <span class="tag tag-id">#605</span>
+              <a class="breadcrumb-item" href="#" data-field="disciplina">Direito Tributário</a>
+              <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+              <a class="breadcrumb-item" href="#" data-field="assunto">Obrigação tributária</a>
+              <span class="tag tag-integrated">Integrada em 2 produtos</span>
+            </div>
+            <div class="card-actions">
+              <button class="icon-btn expand-toggle" type="button" title="Expandir">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <button class="icon-btn" type="button" title="Duplicar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+              <button class="icon-btn" type="button" title="Apagar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12Z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="question-card-body">
+            <div class="question-meta-row">
+              <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">2023</span></span>
+              <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">FCC</span></span>
+              <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">FCC - 2023 - TRF-3 - Técnico Judiciário</span></span>
+            </div>
+            <p class="question-preview">Em relação à obrigação tributária principal e acessória, julgue o item a seguir quanto ao fato gerador e ao sujeito passivo.</p>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="question-card-band">
+            <div class="band-breadcrumb">
+              <span class="card-index">6</span>
+              <span class="tag tag-id">#603</span>
+              <a class="breadcrumb-item" href="#" data-field="disciplina">Matemática Financeira</a>
+              <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+              <a class="breadcrumb-item" href="#" data-field="assunto">Juros compostos</a>
+            </div>
+            <div class="card-actions">
+              <button class="icon-btn expand-toggle" type="button" title="Expandir">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <button class="icon-btn" type="button" title="Duplicar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+              <button class="icon-btn" type="button" title="Apagar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12Z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="question-card-body">
+            <div class="question-meta-row">
+              <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">2022</span></span>
+              <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">FGV</span></span>
+              <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">FGV - 2022 - Receita Federal - Auditor Fiscal</span></span>
+            </div>
+            <p class="question-preview">Um capital de R$ 10.000,00 foi aplicado a juros compostos de 2% ao mês. Calcule o montante ao final de 6 meses de aplicação.</p>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="question-card-band">
+            <div class="band-breadcrumb">
+              <span class="card-index">7</span>
+              <span class="tag tag-id">#601</span>
+              <a class="breadcrumb-item" href="#" data-field="disciplina">Farmacologia</a>
+              <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+              <a class="breadcrumb-item" href="#" data-field="assunto">Metabolização de fármacos</a>
+            </div>
+            <div class="card-actions">
+              <button class="icon-btn expand-toggle" type="button" title="Expandir">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <button class="icon-btn" type="button" title="Duplicar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+              <button class="icon-btn" type="button" title="Apagar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12Z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="question-card-body">
+            <div class="question-meta-row">
+              <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">2024</span></span>
+              <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">FGV</span></span>
+              <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">FGV - 2024 - Ministério da Saúde - Farmacêutico</span></span>
+            </div>
+            <p class="question-preview">Os fármacos são eliminados do organismo após sofrerem uma série de reações químicas chamadas, de maneira geral, de metabolização de fármacos.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination">
+        <button class="page-btn page-nav">‹</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <span class="page-ellipsis">...</span>
+        <button class="page-btn">18</button>
+        <button class="page-btn page-nav">›</button>
+      </div>
+    </main>
+    </div>
+
+  </div>
+
+  <div class="import-modal-overlay" id="import-modal-overlay">
+    <div class="import-modal" role="dialog" aria-modal="true" aria-labelledby="import-modal-title">
+
+      <div class="import-modal-header">
+        <div class="import-modal-heading">
+          <h2 class="import-modal-title" id="import-modal-title">Importe suas questões</h2>
+          <p class="import-modal-subtitle" id="import-modal-subtitle">Envie uma planilha .xlsx com as questões</p>
+        </div>
+        <button type="button" class="import-modal-close" id="import-modal-close" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+
+      <div class="import-stepper" id="import-stepper">
+        <div class="import-step" data-step-item="upload">
+          <div class="import-step-circle"><span class="import-step-num">1</span><svg class="import-step-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+          <span class="import-step-label">Arquivo</span>
+        </div>
+        <div class="import-step-line" data-step-line="0"></div>
+        <div class="import-step" data-step-item="modo">
+          <div class="import-step-circle"><span class="import-step-num">2</span><svg class="import-step-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+          <span class="import-step-label">Organização</span>
+        </div>
+        <div class="import-step-line" data-step-line="1"></div>
+        <div class="import-step" data-step-item="revisao">
+          <div class="import-step-circle"><span class="import-step-num">3</span><svg class="import-step-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+          <span class="import-step-label">Revisão</span>
+        </div>
+      </div>
+
+      <div class="import-modal-body">
+
+        <!-- ETAPA 1: arquivo -->
+        <div class="import-step-panel" data-step-panel="upload">
+          <div class="import-model-link"><a href="#modelo">Clique aqui</a> para baixar o modelo de importação.</div>
+
+          <div class="import-dropzone" id="import-dropzone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+            <div class="import-dropzone-text">Arraste e solte o arquivo aqui ou</div>
+            <button type="button" class="import-pick-btn" id="import-pick-file">Selecionar arquivo</button>
+            <div class="import-dropzone-hint">Formato aceito: .xlsx · Tamanho máximo: 40 MB</div>
+            <input type="file" id="import-file-input" accept=".xlsx" style="display:none">
+          </div>
+
+          <div class="import-filecard" id="import-filecard" style="display:none">
+            <div class="import-filecard-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13l4 4M13 13l-4 4"/></svg>
+            </div>
+            <div class="import-filecard-info">
+              <div class="import-filecard-name" id="import-filecard-name">questoes_importacao.xlsx</div>
+              <div class="import-filecard-meta" id="import-filecard-meta">Arquivo pronto para importar</div>
+            </div>
+            <div class="import-filecard-valid">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Arquivo válido
+            </div>
+            <button type="button" class="import-filecard-remove" id="import-remove-file" aria-label="Remover arquivo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ETAPA 2: organização -->
+        <div class="import-step-panel" data-step-panel="modo">
+          <div class="import-section-title">Como você quer importar as questões?</div>
+
+          <div class="import-mode-grid" role="radiogroup" aria-label="Forma de importação">
+            <button type="button" class="import-mode-card" id="import-mode-draft" role="radio" aria-checked="false">
+              <div class="import-mode-radio"><div class="import-mode-radio-dot"></div></div>
+              <div class="import-mode-body">
+                <div class="import-mode-title-row"><span class="import-mode-title">Importar sem filtros</span></div>
+                <div class="import-mode-desc">As questões entram agora e você adiciona os filtros depois, em cada questão.</div>
+              </div>
+            </button>
+            <button type="button" class="import-mode-card" id="import-mode-bulk" role="radio" aria-checked="false">
+              <div class="import-mode-radio"><div class="import-mode-radio-dot"></div></div>
+              <div class="import-mode-body">
+                <div class="import-mode-title-row"><span class="import-mode-title">Importar com filtros</span><span class="import-mode-badge">Recomendado</span></div>
+                <div class="import-mode-desc">Escolha os filtros uma vez e eles valem para todas as questões do arquivo.</div>
+              </div>
+            </button>
+          </div>
+
+          <p class="import-obs-text"><strong>OBS:</strong> Nas duas opções, as questões são importadas com status <strong>Publicada</strong>.</p>
+
+          <div class="import-banner import-banner-info" id="import-draft-hint" style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+            <span>As questões entram sem Disciplina, Banca e Instituição. Você poderá adicionar esses filtros depois, abrindo cada questão na Biblioteca.</span>
+          </div>
+
+          <div class="import-filters-block" id="import-filters-block" style="display:none">
+            <div class="import-filters-head">
+              <div class="import-section-title" style="font-size:15px;font-weight:600">Filtros para todas as questões</div>
+              <div>
+                <span class="import-filters-count" id="import-filters-count">Nenhum filtro selecionado</span>
+                <button type="button" class="import-filters-clear" id="import-filters-clear" style="display:none">Limpar filtros</button>
+              </div>
+            </div>
+
+            <div class="import-filters-grid" id="import-filters-main"></div>
+
+            <button type="button" class="import-more-toggle" id="import-more-toggle" aria-expanded="false">
+              <span id="import-more-label">Mais filtros</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+
+            <div class="import-filters-grid" id="import-filters-more" style="display:none"></div>
+
+            <div class="import-banner import-banner-warning">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+              <span>Todas as questões do arquivo recebem os mesmos filtros. Um campo deixado vazio pode ser preenchido depois, questão por questão.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ETAPA 3: revisão -->
+        <div class="import-step-panel" data-step-panel="revisao">
+          <div class="import-section-title">Confira antes de importar</div>
+
+          <div class="import-review-card">
+            <div class="import-review-row">
+              <span class="import-review-label">Arquivo</span>
+              <span class="import-review-value" id="import-review-filename">questoes_importacao.xlsx</span>
+            </div>
+            <div class="import-review-row">
+              <span class="import-review-label">Status das questões</span>
+              <span class="import-status-badge"><span class="dot"></span>Publicada</span>
+            </div>
+            <div class="import-review-row">
+              <span class="import-review-label">Filtros</span>
+              <div class="import-filters-status">
+                <span class="import-status-badge" id="import-review-status-badge">Com filtros</span>
+                <button type="button" class="import-alter-link" id="import-back-to-modo">Alterar</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="import-review-bulk">
+            <div class="import-section-title" style="font-size:15px;font-weight:600;margin-bottom:10px">Filtros aplicados a todas as questões</div>
+            <div class="import-chips" id="import-review-chips"></div>
+            <div class="import-review-nofilters" id="import-review-nofilters" style="display:none">Nenhum filtro selecionado. Volte e escolha ao menos um, ou importe sem filtros.</div>
+          </div>
+
+          <div class="import-banner import-banner-info" id="import-review-draft-hint" style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+            <span>As questões entram sem filtros. Você poderá adicioná-los depois, abrindo cada questão na Biblioteca.</span>
+          </div>
+
+          <div class="import-banner import-banner-warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+            <span>Atenção: as questões serão importadas com status <strong>Publicada</strong> e ficam disponíveis assim que a importação terminar.</span>
+          </div>
+        </div>
+
+        <!-- SUCESSO -->
+        <div class="import-step-panel" data-step-panel="sucesso">
+          <div class="import-success">
+            <div class="import-success-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+            </div>
+            <div class="import-success-title">Questões importadas</div>
+            <div class="import-success-text" id="import-success-text"></div>
+            <div class="import-success-actions">
+              <button type="button" class="btn-import-secondary" id="import-success-close">Fechar</button>
+              <button type="button" class="btn-import-primary" id="import-success-cta">Ver na Biblioteca</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="import-modal-footer" id="import-modal-footer">
+        <span class="import-footer-hint" id="import-footer-hint"></span>
+        <div class="import-footer-actions">
+          <button type="button" class="btn-import-secondary" id="import-btn-secondary">Cancelar</button>
+          <button type="button" class="btn-import-primary" id="import-btn-primary">Continuar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Ocultar/mostrar painel de filtros
+    const btnToggleFilters = document.getElementById('btn-toggle-filters');
+    const toggleFiltersLabel = document.getElementById('toggle-filters-label');
+    const filterPanelEl = document.querySelector('.filter-panel');
+
+    btnToggleFilters.addEventListener('click', () => {
+      const willHide = filterPanelEl.style.display !== 'none';
+      filterPanelEl.style.display = willHide ? 'none' : '';
+      toggleFiltersLabel.textContent = willHide ? 'Mostrar filtros' : 'Ocultar filtros';
+      btnToggleFilters.classList.toggle('filters-hidden', willHide);
+    });
+
+    // Limpar filtro
+    const btnLimparFiltro = document.getElementById('btn-limpar-filtro');
+    const filterInputs = Array.from(filterPanelEl.querySelectorAll('.filter-grid input[type="checkbox"], .pill-filters input[type="checkbox"]'));
+    const filterBaseline = filterInputs.map((el) => el.checked);
+
+    function hasActiveFilters() {
+      return filterInputs.some((el, i) => el.checked !== filterBaseline[i]);
+    }
+
+    function updateClearFilterVisibility() {
+      btnLimparFiltro.classList.toggle('visible', hasActiveFilters());
+    }
+
+    filterPanelEl.addEventListener('change', (e) => {
+      if (e.target.matches('input[type="checkbox"]')) updateClearFilterVisibility();
+    });
+
+    btnLimparFiltro.addEventListener('click', () => {
+      filterInputs.forEach((el, i) => {
+        if (el.checked !== filterBaseline[i]) {
+          el.checked = filterBaseline[i];
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+      updateClearFilterVisibility();
+    });
+
+    // Duplicar/apagar questão
+    function renumberQuestionCards() {
+      document.querySelectorAll('.question-card').forEach((card, i) => {
+        const index = card.querySelector('.card-index');
+        if (index) index.textContent = i + 1;
+      });
+    }
+
+    // Editor de questão (expandir card)
+    const QUESTION_DATA = {
+      '#612': {
+        stem: 'Acerca dos atos administrativos, julgue o item: os atos vinculados não admitem apreciação de conveniência e oportunidade por parte do administrador.',
+        options: [
+          { text: 'aplicar-se apenas aos atos discricionários, pois somente estes admitem juízo de mérito.', correct: false },
+          { text: 'estar correta, pois os atos vinculados decorrem diretamente da lei, sem margem de escolha para o administrador.', correct: true },
+          { text: 'estar incorreta, pois todo ato administrativo admite algum grau de discricionariedade.', correct: false },
+          { text: 'aplicar-se somente aos atos praticados por autoridade de última instância.', correct: false },
+        ],
+      },
+      '#611': {
+        stem: 'No que se refere ao controle de constitucionalidade, assinale a alternativa que apresenta corretamente a diferença entre controle difuso e concentrado.',
+        options: [
+          { text: 'O controle difuso pode ser exercido por qualquer juiz ou tribunal no julgamento de um caso concreto.', correct: true },
+          { text: 'O controle concentrado é exercido exclusivamente por tribunais de segunda instância.', correct: false },
+          { text: 'O controle difuso produz efeitos erga omnes de forma automática.', correct: false },
+          { text: 'O controle concentrado independe de previsão constitucional específica.', correct: false },
+        ],
+      },
+      '#609': {
+        stem: 'Com base no texto apresentado, é correto afirmar que o autor defende a tese de que a linguagem escrita reflete diretamente o pensamento do falante.',
+        options: [
+          { text: 'O autor sustenta que pensamento e linguagem escrita são processos inseparáveis.', correct: true },
+          { text: 'O autor nega qualquer relação entre linguagem escrita e processos cognitivos.', correct: false },
+          { text: 'O autor defende que a oralidade é superior à escrita na representação do pensamento.', correct: false },
+          { text: 'O autor não estabelece relação entre linguagem e pensamento no texto.', correct: false },
+        ],
+      },
+      '#607': {
+        stem: 'Considere a proposição "Se chove, então a rua fica molhada". Assinale a alternativa que apresenta corretamente sua negação lógica.',
+        options: [
+          { text: 'Chove e a rua não fica molhada.', correct: true },
+          { text: 'Não chove e a rua fica molhada.', correct: false },
+          { text: 'Se não chove, então a rua não fica molhada.', correct: false },
+          { text: 'A rua fica molhada se, e somente se, chove.', correct: false },
+        ],
+      },
+      '#605': {
+        stem: 'Em relação à obrigação tributária principal e acessória, julgue o item a seguir quanto ao fato gerador e ao sujeito passivo.',
+        options: [
+          { text: 'A obrigação principal surge com a ocorrência do fato gerador e tem por objeto o pagamento de tributo ou penalidade.', correct: true },
+          { text: 'A obrigação acessória sempre depende da existência de uma obrigação principal para ser exigida.', correct: false },
+          { text: 'O sujeito passivo da obrigação tributária é sempre o responsável, nunca o contribuinte.', correct: false },
+          { text: 'A obrigação acessória, quando descumprida, nunca se converte em obrigação principal.', correct: false },
+        ],
+      },
+      '#603': {
+        stem: 'Um capital de R$ 10.000,00 foi aplicado a juros compostos de 2% ao mês. Calcule o montante ao final de 6 meses de aplicação.',
+        options: [
+          { text: 'R$ 11.261,62', correct: true },
+          { text: 'R$ 11.200,00', correct: false },
+          { text: 'R$ 10.612,08', correct: false },
+          { text: 'R$ 12.000,00', correct: false },
+        ],
+      },
+      '#601': {
+        stem: '(FGV) - Os fármacos são eliminados do organismo após sofrerem uma série de reações químicas chamadas, de maneira geral, de metabolização de fármacos. Em relação a tal fato, assinale a afirmativa incorreta.',
+        options: [
+          { text: 'As reações de metabolização se dão principalmente no fígado, mas também podem acontecer em outros órgãos, como no intestino ou no pulmão.', correct: false },
+          { text: 'As reações de metabolização são reações enzimáticas, ou seja, são catalisadas por enzimas, na sua maioria no chamado citocromo P450 (presentes na fase I).', correct: false },
+          { text: 'As chamadas fase I e fase II são, basicamente, as duas fases conhecidas da metabolização.', correct: false },
+          { text: 'As reações de fase II são aquelas em que os fármacos tornam-se mais solúveis, e, assim, mais fáceis de serem excretados.', correct: false },
+          { text: 'Os fármacos administrados por via oral sofrem a metabolização conhecida como "efeito de segunda passagem".', correct: true },
+        ],
+      },
+    };
+
+    function buildEditorToolbar() {
+      return `
+        <div class="editor-toolbar">
+          <select class="editor-format"><option>Normal</option><option>Título</option><option>Subtítulo</option></select>
+          <button type="button" class="editor-btn" title="Negrito">B</button>
+          <button type="button" class="editor-btn italic" title="Itálico">I</button>
+          <button type="button" class="editor-btn underline" title="Sublinhado">U</button>
+          <button type="button" class="editor-btn" title="Citação">&rdquo;</button>
+          <span class="editor-divider"></span>
+          <button type="button" class="editor-btn" title="Lista numerada"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
+          <button type="button" class="editor-btn" title="Lista com marcadores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg></button>
+          <button type="button" class="editor-btn" title="Alinhar à esquerda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg></button>
+          <button type="button" class="editor-btn" title="Centralizar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></button>
+          <span class="editor-divider"></span>
+          <button type="button" class="editor-btn" title="Link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></svg></button>
+          <button type="button" class="editor-btn" title="Imagem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></button>
+          <button type="button" class="editor-btn" title="Vídeo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="15" height="14" rx="2"/><path d="m22 8-5 4 5 4V8Z"/></svg></button>
+        </div>
+      `;
+    }
+
+    function buildOptionToolbar() {
+      return `
+        <div class="editor-toolbar">
+          <button type="button" class="editor-btn" title="Negrito">B</button>
+          <button type="button" class="editor-btn italic" title="Itálico">I</button>
+          <button type="button" class="editor-btn underline" title="Sublinhado">U</button>
+          <button type="button" class="editor-btn" title="Citação">&rdquo;</button>
+          <span class="editor-divider"></span>
+          <button type="button" class="editor-btn" title="Imagem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></button>
+        </div>
+      `;
+    }
+
+    function buildOptionRow(text, correct) {
+      return `
+        <div class="option-row">
+          <input type="checkbox" class="option-checkbox" ${correct ? 'checked' : ''}>
+          <p class="option-text">${text}</p>
+          <button type="button" class="option-remove" title="Remover">&times;</button>
+        </div>
+      `;
+    }
+
+    // Classificação da questão (campos de taxonomia dentro do editor)
+    const TAXONOMY_FIELDS = [
+      { key: 'disciplina', label: 'Disciplina', mode: 'single', options: ['Direito', 'Direito Administrativo', 'Direito Constitucional', 'Direito Tributário', 'Português', 'Matemática', 'Matemática Financeira', 'Raciocínio Lógico', 'Farmacologia', 'Informática', 'Atualidades', 'Contabilidade', 'Administração Pública'] },
+      { key: 'assunto', label: 'Assunto', mode: 'multi', options: ['Atos administrativos', 'Controle de constitucionalidade', 'Interpretação de texto', 'Proposições', 'Proposições lógicas', 'Juros compostos', 'Obrigação tributária', 'Metabolização de fármacos', 'Licitações e contratos', 'Concordância verbal'] },
+      { key: 'banca', label: 'Banca', mode: 'single', options: ['CEBRASPE', 'FGV', 'FCC', 'CESGRANRIO', 'VUNESP', 'IBFC', 'AOCP', 'IADES'] },
+      { key: 'instituicao', label: 'Instituição', mode: 'single', options: ['INSS', 'Receita Federal', 'Polícia Federal', 'Tribunal de Justiça', 'TRF', 'TRT', 'TCU', 'Prefeitura Municipal'] },
+      { key: 'ano', label: 'Ano', mode: 'single', options: ['2026', '2025', '2024', '2023', '2022', '2021', '2020'] },
+      { key: 'cargo', label: 'Cargo', mode: 'multi', options: ['Analista', 'Técnico', 'Auditor', 'Escrivão', 'Agente', 'Perito', 'Procurador'] },
+      { key: 'area-formacao', label: 'Área de Formação', mode: 'multi', options: ['Direito', 'Administração', 'Contabilidade', 'Tecnologia da Informação', 'Engenharia', 'Saúde', 'Educação'] },
+      { key: 'carreiras', label: 'Carreiras', mode: 'multi', options: ['Carreira Fiscal', 'Carreira Policial', 'Carreira Jurídica', 'Carreira Administrativa', 'Carreira de Controle'] },
+      { key: 'escolaridade', label: 'Escolaridade', mode: 'single', options: ['Fundamental', 'Médio', 'Superior'] },
+      { key: 'dificuldade', label: 'Dificuldade', mode: 'single', options: ['Fácil', 'Médio', 'Difícil'] },
+    ];
+
+    function buildTaxonomyField(field) {
+      const optionsHtml = field.options.map((v) => `<label class="multiselect-option"><input type="checkbox" value="${v}"><span>${v}</span></label>`).join('');
+      return `
+        <div class="field qedit-field" data-key="${field.key}" data-mode="${field.mode}">
+          <label>${field.label}</label>
+          <div class="multiselect">
+            <button type="button" class="select">
+              <span class="multiselect-label">-</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="multiselect-panel">
+              <div class="multiselect-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+              </div>
+              <div class="multiselect-options">${optionsHtml}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildTaxonomyGrid() {
+      return `<div class="qedit-grid">${TAXONOMY_FIELDS.map(buildTaxonomyField).join('')}</div>`;
+    }
+
+    function initTaxonomyField(fieldEl) {
+      const ms = fieldEl.querySelector('.multiselect');
+      const trigger = ms.querySelector('.select');
+      const label = ms.querySelector('.multiselect-label');
+      const panel = ms.querySelector('.multiselect-panel');
+      const searchInput = ms.querySelector('.multiselect-search-input');
+      const options = ms.querySelectorAll('.multiselect-option');
+      const checkboxes = ms.querySelectorAll('input[type="checkbox"]');
+      const mode = fieldEl.dataset.mode;
+
+      fieldEl._updateLabel = updateLabel;
+
+      function updateLabel() {
+        const checked = Array.from(checkboxes).filter((cb) => cb.checked);
+        if (checked.length === 0) {
+          label.textContent = '-';
+          label.classList.remove('has-value');
+        } else if (checked.length === 1) {
+          label.textContent = checked[0].value;
+          label.classList.add('has-value');
+        } else {
+          label.textContent = `${checked[0].value} +${checked.length - 1}`;
+          label.classList.add('has-value');
+        }
+      }
+
+      function resetSearch() {
+        searchInput.value = '';
+        options.forEach((opt) => { opt.style.display = ''; });
+      }
+
+      function closePanel() {
+        ms.classList.remove('open');
+        resetSearch();
+      }
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = ms.classList.contains('open');
+        document.querySelectorAll('.multiselect.open').forEach((other) => {
+          if (other !== ms) other.classList.remove('open');
+        });
+        if (isOpen) {
+          closePanel();
+        } else {
+          ms.classList.add('open');
+          searchInput.focus();
+        }
+      });
+
+      panel.addEventListener('click', (e) => e.stopPropagation());
+
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim().toLowerCase();
+        options.forEach((opt) => {
+          const matches = opt.textContent.trim().toLowerCase().includes(query);
+          opt.style.display = matches ? '' : 'none';
+        });
+      });
+
+      checkboxes.forEach((cb) => cb.addEventListener('change', () => {
+        if (mode === 'single' && cb.checked) {
+          checkboxes.forEach((other) => {
+            if (other !== cb) other.checked = false;
+          });
+        }
+        updateLabel();
+        updateSaveValidity(fieldEl.closest('.question-card'));
+        syncFieldDisplay(fieldEl);
+      }));
+
+      document.addEventListener('click', () => {
+        if (ms.classList.contains('open')) closePanel();
+      });
+    }
+
+    function prefillTaxonomyFromDisplay(card) {
+      const sources = {
+        disciplina: card.querySelector('.band-breadcrumb [data-field="disciplina"]'),
+        assunto: card.querySelector('.band-breadcrumb [data-field="assunto"]'),
+        banca: card.querySelector('.question-meta-row [data-field="banca"]'),
+        ano: card.querySelector('.question-meta-row [data-field="ano"]'),
+      };
+
+      Object.keys(sources).forEach((key) => {
+        const source = sources[key];
+        const text = source && source.textContent.trim();
+        if (!text || text === '-') return;
+
+        const field = card.querySelector(`.qedit-field[data-key="${key}"]`);
+        if (!field) return;
+
+        const checkbox = Array.from(field.querySelectorAll('input[type="checkbox"]')).find((cb) => cb.value === text);
+        if (checkbox) {
+          checkbox.checked = true;
+          if (field._updateLabel) field._updateLabel();
+        }
+      });
+    }
+
+    function syncFieldDisplay(fieldEl) {
+      const card = fieldEl.closest('.question-card');
+      if (!card) return;
+      const key = fieldEl.dataset.key;
+      const checked = Array.from(fieldEl.querySelectorAll('input[type="checkbox"]:checked')).map((cb) => cb.value);
+      const text = checked.length === 0 ? '-' : checked.length === 1 ? checked[0] : `${checked[0]} +${checked.length - 1}`;
+      card.querySelectorAll(`[data-field="${key}"]`).forEach((el) => { el.textContent = text; });
+
+      if (key === 'banca' || key === 'ano' || key === 'instituicao') {
+        updateProvaDisplay(card);
+      }
+    }
+
+    function updateProvaDisplay(card) {
+      const parts = ['banca', 'ano', 'instituicao'].map((key) => {
+        const field = card.querySelector(`.qedit-field[data-key="${key}"]`);
+        if (!field) return null;
+        const checkedInput = field.querySelector('input[type="checkbox"]:checked');
+        return checkedInput ? checkedInput.value : null;
+      }).filter(Boolean);
+      const text = parts.length ? parts.join(' - ') : '-';
+      card.querySelectorAll('[data-field="prova"]').forEach((el) => { el.textContent = text; });
+    }
+
+    function updateSaveValidity(card) {
+      const editor = card && card.querySelector('.question-editor');
+      if (!editor) return;
+      const saveItem = editor.querySelector('.save-menu-item[data-action="save"]');
+      if (!saveItem) return;
+
+      const disciplinaField = editor.querySelector('.qedit-field[data-key="disciplina"]');
+      const assuntoField = editor.querySelector('.qedit-field[data-key="assunto"]');
+      const hasDisciplina = !!(disciplinaField && disciplinaField.querySelector('input[type="checkbox"]:checked'));
+      const hasAssunto = !!(assuntoField && assuntoField.querySelector('input[type="checkbox"]:checked'));
+      const optionCount = editor.querySelectorAll('.option-row').length;
+      const stemBody = editor.querySelector('.stem-body');
+      const hasStem = !!(stemBody && stemBody.textContent.trim().length > 0);
+
+      saveItem.disabled = !(hasDisciplina && hasAssunto && optionCount >= 2 && hasStem);
+    }
+
+    function buildEditorHtml(data) {
+      const optionsHtml = data.options.map((opt) => buildOptionRow(opt.text, opt.correct)).join('');
+      return `
+        ${buildTaxonomyGrid()}
+        <button type="button" class="btn-add-aux">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Texto auxiliar
+        </button>
+        <div class="aux-text-field hidden">
+          ${buildEditorToolbar()}
+          <div class="editor-body" contenteditable="true"></div>
+        </div>
+        ${buildEditorToolbar()}
+        <div class="editor-body stem-body" contenteditable="true">${data.stem}</div>
+        <p class="options-hint">Marque pelo menos um item como correto.</p>
+        <div class="options-list">${optionsHtml}</div>
+        <div class="add-option-row">
+          <input type="checkbox" class="option-checkbox" disabled>
+          <span>Adicionar Item</span>
+        </div>
+        <div class="editor-tabs">
+          <button type="button" class="editor-tab active" data-tab="comentario">Comentário</button>
+          <button type="button" class="editor-tab" data-tab="aulas">Aulas</button>
+        </div>
+        <div class="editor-tab-panel active" data-panel="comentario">
+          ${buildEditorToolbar()}
+          <div class="editor-body" contenteditable="true"></div>
+        </div>
+        <div class="editor-tab-panel" data-panel="aulas">
+          <p class="editor-empty">Nenhuma aula vinculada a esta questão.</p>
+        </div>
+        <div class="editor-footer">
+          <div class="save-menu-wrap">
+            <button type="button" class="btn-save-question">
+              Salvar
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="save-menu hidden"></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function setQuestionEditorOpen(card, open) {
+      card.classList.toggle('expanded', open);
+      if (!open) return;
+
+      const body = card.querySelector('.question-card-body');
+      if (body.querySelector('.question-editor')) return;
+
+      const idEl = card.querySelector('.tag-id');
+      const data = (idEl && QUESTION_DATA[idEl.textContent.trim()]) || { stem: '', options: [] };
+
+      const editor = document.createElement('div');
+      editor.className = 'question-editor';
+      editor.innerHTML = buildEditorHtml(data);
+      body.appendChild(editor);
+      editor.querySelectorAll('.qedit-field').forEach(initTaxonomyField);
+      prefillTaxonomyFromDisplay(card);
+      updateSaveValidity(card);
+    }
+
+    function setCardDraftStatus(card, isDraft) {
+      const band = card.querySelector('.question-card-band');
+      let draftTag = card.querySelector('.tag-draft');
+      if (isDraft) {
+        if (!draftTag) {
+          draftTag = document.createElement('span');
+          draftTag.className = 'tag tag-draft';
+          draftTag.textContent = 'Rascunho';
+          const breadcrumb = band.querySelector('.band-breadcrumb');
+          (breadcrumb || band).appendChild(draftTag);
+        }
+      } else if (draftTag) {
+        draftTag.remove();
+      }
+    }
+
+    function buildSaveMenuItems(isDraft) {
+      if (isDraft) {
+        return '<button type="button" class="save-menu-item" data-action="save" disabled>Ativar</button>';
+      }
+      return `
+        <button type="button" class="save-menu-item" data-action="draft">Rascunho</button>
+        <button type="button" class="save-menu-item" data-action="save" disabled>Salvar</button>
+      `;
+    }
+
+    function finalizeQuestionSave(card, action) {
+      const menu = card.querySelector('.save-menu');
+      if (menu) menu.classList.add('hidden');
+      if (action === 'draft') {
+        setCardDraftStatus(card, true);
+        setQuestionEditorOpen(card, false);
+      } else if (action === 'save') {
+        setCardDraftStatus(card, false);
+        setQuestionEditorOpen(card, false);
+      }
+    }
+
+    function buildBlankCardBandHtml() {
+      return `
+        <div class="question-card-band">
+          <div class="band-breadcrumb">
+            <span class="card-index"></span>
+            <a class="breadcrumb-item" href="#" data-field="disciplina">-</a>
+            <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+            <a class="breadcrumb-item" href="#" data-field="assunto">-</a>
+            <span class="tag tag-draft">Rascunho</span>
+          </div>
+          <div class="card-actions">
+            <button class="icon-btn expand-toggle" type="button" title="Expandir">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <button class="icon-btn" type="button" title="Duplicar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+            <button class="icon-btn" type="button" title="Apagar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12Z"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="question-card-body">
+          <div class="question-meta-row">
+            <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">-</span></span>
+            <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">-</span></span>
+            <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">-</span></span>
+          </div>
+        </div>
+      `;
+    }
+
+    function addBlankQuestionCard() {
+      const list = document.querySelector('.question-list');
+      const card = document.createElement('div');
+      card.className = 'question-card expanded';
+      card.innerHTML = buildBlankCardBandHtml();
+      list.insertBefore(card, list.firstChild);
+      renumberQuestionCards();
+
+      const editor = document.createElement('div');
+      editor.className = 'question-editor';
+      editor.innerHTML = buildEditorHtml({ stem: '', options: [] });
+      card.querySelector('.question-card-body').appendChild(editor);
+      editor.querySelectorAll('.qedit-field').forEach(initTaxonomyField);
+      prefillTaxonomyFromDisplay(card);
+      updateSaveValidity(card);
+
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    document.getElementById('btn-add-question').addEventListener('click', addBlankQuestionCard);
+
+    function deactivateOption(row) {
+      const optionEditor = row.querySelector('.option-editor');
+      if (optionEditor) {
+        const text = optionEditor.querySelector('.editor-body').textContent;
+        row.querySelector('.option-text').textContent = text;
+        optionEditor.remove();
+      }
+      row.classList.remove('active');
+    }
+
+    function activateOption(row) {
+      if (row.classList.contains('active')) return;
+      const text = row.querySelector('.option-text').textContent;
+      const optionEditor = document.createElement('div');
+      optionEditor.className = 'option-editor';
+      optionEditor.innerHTML = `${buildOptionToolbar()}<div class="editor-body" contenteditable="true">${text}</div>`;
+      row.classList.add('active');
+      row.querySelector('.option-checkbox').insertAdjacentElement('afterend', optionEditor);
+      optionEditor.querySelector('.editor-body').focus();
+    }
+
+    function switchEditorTab(tabBtn) {
+      const tabsRow = tabBtn.closest('.editor-tabs');
+      const editor = tabBtn.closest('.question-editor');
+      tabsRow.querySelectorAll('.editor-tab').forEach((t) => t.classList.remove('active'));
+      tabBtn.classList.add('active');
+      const target = tabBtn.dataset.tab;
+      editor.querySelectorAll('.editor-tab-panel').forEach((p) => {
+        p.classList.toggle('active', p.dataset.panel === target);
+      });
+    }
+
+    function addOption(addRow) {
+      const list = addRow.previousElementSibling;
+      const row = document.createElement('div');
+      row.className = 'option-row';
+      row.innerHTML = buildOptionRow('', false);
+      list.appendChild(row.firstElementChild);
+      activateOption(list.lastElementChild);
+    }
+
+    document.querySelector('.question-list').addEventListener('input', (e) => {
+      if (e.target.classList.contains('stem-body')) {
+        updateSaveValidity(e.target.closest('.question-card'));
+      }
+    });
+
+    document.querySelector('.question-list').addEventListener('change', (e) => {
+      const cb = e.target.closest('.option-checkbox');
+      if (!cb || cb.disabled || !cb.checked) return;
+      const list = cb.closest('.options-list');
+      if (!list) return;
+      list.querySelectorAll('.option-checkbox').forEach((other) => {
+        if (other !== cb) other.checked = false;
+      });
+    });
+
+    document.querySelector('.question-list').addEventListener('click', (e) => {
+      document.querySelectorAll('.option-row.active').forEach((row) => {
+        if (!row.contains(e.target)) deactivateOption(row);
+      });
+
+      document.querySelectorAll('.save-menu:not(.hidden)').forEach((menu) => {
+        if (!menu.closest('.save-menu-wrap').contains(e.target)) menu.classList.add('hidden');
+      });
+
+      const toggleBtn = e.target.closest('.expand-toggle');
+      if (toggleBtn) {
+        const card = toggleBtn.closest('.question-card');
+        setQuestionEditorOpen(card, !card.classList.contains('expanded'));
+        return;
+      }
+
+      const auxBtn = e.target.closest('.btn-add-aux');
+      if (auxBtn) {
+        const auxField = auxBtn.nextElementSibling;
+        auxField.classList.toggle('hidden');
+        if (!auxField.classList.contains('hidden')) {
+          auxField.querySelector('.editor-body').focus();
+        }
+        return;
+      }
+
+      const iconBtn = e.target.closest('.icon-btn');
+      if (iconBtn) {
+        const card = iconBtn.closest('.question-card');
+        if (iconBtn.title === 'Duplicar') {
+          card.insertAdjacentElement('afterend', card.cloneNode(true));
+          renumberQuestionCards();
+        } else if (iconBtn.title === 'Apagar') {
+          card.remove();
+          renumberQuestionCards();
+        }
+        return;
+      }
+
+      const removeBtn = e.target.closest('.option-remove');
+      if (removeBtn) {
+        const removeCard = removeBtn.closest('.question-card');
+        removeBtn.closest('.option-row').remove();
+        updateSaveValidity(removeCard);
+        return;
+      }
+
+      const addRow = e.target.closest('.add-option-row');
+      if (addRow) {
+        addOption(addRow);
+        updateSaveValidity(addRow.closest('.question-card'));
+        return;
+      }
+
+      const optionText = e.target.closest('.option-text');
+      if (optionText) {
+        activateOption(optionText.closest('.option-row'));
+        return;
+      }
+
+      const tabBtn = e.target.closest('.editor-tab');
+      if (tabBtn) {
+        switchEditorTab(tabBtn);
+        return;
+      }
+
+      const saveBtn = e.target.closest('.btn-save-question');
+      if (saveBtn) {
+        const card = saveBtn.closest('.question-card');
+        const menu = saveBtn.nextElementSibling;
+        const wasHidden = menu.classList.contains('hidden');
+        document.querySelectorAll('.save-menu').forEach((m) => {
+          if (m !== menu) m.classList.add('hidden');
+        });
+        if (wasHidden) {
+          const isDraft = !!card.querySelector('.tag-draft');
+          menu.innerHTML = buildSaveMenuItems(isDraft);
+          updateSaveValidity(card);
+        }
+        menu.classList.toggle('hidden', !wasHidden);
+        return;
+      }
+
+      const saveMenuItem = e.target.closest('.save-menu-item');
+      if (saveMenuItem && !saveMenuItem.disabled) {
+        finalizeQuestionSave(saveMenuItem.closest('.question-card'), saveMenuItem.dataset.action);
+      }
+    });
+
+    // Filtros multi-seleção (dropdowns de checkbox)
+    document.querySelectorAll('.multiselect').forEach((ms) => {
+      const trigger = ms.querySelector('.select');
+      const label = ms.querySelector('.multiselect-label');
+      const placeholder = label.textContent;
+      ms.dataset.category = placeholder;
+      const panel = ms.querySelector('.multiselect-panel');
+      const searchInput = ms.querySelector('.multiselect-search-input');
+      const options = ms.querySelectorAll('.multiselect-option');
+      const checkboxes = ms.querySelectorAll('input[type="checkbox"]');
+
+      function updateLabel() {
+        const checked = Array.from(checkboxes).filter((cb) => cb.checked);
+        if (checked.length === 0) {
+          label.textContent = placeholder;
+          label.classList.remove('has-value');
+        } else if (checked.length === 1) {
+          label.textContent = checked[0].value;
+          label.classList.add('has-value');
+        } else {
+          label.textContent = `${checked[0].value} +${checked.length - 1}`;
+          label.classList.add('has-value');
+        }
+      }
+
+      function resetSearch() {
+        searchInput.value = '';
+        options.forEach((opt) => { opt.style.display = ''; });
+      }
+
+      function closePanel() {
+        ms.classList.remove('open');
+        resetSearch();
+      }
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = ms.classList.contains('open');
+        document.querySelectorAll('.multiselect.open').forEach((other) => {
+          if (other !== ms) other.classList.remove('open');
+        });
+        if (isOpen) {
+          closePanel();
+        } else {
+          ms.classList.add('open');
+          searchInput.focus();
+        }
+      });
+
+      panel.addEventListener('click', (e) => e.stopPropagation());
+
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim().toLowerCase();
+        options.forEach((opt) => {
+          const matches = opt.textContent.trim().toLowerCase().includes(query);
+          opt.style.display = matches ? '' : 'none';
+        });
+      });
+
+      checkboxes.forEach((cb) => cb.addEventListener('change', () => {
+        updateLabel();
+        renderActiveFilters();
+      }));
+
+      document.addEventListener('click', () => {
+        if (ms.classList.contains('open')) closePanel();
+      });
+    });
+
+    // Filtros em switch (seleção única ou múltipla)
+    document.querySelectorAll('.switch-options').forEach((group) => {
+      const mode = group.dataset.mode;
+      const inputs = group.querySelectorAll('input[type="checkbox"]');
+      inputs.forEach((input) => {
+        input.addEventListener('change', () => {
+          if (mode === 'single' && input.checked) {
+            inputs.forEach((other) => {
+              if (other !== input) other.checked = false;
+            });
+          }
+        });
+      });
+    });
+
+    // Chips "Filtrar por:" com os filtros ativos
+    const activeFiltersEl = document.getElementById('active-filters');
+    const activeFiltersTags = document.getElementById('active-filters-tags');
+
+    function createFilterTag(category, value, onRemove) {
+      const tag = document.createElement('button');
+      tag.type = 'button';
+      tag.className = 'filter-tag';
+      tag.innerHTML = `
+        <svg class="tag-remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+        <span class="tag-category">${category}</span>
+        <span class="tag-value">${value}</span>
+      `;
+      tag.addEventListener('click', onRemove);
+      return tag;
+    }
+
+    function createGroupClearButton(category, onClearAll) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'filter-tag-group-clear';
+      btn.innerHTML = `
+        <svg class="tag-remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+        <span class="tag-category">${category}</span>
+      `;
+      btn.addEventListener('click', onClearAll);
+      return btn;
+    }
+
+    function createValueChip(value, onRemove) {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'filter-tag-value-chip';
+      chip.innerHTML = `
+        <span class="tag-value">${value}</span>
+        <svg class="tag-remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+      `;
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        onRemove();
+      });
+      return chip;
+    }
+
+    function appendFilterGroup(category, items, onClearAll) {
+      if (items.length === 0) return;
+      if (items.length === 1) {
+        activeFiltersTags.appendChild(createFilterTag(category, items[0].value, items[0].onRemove));
+        return;
+      }
+      const group = document.createElement('div');
+      group.className = 'filter-tag-group';
+      group.appendChild(createGroupClearButton(category, onClearAll));
+      items.forEach((item) => group.appendChild(createValueChip(item.value, item.onRemove)));
+      activeFiltersTags.appendChild(group);
+    }
+
+    function removeMultiselectFilter(checkbox) {
+      checkbox.checked = false;
+      checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function clearMultiselectFilter(ms) {
+      const checkboxes = ms.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach((cb) => { cb.checked = false; });
+      checkboxes[0].dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function renderActiveFilters() {
+      activeFiltersTags.innerHTML = '';
+
+      document.querySelectorAll('.multiselect').forEach((ms) => {
+        const category = ms.dataset.category;
+        const checked = Array.from(ms.querySelectorAll('input[type="checkbox"]:checked'));
+        appendFilterGroup(category, checked.map((cb) => ({
+          value: cb.value,
+          onRemove: () => removeMultiselectFilter(cb),
+        })), () => clearMultiselectFilter(ms));
+      });
+
+      activeFiltersEl.classList.toggle('has-tags', activeFiltersTags.children.length > 0);
+    }
+
+    renderActiveFilters();
+
+    // Menu mobile
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebarEl = document.querySelector('.sidebar');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+    const sidebarClose = document.getElementById('sidebar-close');
+
+    function openMobileMenu() {
+      sidebarEl.classList.add('open');
+      sidebarBackdrop.classList.add('open');
+    }
+
+    function closeMobileMenu() {
+      sidebarEl.classList.remove('open');
+      sidebarBackdrop.classList.remove('open');
+    }
+
+    mobileMenuToggle.addEventListener('click', openMobileMenu);
+    sidebarClose.addEventListener('click', closeMobileMenu);
+    sidebarBackdrop.addEventListener('click', closeMobileMenu);
+
+    // ===== Importar questões (modal) =====
+    (function () {
+      const overlay = document.getElementById('import-modal-overlay');
+      const btnOpenImport = document.getElementById('btn-import-questions');
+      const btnCloseImport = document.getElementById('import-modal-close');
+      const subtitleEl = document.getElementById('import-modal-subtitle');
+      const stepperEl = document.getElementById('import-stepper');
+      const footerEl = document.getElementById('import-modal-footer');
+      const footerHintEl = document.getElementById('import-footer-hint');
+      const btnSecondary = document.getElementById('import-btn-secondary');
+      const btnPrimary = document.getElementById('import-btn-primary');
+
+      const dropzone = document.getElementById('import-dropzone');
+      const fileInput = document.getElementById('import-file-input');
+      const pickFileBtn = document.getElementById('import-pick-file');
+      const filecard = document.getElementById('import-filecard');
+      const filecardName = document.getElementById('import-filecard-name');
+      const filecardMeta = document.getElementById('import-filecard-meta');
+      const removeFileBtn = document.getElementById('import-remove-file');
+
+      const modeDraftBtn = document.getElementById('import-mode-draft');
+      const modeBulkBtn = document.getElementById('import-mode-bulk');
+      const draftHint = document.getElementById('import-draft-hint');
+      const filtersBlock = document.getElementById('import-filters-block');
+      const filtersCountEl = document.getElementById('import-filters-count');
+      const filtersClearBtn = document.getElementById('import-filters-clear');
+      const filtersMainEl = document.getElementById('import-filters-main');
+      const filtersMoreEl = document.getElementById('import-filters-more');
+      const moreToggleBtn = document.getElementById('import-more-toggle');
+      const moreLabelEl = document.getElementById('import-more-label');
+
+      const reviewFilename = document.getElementById('import-review-filename');
+      const reviewStatusBadge = document.getElementById('import-review-status-badge');
+      const reviewBulkBlock = document.getElementById('import-review-bulk');
+      const reviewChips = document.getElementById('import-review-chips');
+      const reviewNoFilters = document.getElementById('import-review-nofilters');
+      const reviewDraftHint = document.getElementById('import-review-draft-hint');
+      const backToModoBtn = document.getElementById('import-back-to-modo');
+
+      const successTextEl = document.getElementById('import-success-text');
+      const successCloseBtn = document.getElementById('import-success-close');
+      const successCtaBtn = document.getElementById('import-success-cta');
+
+      const IMPORT_FIELDS = [
+        { key: 'disciplina', label: 'Disciplina', main: true, options: ['Direito', 'Direito Administrativo', 'Direito Constitucional', 'Direito Tributário', 'Português', 'Matemática', 'Matemática Financeira', 'Raciocínio Lógico', 'Farmacologia', 'Informática', 'Atualidades', 'Contabilidade', 'Administração Pública'] },
+        { key: 'banca', label: 'Banca', main: true, options: ['CEBRASPE', 'FGV', 'FCC', 'CESGRANRIO', 'VUNESP', 'IBFC', 'AOCP', 'IADES'] },
+        { key: 'instituicao', label: 'Instituição', main: true, options: ['INSS', 'Receita Federal', 'Polícia Federal', 'Tribunal de Justiça', 'TRF', 'TRT', 'TCU', 'Prefeitura Municipal'] },
+        { key: 'assunto', label: 'Assunto', dep: 'disciplina' },
+        { key: 'ano', label: 'Ano', options: ['2026', '2025', '2024', '2023', '2022', '2021', '2020'] },
+        { key: 'area-formacao', label: 'Área de Formação', options: ['Direito', 'Administração', 'Contabilidade', 'Tecnologia da Informação', 'Engenharia', 'Saúde', 'Educação'] },
+        { key: 'carreiras', label: 'Carreiras', options: ['Carreira Fiscal', 'Carreira Policial', 'Carreira Jurídica', 'Carreira Administrativa', 'Carreira de Controle'] },
+        { key: 'escolaridade', label: 'Escolaridade', options: ['Fundamental', 'Médio', 'Superior'] },
+        { key: 'dificuldade', label: 'Dificuldade', options: ['Fácil', 'Médio', 'Difícil'] },
+        { key: 'tipo', label: 'Tipo de Questão', options: ['Múltipla escolha', 'Certo e errado'] },
+        { key: 'cargo', label: 'Cargo', options: ['Analista', 'Técnico', 'Auditor', 'Escrivão', 'Agente', 'Perito', 'Procurador'] },
+      ];
+      const ASSUNTO_FIELD = IMPORT_FIELDS.find((f) => f.key === 'assunto');
+
+      const ASSUNTOS_BY_DISCIPLINA = {
+        'Direito Administrativo': ['Atos administrativos', 'Licitações e contratos'],
+        'Direito Constitucional': ['Controle de constitucionalidade'],
+        'Direito Tributário': ['Obrigação tributária'],
+        'Português': ['Interpretação de texto', 'Concordância verbal'],
+        'Raciocínio Lógico': ['Proposições', 'Proposições lógicas'],
+        'Matemática Financeira': ['Juros compostos'],
+        'Farmacologia': ['Metabolização de fármacos'],
+      };
+
+      function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      }
+
+      function pluralize(count, singular, plural) {
+        return count === 1 ? singular : plural;
+      }
+
+      let state = baseState();
+
+      function baseState() {
+        return { step: 'upload', file: null, mode: null, filters: {}, moreOpen: false };
+      }
+
+      function fieldOptionsFor(field) {
+        if (field.dep) {
+          const depVal = state.filters[field.dep];
+          return depVal ? (ASSUNTOS_BY_DISCIPLINA[depVal] || []) : [];
+        }
+        return field.options;
+      }
+
+      function buildImportFilterField(field) {
+        const options = fieldOptionsFor(field);
+        const optionsHtml = options.map((v) => `<label class="multiselect-option"><input type="checkbox" value="${escapeHtml(v)}"><span>${escapeHtml(v)}</span></label>`).join('');
+        const disabled = !!field.dep && !state.filters[field.dep];
+        return `
+          <div class="field import-filter-field" data-key="${field.key}">
+            <label>${field.label}</label>
+            <div class="multiselect">
+              <button type="button" class="select"${disabled ? ' disabled' : ''}>
+                <span class="multiselect-label">Filtrar por ${field.label.toLowerCase()}</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">${optionsHtml || '<div class="import-filter-empty">Nenhuma opção disponível</div>'}</div>
+              </div>
+            </div>
+            ${field.dep ? `<span class="import-filter-hint" style="${disabled ? '' : 'display:none'}">Escolha a disciplina primeiro</span>` : ''}
+          </div>
+        `;
+      }
+
+      function initImportFilterField(fieldEl, field) {
+        const ms = fieldEl.querySelector('.multiselect');
+        const trigger = ms.querySelector('.select');
+        const panel = ms.querySelector('.multiselect-panel');
+        const searchInput = ms.querySelector('.multiselect-search-input');
+
+        function closePanel() {
+          ms.classList.remove('open');
+          searchInput.value = '';
+          ms.querySelectorAll('.multiselect-option').forEach((opt) => { opt.style.display = ''; });
+        }
+
+        trigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (trigger.disabled) return;
+          const isOpen = ms.classList.contains('open');
+          overlay.querySelectorAll('.multiselect.open').forEach((other) => {
+            if (other !== ms) other.classList.remove('open');
+          });
+          if (isOpen) { closePanel(); } else { ms.classList.add('open'); searchInput.focus(); }
+        });
+
+        panel.addEventListener('click', (e) => e.stopPropagation());
+
+        searchInput.addEventListener('input', () => {
+          const query = searchInput.value.trim().toLowerCase();
+          ms.querySelectorAll('.multiselect-option').forEach((opt) => {
+            opt.style.display = opt.textContent.trim().toLowerCase().includes(query) ? '' : 'none';
+          });
+        });
+
+        ms.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+          cb.addEventListener('change', () => {
+            const checkboxes = ms.querySelectorAll('input[type="checkbox"]');
+            if (cb.checked) {
+              checkboxes.forEach((other) => { if (other !== cb) other.checked = false; });
+            }
+            setFilterValue(field.key, cb.checked ? cb.value : '');
+            closePanel();
+          });
+        });
+
+        document.addEventListener('click', () => {
+          if (ms.classList.contains('open')) closePanel();
+        });
+      }
+
+      function updateFilterFieldLabel(key, value) {
+        const fieldEl = overlay.querySelector(`.import-filter-field[data-key="${key}"]`);
+        if (!fieldEl) return;
+        const label = fieldEl.querySelector('.multiselect-label');
+        const field = IMPORT_FIELDS.find((f) => f.key === key);
+        if (value) {
+          label.textContent = value;
+          label.classList.add('has-value');
+        } else {
+          label.textContent = `Filtrar por ${field.label.toLowerCase()}`;
+          label.classList.remove('has-value');
+        }
+      }
+
+      function rebuildDependentField(field) {
+        const fieldEl = overlay.querySelector(`.import-filter-field[data-key="${field.key}"]`);
+        if (!fieldEl) return;
+        fieldEl.outerHTML = buildImportFilterField(field);
+        const newEl = overlay.querySelector(`.import-filter-field[data-key="${field.key}"]`);
+        initImportFilterField(newEl, field);
+      }
+
+      function setFilterValue(key, value) {
+        if (value) { state.filters[key] = value; } else { delete state.filters[key]; }
+        updateFilterFieldLabel(key, value);
+        if (key === 'disciplina') {
+          delete state.filters.assunto;
+          rebuildDependentField(ASSUNTO_FIELD);
+        }
+        refreshFiltersCount();
+        refreshFooter();
+      }
+
+      function renderFiltersGrids() {
+        const mainFields = IMPORT_FIELDS.filter((f) => f.main);
+        const moreFields = IMPORT_FIELDS.filter((f) => !f.main);
+        filtersMainEl.innerHTML = mainFields.map(buildImportFilterField).join('');
+        filtersMoreEl.innerHTML = moreFields.map(buildImportFilterField).join('');
+        overlay.querySelectorAll('.import-filter-field').forEach((el) => {
+          const field = IMPORT_FIELDS.find((f) => f.key === el.dataset.key);
+          initImportFilterField(el, field);
+        });
+      }
+
+      function updateMoreLabel() {
+        const moreFields = IMPORT_FIELDS.filter((f) => !f.main);
+        const moreCount = moreFields.filter((f) => state.filters[f.key]).length;
+        moreLabelEl.textContent = state.moreOpen
+          ? 'Ocultar mais filtros'
+          : 'Mais filtros' + (moreCount ? ` · ${moreCount} ${pluralize(moreCount, 'selecionado', 'selecionados')}` : '');
+      }
+
+      function refreshFiltersCount() {
+        const count = Object.keys(state.filters).length;
+        filtersCountEl.textContent = count === 0 ? 'Nenhum filtro selecionado' : `${count} ${pluralize(count, 'filtro selecionado', 'filtros selecionados')}`;
+        filtersClearBtn.style.display = count > 0 ? '' : 'none';
+        updateMoreLabel();
+      }
+
+      moreToggleBtn.addEventListener('click', () => {
+        state.moreOpen = !state.moreOpen;
+        filtersMoreEl.style.display = state.moreOpen ? '' : 'none';
+        moreToggleBtn.classList.toggle('open', state.moreOpen);
+        moreToggleBtn.setAttribute('aria-expanded', String(state.moreOpen));
+        updateMoreLabel();
+      });
+
+      filtersClearBtn.addEventListener('click', () => {
+        state.filters = {};
+        renderFiltersGrids();
+        refreshFiltersCount();
+        refreshFooter();
+      });
+
+      // ---- Etapa 1: arquivo ----
+
+      function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        const kb = bytes / 1024;
+        if (kb < 1024) return kb.toFixed(0) + ' KB';
+        return (kb / 1024).toFixed(1).replace('.', ',') + ' MB';
+      }
+
+      function setFile(file) {
+        state.file = file;
+        if (file) {
+          filecardName.textContent = file.name;
+          filecardMeta.textContent = 'Arquivo pronto para importar · ' + formatFileSize(file.size);
+          filecard.style.display = '';
+          dropzone.style.display = 'none';
+        } else {
+          filecard.style.display = 'none';
+          dropzone.style.display = '';
+        }
+        refreshFooter();
+      }
+
+      pickFileBtn.addEventListener('click', () => fileInput.click());
+
+      fileInput.addEventListener('change', () => {
+        if (fileInput.files && fileInput.files[0]) setFile(fileInput.files[0]);
+      });
+
+      removeFileBtn.addEventListener('click', () => {
+        setFile(null);
+        fileInput.value = '';
+      });
+
+      ['dragenter', 'dragover'].forEach((evt) => dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+      }));
+
+      ['dragleave', 'drop'].forEach((evt) => dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+      }));
+
+      dropzone.addEventListener('drop', (e) => {
+        const dropped = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (dropped) setFile(dropped);
+      });
+
+      // ---- Etapa 2: organização ----
+
+      function selectMode(mode) {
+        state.mode = mode;
+        modeDraftBtn.classList.toggle('selected', mode === 'rascunho');
+        modeDraftBtn.setAttribute('aria-checked', String(mode === 'rascunho'));
+        modeBulkBtn.classList.toggle('selected', mode === 'filtros');
+        modeBulkBtn.setAttribute('aria-checked', String(mode === 'filtros'));
+        draftHint.style.display = mode === 'rascunho' ? '' : 'none';
+        filtersBlock.style.display = mode === 'filtros' ? '' : 'none';
+        refreshFooter();
+      }
+
+      modeDraftBtn.addEventListener('click', () => selectMode('rascunho'));
+      modeBulkBtn.addEventListener('click', () => selectMode('filtros'));
+
+      // ---- Etapa 3: revisão ----
+
+      function renderRevisao() {
+        const isBulk = state.mode === 'filtros';
+        const count = Object.keys(state.filters).length;
+        reviewFilename.textContent = state.file ? state.file.name : 'questoes_importacao.xlsx';
+        reviewStatusBadge.textContent = isBulk ? 'Com filtros' : 'Sem filtros, adicionar depois';
+        reviewStatusBadge.classList.toggle('neutral', !isBulk);
+
+        reviewBulkBlock.style.display = isBulk ? '' : 'none';
+        reviewDraftHint.style.display = isBulk ? 'none' : '';
+
+        if (isBulk) {
+          reviewChips.innerHTML = IMPORT_FIELDS.filter((f) => state.filters[f.key]).map((f) => `
+            <div class="import-chip">
+              <span class="import-chip-label">${f.label}:</span><span class="import-chip-value">${escapeHtml(state.filters[f.key])}</span>
+              <button type="button" class="import-chip-remove" aria-label="Remover filtro ${f.label}" data-key="${f.key}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+              </button>
+            </div>
+          `).join('');
+          reviewNoFilters.style.display = count === 0 ? '' : 'none';
+        }
+      }
+
+      reviewChips.addEventListener('click', (e) => {
+        const btn = e.target.closest('.import-chip-remove');
+        if (!btn) return;
+        setFilterValue(btn.dataset.key, '');
+        renderRevisao();
+      });
+
+      backToModoBtn.addEventListener('click', () => goToStep('modo'));
+
+      // ---- Sucesso ----
+
+      function renderSucesso() {
+        const isBulk = state.mode === 'filtros';
+        const count = Object.keys(state.filters).length;
+        successTextEl.textContent = isBulk
+          ? `As questões já estão publicadas na sua Biblioteca, com ${count} ${pluralize(count, 'filtro aplicado', 'filtros aplicados')} a todas.`
+          : 'As questões já estão publicadas na sua Biblioteca, sem filtros. Adicione os filtros quando quiser, abrindo cada questão.';
+      }
+
+      // ---- Stepper / navegação ----
+
+      const STEP_KEYS = ['upload', 'modo', 'revisao'];
+
+      function goToStep(step) {
+        state.step = step;
+        render();
+      }
+
+      function render() {
+        overlay.querySelectorAll('.import-step-panel').forEach((panel) => {
+          panel.classList.toggle('active', panel.dataset.stepPanel === state.step);
+        });
+
+        const isSucesso = state.step === 'sucesso';
+        stepperEl.style.display = isSucesso ? 'none' : '';
+        footerEl.style.display = isSucesso ? 'none' : '';
+
+        const stepIdx = STEP_KEYS.indexOf(state.step);
+        STEP_KEYS.forEach((key, i) => {
+          const stepEl = stepperEl.querySelector(`[data-step-item="${key}"]`);
+          const done = isSucesso || i < stepIdx;
+          const current = !isSucesso && i === stepIdx;
+          stepEl.classList.toggle('done', done);
+          stepEl.classList.toggle('current', current);
+          stepEl.querySelector('.import-step-num').style.display = done ? 'none' : '';
+          stepEl.querySelector('.import-step-check').style.display = done ? '' : 'none';
+        });
+        stepperEl.querySelectorAll('.import-step-line').forEach((line, i) => {
+          line.classList.toggle('done', i < stepIdx);
+        });
+
+        subtitleEl.textContent = isSucesso ? 'Importação concluída' : 'Envie uma planilha .xlsx com as questões';
+
+        if (state.step === 'revisao') renderRevisao();
+        if (isSucesso) renderSucesso();
+        refreshFooter();
+      }
+
+      function refreshFooter() {
+        const isBulk = state.mode === 'filtros';
+        const count = Object.keys(state.filters).length;
+
+        let primaryDisabled = false;
+        let primaryLabel = 'Continuar';
+        let secondaryLabel = 'Cancelar';
+        let hint = '';
+        let secondaryAction = closeImportModal;
+        let primaryAction = () => {};
+
+        if (state.step === 'upload') {
+          primaryDisabled = !state.file;
+          hint = state.file ? '' : 'Envie a planilha para continuar';
+          primaryAction = () => goToStep('modo');
+        } else if (state.step === 'modo') {
+          secondaryLabel = 'Voltar';
+          secondaryAction = () => goToStep('upload');
+          primaryDisabled = !state.mode || (isBulk && count === 0);
+          hint = !state.mode
+            ? 'Escolha com ou sem filtros'
+            : (isBulk && count === 0 ? 'Selecione ao menos 1 filtro' : (isBulk ? `${count} ${pluralize(count, 'filtro selecionado', 'filtros selecionados')}` : ''));
+          primaryAction = () => goToStep('revisao');
+        } else if (state.step === 'revisao') {
+          secondaryLabel = 'Voltar';
+          secondaryAction = () => goToStep('modo');
+          primaryDisabled = isBulk && count === 0;
+          primaryLabel = 'Importar questões';
+          primaryAction = () => goToStep('sucesso');
+        }
+
+        footerHintEl.textContent = hint;
+        btnSecondary.textContent = secondaryLabel;
+        btnPrimary.textContent = primaryLabel;
+        btnPrimary.disabled = primaryDisabled;
+        btnSecondary.onclick = secondaryAction;
+        btnPrimary.onclick = primaryAction;
+      }
+
+      // ---- Abrir / fechar modal ----
+
+      function resetImportModal() {
+        state = baseState();
+        fileInput.value = '';
+        filecard.style.display = 'none';
+        dropzone.style.display = '';
+        dropzone.classList.remove('dragover');
+
+        modeDraftBtn.classList.remove('selected');
+        modeDraftBtn.setAttribute('aria-checked', 'false');
+        modeBulkBtn.classList.remove('selected');
+        modeBulkBtn.setAttribute('aria-checked', 'false');
+        draftHint.style.display = 'none';
+        filtersBlock.style.display = 'none';
+        filtersMoreEl.style.display = 'none';
+        moreToggleBtn.classList.remove('open');
+        moreToggleBtn.setAttribute('aria-expanded', 'false');
+
+        renderFiltersGrids();
+        refreshFiltersCount();
+        render();
+      }
+
+      function openImportModal() {
+        resetImportModal();
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeImportModal() {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      btnOpenImport.addEventListener('click', openImportModal);
+      btnCloseImport.addEventListener('click', closeImportModal);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeImportModal(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) closeImportModal();
+      });
+      successCloseBtn.addEventListener('click', closeImportModal);
+      successCtaBtn.addEventListener('click', closeImportModal);
+    })();
+  </script>
+
 </body>
 </html>

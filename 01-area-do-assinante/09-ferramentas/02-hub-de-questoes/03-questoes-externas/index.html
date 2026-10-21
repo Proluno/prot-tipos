@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Questões Externas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #ffffff;
+      color: #1a1a1a;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ---------- Sidebar ---------- */
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background-color: #F1F1F1;
+      padding: 28px 20px;
+    }
+
+    .content-col {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ---------- Topbar ---------- */
+
+    .topbar {
+      width: 100%;
+      height: 56px;
+      flex-shrink: 0;
+      background-color: #F1F1F1;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #6b7280;
+      text-decoration: none;
+      margin-bottom: 18px;
+    }
+
+    .back-link svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .sidebar-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: #18181b;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 13px;
+      font-weight: 400;
+      color: #9a9a9f;
+      margin-bottom: 26px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #3f3f46;
+      text-decoration: none;
+    }
+
+    .nav-item svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+
+    .nav-item.active {
+      background-color: #ffffff;
+      color: #E8761A;
+      font-weight: 600;
+    }
+
+    /* ---------- Main ---------- */
+
+    .main {
+      flex: 1 1 auto;
+      background-color: #ffffff;
+      padding: 44px 48px 60px;
+    }
+
+    .page-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .page-title {
+      font-size: 30px;
+      font-weight: 700;
+      color: #18181b;
+    }
+
+    .page-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: #20212380;
+      width: 100%;
+      line-height: 1.5;
+      margin: 20px 0 30px;
+    }
+
+    .btn-add-question {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-shrink: 0;
+      padding: 13px 22px;
+      border-radius: 8px;
+      border: 1.5px solid #E8761A;
+      background-color: #ffffff;
+      color: #E8761A;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .btn-add-question svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* ---------- Tabs ---------- */
+
+    .page-tabs {
+      display: flex;
+      gap: 26px;
+      border-bottom: 1px solid #e4e4e7;
+      margin-bottom: 24px;
+    }
+
+    .page-tab {
+      padding-bottom: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #a1a1aa;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .page-tab.active {
+      color: #E8761A;
+      border-bottom-color: #E8761A;
+    }
+
+    .page-tab-panel {
+      display: none;
+    }
+
+    .page-tab-panel.active {
+      display: block;
+    }
+
+    .panel-empty {
+      font-size: 14px;
+      color: #a1a1aa;
+      padding: 40px 0;
+      text-align: center;
+    }
+
+    /* ---------- Busca ---------- */
+
+    .search-field {
+      max-width: 420px;
+      margin-bottom: 24px;
+    }
+
+    .input-with-icon {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13.5px;
+      color: #a1a1aa;
+    }
+
+    .input-with-icon svg {
+      width: 15px;
+      height: 15px;
+      color: #a1a1aa;
+      flex-shrink: 0;
+    }
+
+    .input-with-icon input {
+      border: none;
+      outline: none;
+      background: none;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      color: #1a1a1a;
+      width: 100%;
+    }
+
+    .input-with-icon input::placeholder {
+      color: #a1a1aa;
+    }
+
+    /* ---------- Question cards ---------- */
+
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .question-card {
+      border: 1px solid #ececee;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .question-card-band {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 20px;
+      background-color: #fafafa;
+      border-bottom: 1px solid #ececee;
+    }
+
+    .band-breadcrumb {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-width: 0;
+      font-size: 13.5px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .tag-id {
+      background-color: #FCE4CC;
+      color: #B4600F;
+      flex-shrink: 0;
+    }
+
+    .breadcrumb-item {
+      color: #E8761A;
+      font-weight: 400;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .breadcrumb-item:hover {
+      text-decoration: underline;
+    }
+
+    .breadcrumb-chevron {
+      width: 13px;
+      height: 13px;
+      color: #c4c4c9;
+      flex-shrink: 0;
+    }
+
+    .card-index {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 24px;
+      padding: 0 6px;
+      border-radius: 6px;
+      background-color: #ececee;
+      color: #55555A;
+      font-size: 12.5px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      color: #8b8b93;
+      cursor: pointer;
+    }
+
+    .icon-btn:hover {
+      background-color: #f4f4f5;
+      color: #3f3f46;
+    }
+
+    .icon-btn svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .question-card-body {
+      padding: 18px 20px 20px;
+    }
+
+    .question-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: 22px;
+      row-gap: 4px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .meta-label {
+      color: #1a1a1a;
+      font-weight: 700;
+    }
+
+    .meta-value {
+      color: #E8761A;
+      font-weight: 400;
+    }
+
+    .question-preview {
+      font-size: 15px;
+      color: #3459AD;
+      margin-bottom: 14px;
+    }
+
+    .external-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .external-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #27272a;
+    }
+
+    .option-letter {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      border: 1.5px solid #d4d4d8;
+      font-size: 12px;
+      font-weight: 700;
+      color: #71717a;
+    }
+
+    /* ---------- Menu mobile (topbar + drawer) ---------- */
+
+    .mobile-topbar {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      height: 56px;
+      background-color: #F1F1F1;
+      padding: 0 16px;
+    }
+
+    .mobile-menu-toggle {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: none;
+      border: none;
+      color: #18181b;
+      cursor: pointer;
+    }
+
+    .mobile-menu-toggle svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .mobile-logo {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: #18181b;
+      white-space: nowrap;
+    }
+
+    .mobile-logo .orange {
+      color: #E8761A;
+    }
+
+    .mobile-logo-dots {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .mobile-logo-dots .dot {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .mobile-logo-dots .dot-teal { width: 5px; height: 5px; background-color: #35C6C1; top: 0; left: 5px; }
+    .mobile-logo-dots .dot-pink { width: 5px; height: 5px; background-color: #E85AA0; top: 7px; left: 0; }
+    .mobile-logo-dots .dot-orange { width: 5px; height: 5px; background-color: #E8761A; top: 8px; left: 13px; }
+    .mobile-logo-dots .dot-blue { width: 4px; height: 4px; background-color: #4C6FE0; top: 14px; left: 7px; }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.45);
+      z-index: 250;
+    }
+
+    .sidebar-backdrop.open {
+      display: block;
+    }
+
+    .sidebar-close {
+      display: none;
+      position: absolute;
+      top: 22px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #18181b;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .sidebar-close svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ---------- Responsivo ---------- */
+
+    @media (max-width: 768px) {
+      .mobile-topbar {
+        display: flex;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 85vw;
+        max-width: 320px;
+        height: 100vh;
+        padding: 24px 20px;
+        z-index: 300;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        overflow-y: auto;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-close {
+        display: flex;
+      }
+
+      .topbar {
+        display: none;
+      }
+
+      .main {
+        padding: 24px 20px 40px;
+      }
+
+      .page-title {
+        font-size: 22px;
+      }
+
+      .page-subtitle {
+        font-size: 15px;
+      }
+
+      .btn-add-question {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .search-field {
+        max-width: none;
+      }
+
+      .question-card-band {
+        padding: 10px 16px;
+        flex-wrap: wrap;
+      }
+
+      .question-card-body {
+        padding: 14px 16px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="mobile-topbar">
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="mobile-logo">
+      Prol<span class="mobile-logo-dots"><span class="dot dot-teal"></span><span class="dot dot-pink"></span><span class="dot dot-orange"></span><span class="dot dot-blue"></span></span><span class="orange">uno.</span>
+    </div>
+  </header>
+
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <div class="app">
+
+    <aside class="sidebar">
+      <button class="sidebar-close" id="sidebar-close" aria-label="Fechar menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <a class="back-link" href="../../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Voltar
+      </a>
+
+      <h1 class="sidebar-title">Hub de Questões</h1>
+      <p class="sidebar-subtitle">Crie e venda suas questões</p>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item" href="../01-biblioteca/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h9"/></svg>
+          Biblioteca
+        </a>
+        <a class="nav-item" href="../02-banco-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>
+          Banco de questões
+        </a>
+        <a class="nav-item active" href="../03-questoes-externas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-5Z"/><path d="M14 3v6h6"/></svg>
+          Questões externas
+        </a>
+        <a class="nav-item" href="../04-estatisticas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Estatísticas
+        </a>
+        <a class="nav-item" href="../05-pagamentos/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+          Pagamentos
+        </a>
+        <a class="nav-item" href="../06-plano-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          Plano de Questões
+        </a>
+        <a class="nav-item" href="../07-simulados/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 3.5h6a1 1 0 0 1 1 1V6H8V4.5a1 1 0 0 1 1-1Z"/><path d="M9 12.5l2 2 4-4"/></svg>
+          Simulados
+        </a>
+      </nav>
+    </aside>
+
+    <div class="content-col">
+      <header class="topbar"></header>
+
+    <main class="main">
+      <div class="page-header-row">
+        <h2 class="page-title">Questões externas</h2>
+        <a href="Adicionar-questão.html" class="btn-add-question">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Adicionar questões
+        </a>
+      </div>
+      <p class="page-subtitle">Selecione as questões que irão ficar disponíveis de forma gratuita para os seus alunos na página inicial do seu site, na aba "questões".</p>
+
+      <div class="page-tabs">
+        <button type="button" class="page-tab active" data-tab="questoes">Questões</button>
+        <button type="button" class="page-tab" data-tab="comentarios">Comentários reportados</button>
+        <button type="button" class="page-tab" data-tab="alunos">Alunos reportados</button>
+      </div>
+
+      <div class="page-tab-panel active" data-panel="questoes">
+        <div class="search-field">
+          <div class="input-with-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Buscar por questão">
+          </div>
+        </div>
+
+        <div class="question-list">
+          <div class="question-card">
+            <div class="question-card-band">
+              <div class="band-breadcrumb">
+                <span class="card-index">1</span>
+                <span class="tag tag-id">#2659</span>
+                <a class="breadcrumb-item" href="#">Disciplina Exemplo</a>
+                <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+                <a class="breadcrumb-item" href="#">Assunto Exemplo</a>
+              </div>
+              <div class="card-actions">
+                <button class="icon-btn btn-remove-external" type="button" title="Remover">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12Z"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="question-card-body">
+              <div class="question-meta-row">
+                <span><span class="meta-label">Ano:</span> <span class="meta-value">2023</span></span>
+                <span><span class="meta-label">Banca:</span> <span class="meta-value">CEBRASPE</span></span>
+                <span><span class="meta-label">Prova:</span> <span class="meta-value">CEBRASPE - 2023 - PF - Agente Administrativo</span></span>
+              </div>
+              <p class="question-preview">Texto de exemplo</p>
+              <div class="external-options">
+                <div class="external-option">
+                  <span class="option-letter">A</span>
+                  <span>Item 1</span>
+                </div>
+                <div class="external-option">
+                  <span class="option-letter">B</span>
+                  <span>teste</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="question-card">
+            <div class="question-card-band">
+              <div class="band-breadcrumb">
+                <span class="card-index">2</span>
+                <span class="tag tag-id">#2658</span>
+                <a class="breadcrumb-item" href="#">Disciplina Exemplo</a>
+                <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+                <a class="breadcrumb-item" href="#">Assunto Exemplo</a>
+              </div>
+              <div class="card-actions">
+                <button class="icon-btn btn-remove-external" type="button" title="Remover">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6h12Z"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="question-card-body">
+              <div class="question-meta-row">
+                <span><span class="meta-label">Ano:</span> <span class="meta-value">2022</span></span>
+                <span><span class="meta-label">Banca:</span> <span class="meta-value">FGV</span></span>
+                <span><span class="meta-label">Prova:</span> <span class="meta-value">FGV - 2022 - TJ-SP - Analista Judiciário</span></span>
+              </div>
+              <p class="question-preview">Texto de exemplo</p>
+              <div class="external-options">
+                <div class="external-option">
+                  <span class="option-letter">A</span>
+                  <span>Item 1</span>
+                </div>
+                <div class="external-option">
+                  <span class="option-letter">B</span>
+                  <span>teste</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-tab-panel" data-panel="comentarios">
+        <p class="panel-empty">Nenhum comentário reportado até o momento.</p>
+      </div>
+
+      <div class="page-tab-panel" data-panel="alunos">
+        <p class="panel-empty">Nenhum aluno reportado até o momento.</p>
+      </div>
+    </main>
+    </div>
+
+  </div>
+
+  <script>
+    // Abas
+    document.querySelectorAll('.page-tab').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.page-tab').forEach((t) => t.classList.remove('active'));
+        tab.classList.add('active');
+        const target = tab.dataset.tab;
+        document.querySelectorAll('.page-tab-panel').forEach((panel) => {
+          panel.classList.toggle('active', panel.dataset.panel === target);
+        });
+      });
+    });
+
+    // Remover questão externa
+    document.querySelector('.question-list').addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn-remove-external');
+      if (btn) {
+        btn.closest('.question-card').remove();
+      }
+    });
+
+    // Menu mobile
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebarEl = document.querySelector('.sidebar');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+    const sidebarClose = document.getElementById('sidebar-close');
+
+    function openMobileMenu() {
+      sidebarEl.classList.add('open');
+      sidebarBackdrop.classList.add('open');
+    }
+
+    function closeMobileMenu() {
+      sidebarEl.classList.remove('open');
+      sidebarBackdrop.classList.remove('open');
+    }
+
+    mobileMenuToggle.addEventListener('click', openMobileMenu);
+    sidebarClose.addEventListener('click', closeMobileMenu);
+    sidebarBackdrop.addEventListener('click', closeMobileMenu);
+  </script>
+
+</body>
+</html>

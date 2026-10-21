@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hub de Questões</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #ffffff;
+      color: #1a1a1a;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ---------- Sidebar ---------- */
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background-color: #F1F1F1;
+      padding: 28px 20px;
+    }
+
+    .content-col {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ---------- Topbar ---------- */
+
+    .topbar {
+      width: 100%;
+      height: 56px;
+      flex-shrink: 0;
+      background-color: #F1F1F1;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #6b7280;
+      text-decoration: none;
+      margin-bottom: 18px;
+    }
+
+    .back-link svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .sidebar-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: #18181b;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 13px;
+      font-weight: 400;
+      color: #9a9a9f;
+      margin-bottom: 26px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #3f3f46;
+      text-decoration: none;
+    }
+
+    .nav-item svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+
+    .nav-item.active {
+      background-color: #ffffff;
+      color: #E8761A;
+      font-weight: 600;
+    }
+
+    /* ---------- Main ---------- */
+
+    .main {
+      flex: 1 1 auto;
+      background-color: #ffffff;
+      padding: 44px 48px 60px;
+    }
+
+    .page-title {
+      font-size: 30px;
+      font-weight: 700;
+      color: #18181b;
+    }
+
+    .page-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .page-subtitle {
+      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: #20212380;
+      width: 100%;
+      line-height: 1.5;
+      margin: 20px 0 30px;
+    }
+
+    .btn-solid-orange {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: #E8761A;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 22px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-solid-orange svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .empty-state-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 64px 40px;
+    }
+
+    .empty-state-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      color: #a1a1aa;
+      margin-bottom: 20px;
+    }
+
+    .empty-state-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .empty-state-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #18181b;
+      margin-bottom: 8px;
+    }
+
+    .empty-state-subtitle {
+      font-size: 14px;
+      font-weight: 400;
+      color: #a1a1aa;
+      line-height: 1.6;
+      max-width: 360px;
+    }
+
+    /* ---------- Simulado cards ---------- */
+
+    .simulados-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .simulado-card {
+      position: relative;
+      background-color: #ffffff;
+      border: 1px solid #E4E4E7;
+      border-radius: 14px;
+      padding: 18px 18px 20px;
+    }
+
+    .simulado-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .simulado-card-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background-color: #FCE4CC;
+      color: #E8761A;
+      flex-shrink: 0;
+    }
+
+    .simulado-card-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .card-menu {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .card-menu-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      color: #8b8b93;
+      cursor: pointer;
+    }
+
+    .card-menu-trigger:hover {
+      background-color: rgba(0, 0, 0, 0.06);
+      color: #3f3f46;
+    }
+
+    .card-menu-trigger svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .card-menu-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      right: 0;
+      min-width: 210px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .card-menu-dropdown.open {
+      display: block;
+    }
+
+    .card-menu-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 10px 14px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: #27272a;
+      cursor: pointer;
+    }
+
+    .card-menu-item:hover {
+      background-color: #f4f4f5;
+    }
+
+    .card-menu-item.danger {
+      color: #DC2626;
+    }
+
+    .card-menu-item.danger:hover {
+      background-color: #FEF2F2;
+    }
+
+    .simulado-card-title {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: #18181b;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .simulado-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #71717a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .simulado-card-meta + .simulado-card-meta {
+      margin-top: 6px;
+    }
+
+    .simulado-card-meta svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+
+    .meta-dot {
+      color: #c4c4ca;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 4px 12px 4px 10px;
+      border-radius: 999px;
+    }
+
+    .status-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-badge-ativo {
+      background-color: #D3F5DF;
+      color: #17803D;
+    }
+
+    .status-badge-ativo .status-badge-dot {
+      background-color: #17803D;
+    }
+
+    .status-badge-rascunho {
+      background-color: #FCEFC6;
+      color: #92730B;
+    }
+
+    .status-badge-rascunho .status-badge-dot {
+      background-color: #92730B;
+    }
+
+    /* ---------- Actions row ---------- */
+
+    .actions-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex: 1 1 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14.5px;
+      font-weight: 600;
+      padding: 13px 20px;
+      border-radius: 8px;
+      background-color: #ffffff;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .btn-outline-orange {
+      border: 1.5px solid #E8761A;
+      color: #E8761A;
+    }
+
+    .btn-outline-gray {
+      border: 1.5px solid #d4d4d8;
+      color: #3f3f46;
+    }
+
+    .toggle-filters-link {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: #E8761A;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      margin-left: 8px;
+    }
+
+    .toggle-filters-link svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* ---------- Filter panel ---------- */
+
+    .filter-panel {
+      background-color: #f4f4f5;
+      border-radius: 10px;
+      padding: 26px 28px 24px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px 24px;
+      margin-bottom: 22px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #27272a;
+      margin-bottom: 8px;
+    }
+
+    .field.label-blue label {
+      color: #3459AD;
+    }
+
+    .input-with-icon,
+    .select {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13.5px;
+      color: #a1a1aa;
+    }
+
+    .input-with-icon svg,
+    .select svg {
+      width: 15px;
+      height: 15px;
+      color: #a1a1aa;
+      flex-shrink: 0;
+    }
+
+    .select svg {
+      margin-left: auto;
+    }
+
+    .input-with-icon input {
+      border: none;
+      outline: none;
+      background: none;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      color: #1a1a1a;
+      width: 100%;
+    }
+
+    .input-with-icon input::placeholder {
+      color: #a1a1aa;
+    }
+
+    .select span {
+      flex: 1;
+    }
+
+    /* ---------- Toggles ---------- */
+
+    .toggles-row {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      margin-bottom: 22px;
+    }
+
+    .switch-field {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #27272a;
+    }
+
+    .switch {
+      position: relative;
+      width: 34px;
+      height: 19px;
+      background-color: #d4d4d8;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 15px;
+      height: 15px;
+      background-color: #ffffff;
+      border-radius: 50%;
+    }
+
+    /* ---------- Filter footer ---------- */
+
+    .filter-footer {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-filtrar {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: #E8761A;
+      border: none;
+      border-radius: 6px;
+      padding: 11px 32px;
+      cursor: pointer;
+    }
+
+    /* ---------- Empty state ---------- */
+
+    .empty-state {
+      text-align: center;
+      color: #b0b0b6;
+      font-size: 15px;
+      font-weight: 500;
+      margin-top: 90px;
+    }
+
+    /* ---------- Menu mobile (topbar + drawer) ---------- */
+
+    .mobile-topbar {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      height: 56px;
+      background-color: #F1F1F1;
+      padding: 0 16px;
+    }
+
+    .mobile-menu-toggle {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: none;
+      border: none;
+      color: #18181b;
+      cursor: pointer;
+    }
+
+    .mobile-menu-toggle svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .mobile-logo {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: #18181b;
+      white-space: nowrap;
+    }
+
+    .mobile-logo .orange {
+      color: #E8761A;
+    }
+
+    .mobile-logo-dots {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .mobile-logo-dots .dot {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .mobile-logo-dots .dot-teal { width: 5px; height: 5px; background-color: #35C6C1; top: 0; left: 5px; }
+    .mobile-logo-dots .dot-pink { width: 5px; height: 5px; background-color: #E85AA0; top: 7px; left: 0; }
+    .mobile-logo-dots .dot-orange { width: 5px; height: 5px; background-color: #E8761A; top: 8px; left: 13px; }
+    .mobile-logo-dots .dot-blue { width: 4px; height: 4px; background-color: #4C6FE0; top: 14px; left: 7px; }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.45);
+      z-index: 250;
+    }
+
+    .sidebar-backdrop.open {
+      display: block;
+    }
+
+    .sidebar-close {
+      display: none;
+      position: absolute;
+      top: 22px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #18181b;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .sidebar-close svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ---------- Responsivo ---------- */
+
+    @media (max-width: 768px) {
+      .mobile-topbar {
+        display: flex;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 85vw;
+        max-width: 320px;
+        height: 100vh;
+        padding: 24px 20px;
+        z-index: 300;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        overflow-y: auto;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-close {
+        display: flex;
+      }
+
+      .topbar {
+        display: none;
+      }
+
+      .main {
+        padding: 24px 20px 40px;
+      }
+
+      .page-header-row {
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .page-title {
+        font-size: 22px;
+      }
+
+      .page-subtitle {
+        font-size: 15px;
+      }
+
+      .btn-solid-orange {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .simulados-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .actions-row {
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        flex: 1 1 100%;
+      }
+
+      .toggle-filters-link {
+        margin-left: 0;
+      }
+
+      .filter-panel {
+        padding: 20px;
+      }
+
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .toggles-row {
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .card-menu-dropdown {
+        min-width: 180px;
+      }
+
+      .empty-state-left {
+        padding: 40px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="mobile-topbar">
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="mobile-logo">
+      Prol<span class="mobile-logo-dots"><span class="dot dot-teal"></span><span class="dot dot-pink"></span><span class="dot dot-orange"></span><span class="dot dot-blue"></span></span><span class="orange">uno.</span>
+    </div>
+  </header>
+
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <div class="app">
+
+    <aside class="sidebar">
+      <button class="sidebar-close" id="sidebar-close" aria-label="Fechar menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <a class="back-link" href="../../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Voltar
+      </a>
+
+      <h1 class="sidebar-title">Hub de Questões</h1>
+      <p class="sidebar-subtitle">Crie e venda suas questões</p>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item" href="../01-biblioteca/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h9"/></svg>
+          Biblioteca
+        </a>
+        <a class="nav-item" href="../02-banco-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>
+          Banco de questões
+        </a>
+        <a class="nav-item" href="../03-questoes-externas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-5Z"/><path d="M14 3v6h6"/></svg>
+          Questões externas
+        </a>
+        <a class="nav-item" href="../04-estatisticas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Estatísticas
+        </a>
+        <a class="nav-item" href="../05-pagamentos/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+          Pagamentos
+        </a>
+        <a class="nav-item" href="../06-plano-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          Plano de Questões
+        </a>
+        <a class="nav-item active" href="../07-simulados/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 3.5h6a1 1 0 0 1 1 1V6H8V4.5a1 1 0 0 1 1-1Z"/><path d="M9 12.5l2 2 4-4"/></svg>
+          Simulados
+        </a>
+      </nav>
+    </aside>
+
+    <div class="content-col">
+      <header class="topbar"></header>
+
+    <main class="main">
+      <div class="page-header-row">
+        <h2 class="page-title">Simulado</h2>
+        <a class="btn-solid-orange" href="criacao-simulado-questoes.html" id="btn-criar-simulado">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Criar simulado
+        </a>
+      </div>
+
+      <p class="page-subtitle">Crie simulados oficiais e vincule aos seus produtos para que os alunos pratiquem com cronômetro, relatório de desempenho e ranking.</p>
+
+      <div class="empty-state-left" id="empty-state">
+        <div class="empty-state-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 3.5h6a1 1 0 0 1 1 1V6H8V4.5a1 1 0 0 1 1-1Z"/><path d="M9 12.5l2 2 4-4"/></svg>
+        </div>
+        <p class="empty-state-title">Nenhum simulado encontrado</p>
+        <p class="empty-state-subtitle">Crie o seu primeiro simulado clicando no botão "Criar simulado" para começar.</p>
+      </div>
+
+      <div class="simulados-grid" id="simulados-grid"></div>
+    </main>
+    </div>
+
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'simulados';
+    const emptyState = document.getElementById('empty-state');
+    const grid = document.getElementById('simulados-grid');
+
+    // Garante que uma criação nova não herde estado de uma edição/criação anterior não finalizada
+    document.getElementById('btn-criar-simulado').addEventListener('click', () => {
+      localStorage.removeItem('editingSimuladoIndex');
+      localStorage.removeItem('simuladoQuestoes');
+    });
+
+    function getSimulados() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    }
+
+    function saveSimulados(simulados) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(simulados));
+    }
+
+    function renderSimulados() {
+      const simulados = getSimulados();
+      grid.innerHTML = '';
+      emptyState.style.display = simulados.length > 0 ? 'none' : 'flex';
+
+      simulados.forEach((simulado, index) => {
+        const statusClass = simulado.status === 'Ativo' ? 'status-badge-ativo' : 'status-badge-rascunho';
+
+        const card = document.createElement('div');
+        card.className = 'simulado-card';
+        card.innerHTML = `
+          <div class="simulado-card-top">
+            <div class="simulado-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 3.5h6a1 1 0 0 1 1 1V6H8V4.5a1 1 0 0 1 1-1Z"/><path d="M9 12.5l2 2 4-4"/></svg>
+            </div>
+            <div class="card-menu">
+              <button class="card-menu-trigger" data-index="${index}">
+                <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+              </button>
+              <div class="card-menu-dropdown">
+                <button class="card-menu-item" data-action="edit" data-index="${index}">Editar</button>
+                <button class="card-menu-item" data-action="stats" data-index="${index}">Estatísticas dos simulados</button>
+                <button class="card-menu-item danger" data-action="delete" data-index="${index}">Excluir</button>
+              </div>
+            </div>
+          </div>
+          <h3 class="simulado-card-title">${simulado.nome}</h3>
+          <p class="simulado-card-meta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            Tempo: ${simulado.tempo}
+          </p>
+          <p class="simulado-card-meta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="6" r="1"/><line x1="8" y1="6" x2="20" y2="6"/><circle cx="4" cy="12" r="1"/><line x1="8" y1="12" x2="20" y2="12"/><circle cx="4" cy="18" r="1"/><line x1="8" y1="18" x2="20" y2="18"/></svg>
+            ${simulado.questoes || 0} questões
+          </p>
+          <p class="simulado-card-meta">
+            <span class="status-badge ${statusClass}"><span class="status-badge-dot"></span>${simulado.status}</span>
+          </p>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    grid.addEventListener('click', (e) => {
+      const trigger = e.target.closest('.card-menu-trigger');
+      if (trigger) {
+        const dropdown = trigger.nextElementSibling;
+        const wasOpen = dropdown.classList.contains('open');
+        document.querySelectorAll('.card-menu-dropdown.open').forEach((el) => el.classList.remove('open'));
+        if (!wasOpen) dropdown.classList.add('open');
+        return;
+      }
+
+      const item = e.target.closest('.card-menu-item');
+      if (item) {
+        const index = Number(item.dataset.index);
+
+        if (item.dataset.action === 'delete') {
+          const simulados = getSimulados();
+          simulados.splice(index, 1);
+          saveSimulados(simulados);
+          renderSimulados();
+        } else if (item.dataset.action === 'edit') {
+          localStorage.setItem('editingSimuladoIndex', String(index));
+          window.location.href = 'criacao-simulado.html';
+        } else if (item.dataset.action === 'stats') {
+          const simulados = getSimulados();
+          localStorage.setItem('statsSimuladoNome', simulados[index] ? simulados[index].nome : '');
+          window.location.href = 'estatisticas-simulado.html';
+        }
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.card-menu')) {
+        document.querySelectorAll('.card-menu-dropdown.open').forEach((el) => el.classList.remove('open'));
+      }
+    });
+
+    renderSimulados();
+
+    // Menu mobile
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebarEl = document.querySelector('.sidebar');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+    const sidebarClose = document.getElementById('sidebar-close');
+
+    function openMobileMenu() {
+      sidebarEl.classList.add('open');
+      sidebarBackdrop.classList.add('open');
+    }
+
+    function closeMobileMenu() {
+      sidebarEl.classList.remove('open');
+      sidebarBackdrop.classList.remove('open');
+    }
+
+    mobileMenuToggle.addEventListener('click', openMobileMenu);
+    sidebarClose.addEventListener('click', closeMobileMenu);
+    sidebarBackdrop.addEventListener('click', closeMobileMenu);
+  </script>
+
+</body>
+</html>

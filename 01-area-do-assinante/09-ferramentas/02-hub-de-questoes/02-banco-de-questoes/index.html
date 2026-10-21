@@ -1,0 +1,3176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco de Questões</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #ffffff;
+      color: #1a1a1a;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ---------- Sidebar ---------- */
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background-color: #F1F1F1;
+      padding: 28px 20px;
+    }
+
+    .content-col {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ---------- Topbar ---------- */
+
+    .topbar {
+      width: 100%;
+      height: 56px;
+      flex-shrink: 0;
+      background-color: #F1F1F1;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #6b7280;
+      text-decoration: none;
+      margin-bottom: 18px;
+    }
+
+    .back-link svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .sidebar-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: #18181b;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 13px;
+      font-weight: 400;
+      color: #9a9a9f;
+      margin-bottom: 26px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #3f3f46;
+      text-decoration: none;
+    }
+
+    .nav-item svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+
+    .nav-item.active {
+      background-color: #ffffff;
+      color: #E8761A;
+      font-weight: 600;
+    }
+
+    /* ---------- Main ---------- */
+
+    .main {
+      flex: 1 1 auto;
+      background-color: #ffffff;
+      padding: 44px 48px 60px;
+    }
+
+    .page-title {
+      font-size: 30px;
+      font-weight: 700;
+      color: #18181b;
+    }
+
+    .page-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: #20212380;
+      width: 100%;
+      line-height: 1.5;
+      margin: 20px 0 30px;
+    }
+
+    /* ---------- Balance card ---------- */
+
+    .balance-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 14px;
+      padding: 22px 28px;
+      margin-bottom: 28px;
+    }
+
+    .balance-info {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .balance-label {
+      font-size: 13.5px;
+      color: #52525b;
+      margin-bottom: 10px;
+    }
+
+    .balance-bar-track {
+      width: 100%;
+      max-width: 460px;
+      height: 8px;
+      border-radius: 999px;
+      background-color: #f0f0f1;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .balance-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background-color: #E8761A;
+    }
+
+    .balance-count {
+      font-size: 14px;
+      color: #27272a;
+    }
+
+    .balance-count strong {
+      font-weight: 700;
+    }
+
+    .btn-comprar-questoes {
+      flex-shrink: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #E8761A;
+      background-color: #ffffff;
+      border: 1.5px solid #E8761A;
+      border-radius: 6px;
+      padding: 11px 24px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.12s ease;
+    }
+
+    .btn-comprar-questoes:hover {
+      background-color: #FFF4EC;
+    }
+
+    @media (max-width: 768px) {
+      .balance-card {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-comprar-questoes {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    /* ---------- Filter card ---------- */
+
+    .filter-panel {
+      background-color: #fafafa;
+      border: 1px solid #e4e4e7;
+      border-radius: 14px;
+      padding: 26px 28px 24px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px 24px;
+      margin-bottom: 32px;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field > label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 400;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .input-with-icon,
+    .select {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13.5px;
+      color: #a1a1aa;
+    }
+
+    .input-with-icon svg,
+    .select svg {
+      width: 15px;
+      height: 15px;
+      color: #a1a1aa;
+      flex-shrink: 0;
+    }
+
+    .select svg {
+      margin-left: auto;
+    }
+
+    .input-with-icon input {
+      border: none;
+      outline: none;
+      background: none;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      color: #1a1a1a;
+      width: 100%;
+    }
+
+    .input-with-icon input::placeholder {
+      color: #a1a1aa;
+    }
+
+    .select span {
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    button.select {
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .select svg {
+      transition: transform 0.15s ease;
+    }
+
+    .multiselect {
+      position: relative;
+    }
+
+    .multiselect.open .select svg {
+      transform: rotate(180deg);
+    }
+
+    .select .multiselect-label.has-value {
+      color: #52525b;
+      font-weight: 400;
+    }
+
+    .multiselect-panel {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+      z-index: 60;
+    }
+
+    .multiselect.open .multiselect-panel {
+      display: block;
+    }
+
+    .multiselect-search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #e4e4e7;
+      background-color: #fafafa;
+    }
+
+    .multiselect-search svg {
+      width: 15px;
+      height: 15px;
+      color: #a1a1aa;
+      flex-shrink: 0;
+    }
+
+    .multiselect-search input {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      outline: none;
+      background: none;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      color: #1a1a1a;
+    }
+
+    .multiselect-search input::placeholder {
+      color: #a1a1aa;
+    }
+
+    .multiselect-options {
+      max-height: 220px;
+      overflow-y: auto;
+      padding: 4px 0;
+    }
+
+    .multiselect-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      font-size: 13.5px;
+      line-height: 1.3;
+      color: #3f3f46;
+      cursor: pointer;
+      transition: background-color 0.12s ease;
+    }
+
+    .multiselect-option:nth-child(even) {
+      background-color: #fafafa;
+    }
+
+    .multiselect-option:hover {
+      background-color: #FFF4EC;
+    }
+
+    .multiselect-option span {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .multiselect-option input {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid #d4d4d8;
+      accent-color: #E8761A;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ---------- Filter footer ---------- */
+
+    .filter-footer-row {
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .active-filters {
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .active-filters.has-tags {
+      display: flex;
+    }
+
+    .active-filters-label {
+      flex-shrink: 0;
+      padding-top: 6px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #27272a;
+      white-space: nowrap;
+    }
+
+    .active-filters-tags {
+      display: flex;
+      flex: 1 1 auto;
+      min-width: 0;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-tag {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      gap: 7px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background-color: #F4F4F5;
+      border: 1px solid #e4e4e7;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12.5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.12s ease, border-color 0.12s ease;
+    }
+
+    .filter-tag:hover {
+      background-color: #FFF4EC;
+      border-color: #F3C79A;
+    }
+
+    .filter-tag .tag-remove {
+      width: 14px;
+      height: 14px;
+      color: #E8761A;
+      flex-shrink: 0;
+    }
+
+    .filter-tag .tag-category {
+      color: #71717a;
+      font-weight: 500;
+    }
+
+    .filter-tag .tag-value {
+      color: #27272a;
+      font-weight: 600;
+    }
+
+    .filter-tag-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      padding: 4px 4px 4px 12px;
+      border-radius: 999px;
+      background-color: #F4F4F5;
+      border: 1px solid #e4e4e7;
+    }
+
+    .filter-tag-group-clear {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #71717a;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .filter-tag-group-clear .tag-remove {
+      width: 14px;
+      height: 14px;
+      color: #E8761A;
+      flex-shrink: 0;
+    }
+
+    .filter-tag-value-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #27272a;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.12s ease, border-color 0.12s ease;
+    }
+
+    .filter-tag-value-chip:hover {
+      background-color: #FFF4EC;
+      border-color: #F3C79A;
+    }
+
+    .filter-tag-value-chip .tag-remove {
+      width: 12px;
+      height: 12px;
+      color: #E8761A;
+      flex-shrink: 0;
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    .btn-filtrar {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: #E8761A;
+      border: none;
+      border-radius: 6px;
+      padding: 11px 32px;
+      cursor: pointer;
+    }
+
+    .btn-limpar-filtro {
+      display: none;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #71717a;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-limpar-filtro:hover {
+      color: #3f3f46;
+      text-decoration: underline;
+    }
+
+    .btn-limpar-filtro.visible {
+      display: inline-flex;
+    }
+
+    /* ---------- Pill filters ---------- */
+
+    .pill-filters {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .pill-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .pill-filter-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #27272a;
+      white-space: nowrap;
+    }
+
+    .switch-options {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      border: 1.5px solid #e4e4e7;
+      background-color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #3f3f46;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+    }
+
+    .chip-option input {
+      display: none;
+    }
+
+    .chip-option .chip-check {
+      display: none;
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+
+    .chip-option:not(:has(input:checked)):hover {
+      border-color: #d4d4d8;
+      background-color: #fafafa;
+    }
+
+    .chip-option:has(input:checked) {
+      background-color: #FFF4EC;
+      border-color: #E8761A;
+      color: #E8761A;
+    }
+
+    .chip-option:has(input:checked) .chip-check {
+      display: inline-flex;
+    }
+
+    /* ---------- Select-all row ---------- */
+
+    .select-all-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 26px 0 18px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14.5px;
+      color: #27272a;
+      cursor: pointer;
+    }
+
+    .select-all-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .select-all-pages-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .select-all-dot {
+      color: #a1a1aa;
+      font-size: 14.5px;
+    }
+
+    .select-all-pages {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #E8761A;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: 'Montserrat', sans-serif;
+      padding: 0;
+    }
+
+    .select-all-pages:hover {
+      text-decoration: underline;
+    }
+
+    .checkbox-label input,
+    .question-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1.5px solid #d4d4d8;
+      accent-color: #E8761A;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .selected-count {
+      font-size: 14.5px;
+      color: #71717a;
+    }
+
+    .selected-count strong {
+      color: #1a1a1a;
+      font-weight: 700;
+    }
+
+    /* ---------- Question cards ---------- */
+
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .question-card {
+      display: flex;
+      gap: 16px;
+      border: 1px solid #e4e4e7;
+      border-radius: 10px;
+      padding: 20px 24px;
+    }
+
+    .question-check {
+      margin-top: 2px;
+    }
+
+    .question-content {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .tags-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .tag-id {
+      background-color: #FCE4CC;
+      color: #B4600F;
+    }
+
+    .tag-integrated {
+      background-color: #D8F3E3;
+      color: #1F9254;
+    }
+
+    .tag-neutral {
+      background-color: #F0F0F1;
+      color: #55555A;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+
+    .question-preview {
+      font-size: 15px;
+      color: #27272a;
+    }
+
+    .question-full-text {
+      margin-top: 14px;
+      font-size: 14.5px;
+      line-height: 1.75;
+      color: #27272a;
+    }
+
+    .question-full-text p {
+      margin-bottom: 14px;
+    }
+
+    /* ---------- Pagination ---------- */
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .page-btn {
+      min-width: 40px;
+      height: 40px;
+      padding: 0 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #3f3f46;
+      cursor: pointer;
+    }
+
+    .page-btn.active {
+      background-color: #E8761A;
+      border-color: #E8761A;
+      color: #ffffff;
+    }
+
+    .page-btn.page-nav {
+      color: #E8761A;
+      border-color: transparent;
+    }
+
+    .page-ellipsis {
+      color: #a1a1aa;
+      font-size: 14.5px;
+      padding: 0 4px;
+    }
+
+    /* ---------- Menu mobile (topbar + drawer) ---------- */
+
+    .mobile-topbar {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      height: 56px;
+      background-color: #F1F1F1;
+      padding: 0 16px;
+    }
+
+    .mobile-menu-toggle {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: none;
+      border: none;
+      color: #18181b;
+      cursor: pointer;
+    }
+
+    .mobile-menu-toggle svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .mobile-logo {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: #18181b;
+      white-space: nowrap;
+    }
+
+    .mobile-logo .orange {
+      color: #E8761A;
+    }
+
+    .mobile-logo-dots {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .mobile-logo-dots .dot {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .mobile-logo-dots .dot-teal { width: 5px; height: 5px; background-color: #35C6C1; top: 0; left: 5px; }
+    .mobile-logo-dots .dot-pink { width: 5px; height: 5px; background-color: #E85AA0; top: 7px; left: 0; }
+    .mobile-logo-dots .dot-orange { width: 5px; height: 5px; background-color: #E8761A; top: 8px; left: 13px; }
+    .mobile-logo-dots .dot-blue { width: 4px; height: 4px; background-color: #4C6FE0; top: 14px; left: 7px; }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.45);
+      z-index: 250;
+    }
+
+    .sidebar-backdrop.open {
+      display: block;
+    }
+
+    .sidebar-close {
+      display: none;
+      position: absolute;
+      top: 22px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #18181b;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .sidebar-close svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ---------- Modal de compra de questões ---------- */
+
+    .buy-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(17, 19, 23, 0.5);
+      z-index: 400;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 48px 20px;
+      overflow-y: auto;
+    }
+
+    .buy-modal-overlay.open {
+      display: flex;
+    }
+
+    .buy-modal {
+      width: 100%;
+      max-width: 460px;
+      max-height: calc(100vh - 96px);
+      overflow-y: auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+      padding: 26px 28px 24px;
+    }
+
+    .buy-modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 4px;
+    }
+
+    .buy-modal-title {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: #18181b;
+      max-width: 340px;
+    }
+
+    .buy-modal-close {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      border: 1px solid #e4e4e7;
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #1a1a1a;
+    }
+
+    .buy-modal-close:hover {
+      background-color: #f4f4f5;
+    }
+
+    .buy-modal-close svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .buy-modal-subtitle {
+      font-size: 13px;
+      color: #71717a;
+      margin: 6px 0 20px;
+    }
+
+    .buy-tabs {
+      display: flex;
+      gap: 6px;
+      background-color: #fafafa;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 20px;
+    }
+
+    .buy-tab {
+      flex: 1;
+      text-align: center;
+      padding: 9px 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #71717a;
+      border: none;
+      background: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .buy-tab.active {
+      background-color: #ffffff;
+      color: #E8761A;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .buy-pkg-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .buy-pkg-card {
+      text-align: left;
+      font-family: 'Montserrat', sans-serif;
+      border: 1.5px solid #e4e4e7;
+      border-radius: 9px;
+      padding: 12px 14px;
+      background-color: #ffffff;
+      cursor: pointer;
+    }
+
+    .buy-pkg-card.selected {
+      border-color: #E8761A;
+      background-color: #FFF9F5;
+    }
+
+    .buy-pkg-qty {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 6px;
+    }
+
+    .buy-pkg-promo {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #ffffff;
+      background-color: #E8761A;
+      padding: 2px 7px;
+      border-radius: 5px;
+      margin-right: 6px;
+    }
+
+    .buy-pkg-save {
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #9A4A12;
+      background-color: #FFF4EC;
+      padding: 2px 8px;
+      border-radius: 5px;
+    }
+
+    .buy-unit-row {
+      margin-bottom: 20px;
+    }
+
+    .buy-unit-row label {
+      display: block;
+      font-size: 12.5px;
+      color: #71717a;
+      margin-bottom: 6px;
+    }
+
+    .buy-unit-row input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #E8761A;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      color: #1a1a1a;
+    }
+
+    .buy-unit-hint {
+      font-size: 11.5px;
+      color: #a1a1aa;
+      margin-top: 6px;
+    }
+
+    .buy-summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13.5px;
+      padding: 7px 0;
+      color: #1a1a1a;
+    }
+
+    .buy-summary-row .muted {
+      color: #71717a;
+    }
+
+    .buy-summary-row.total {
+      font-weight: 700;
+      border-top: 1px solid #e4e4e7;
+      margin-top: 4px;
+      padding-top: 12px;
+    }
+
+    .buy-pay-tabs {
+      display: flex;
+      gap: 12px;
+      margin: 20px 0 12px;
+    }
+
+    .buy-pay-tab {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-align: center;
+      padding: 11px 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #71717a;
+      border: 1px solid #e4e4e7;
+      background-color: #ffffff;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .buy-pay-tab:hover {
+      border-color: #d4d4d8;
+    }
+
+    .buy-pay-tab.active {
+      border-color: #E8761A;
+      color: #E8761A;
+    }
+
+    .buy-pay-tab.active::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      background: #22A05A url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / 11px no-repeat;
+    }
+
+    .buy-card-badge {
+      background-color: #1A1F71;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+
+    .buy-card-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 6px;
+    }
+
+    .buy-card-form-row label {
+      display: block;
+      font-size: 12.5px;
+      color: #71717a;
+      margin-bottom: 6px;
+    }
+
+    .buy-card-form-row input {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #e4e4e7;
+      border-radius: 7px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      color: #1a1a1a;
+    }
+
+    .buy-card-form-row input:focus {
+      outline: none;
+      border-color: #E8761A;
+    }
+
+    .buy-card-form-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .buy-saved-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .buy-saved-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 14px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      color: #1a1a1a;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+
+    .buy-saved-card:hover {
+      border-color: #d4d4d8;
+    }
+
+    .buy-saved-card.selected {
+      border-color: #E8761A;
+      background-color: #fff8f2;
+    }
+
+    .buy-saved-card-radio {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #d4d4d8;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .buy-saved-card.selected .buy-saved-card-radio {
+      border-color: #E8761A;
+    }
+
+    .buy-saved-card.selected .buy-saved-card-radio::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background-color: #E8761A;
+    }
+
+    .buy-saved-card-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .buy-saved-card-number {
+      font-weight: 600;
+    }
+
+    .buy-saved-card-meta {
+      font-size: 12px;
+      color: #71717a;
+    }
+
+    .buy-saved-card-new-icon {
+      width: 18px;
+      height: 18px;
+      color: #71717a;
+    }
+
+    .buy-save-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #1a1a1a;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .buy-save-card input {
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      accent-color: #E8761A;
+      cursor: pointer;
+    }
+
+    .buy-pix-box {
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      padding: 18px 12px;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .buy-pix-qr-wrap {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 14px;
+    }
+
+    .buy-pix-qr-svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 6px;
+      border: 1px solid #e4e4e7;
+      background-color: #ffffff;
+      opacity: 0.4;
+      filter: blur(0.5px);
+      transition: opacity 0.15s ease, filter 0.15s ease;
+    }
+
+    .buy-pix-qr-lock {
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      background-color: #E8761A;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11.5px;
+      line-height: 1.5;
+      font-weight: 600;
+      padding: 16px;
+      box-shadow: 0 8px 20px rgba(232, 118, 26, 0.35);
+    }
+
+    .buy-pix-qr-lock strong {
+      font-weight: 700;
+    }
+
+    .buy-pix-qr-wrap.unlocked .buy-pix-qr-svg {
+      opacity: 1;
+      filter: none;
+    }
+
+    .buy-pix-qr-wrap.unlocked .buy-pix-qr-lock {
+      display: none;
+    }
+
+    .buy-pixgen-total {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #1a1a1a;
+      text-align: center;
+      margin: 0 0 16px;
+    }
+
+    .buy-pixgen-total strong {
+      color: #E8761A;
+    }
+
+    .buy-pixgen-steps {
+      margin: 18px 0 16px;
+    }
+
+    .buy-pixgen-steps-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin: 0 0 8px;
+    }
+
+    .buy-pixgen-steps ol {
+      margin: 0;
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .buy-pixgen-steps li {
+      font-size: 13px;
+      color: #52525b;
+      line-height: 1.5;
+    }
+
+    .buy-pixgen-code-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+    }
+
+    .buy-pixgen-code-text {
+      flex: 1 1 auto;
+      min-width: 0;
+      font-family: ui-monospace, monospace;
+      font-size: 12px;
+      color: #3f3f46;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .buy-pixgen-copy {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      background: none;
+      color: #E8761A;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px;
+      white-space: nowrap;
+    }
+
+    .buy-pixgen-copy svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .buy-pixgen-expiry {
+      font-size: 12.5px;
+      color: #9A4A12;
+      text-align: center;
+      margin: 0;
+    }
+
+    .buy-success-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+      padding: 8px 0 4px;
+    }
+
+    .buy-success-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 28px;
+      background-color: #D8F3E3;
+      color: #1F9254;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .buy-success-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .buy-success-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin: 0;
+    }
+
+    .buy-success-text {
+      font-size: 13.5px;
+      color: #71717a;
+      margin: 0;
+      max-width: 320px;
+    }
+
+    .buy-modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn-buy-cancel {
+      flex: 1;
+      padding: 11px;
+      border-radius: 8px;
+      border: 1px solid #e4e4e7;
+      background-color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+      cursor: pointer;
+    }
+
+    .btn-buy-cancel:hover {
+      background-color: #fafafa;
+    }
+
+    .btn-buy-pay {
+      flex: 1.5;
+      padding: 11px;
+      border-radius: 8px;
+      border: none;
+      background-color: #E8761A;
+      color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-buy-pay:hover {
+      background-color: #C85D0F;
+    }
+
+    /* ---------- Barra de seleção (enviar para biblioteca) ---------- */
+
+    .main.has-selection-bar {
+      padding-bottom: 116px;
+    }
+
+    .selection-bar {
+      display: none;
+      position: fixed;
+      left: 240px;
+      right: 0;
+      bottom: 0;
+      z-index: 200;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      background-color: #ffffff;
+      border-top: 1px solid #e4e4e7;
+      box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.06);
+      padding: 16px 48px;
+    }
+
+    .selection-bar.visible {
+      display: flex;
+    }
+
+    .selection-bar-text {
+      font-size: 14px;
+      color: #27272a;
+    }
+
+    .selection-bar-text strong {
+      color: #E8761A;
+      font-weight: 700;
+    }
+
+    .btn-enviar-biblioteca {
+      flex-shrink: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: #E8761A;
+      border: none;
+      border-radius: 8px;
+      padding: 11px 24px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-enviar-biblioteca:hover {
+      background-color: #C85D0F;
+    }
+
+    /* ---------- Pop-ups de envio para a biblioteca ---------- */
+
+    .mini-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(17, 19, 23, 0.5);
+      z-index: 450;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .mini-modal-overlay.open {
+      display: flex;
+    }
+
+    .mini-modal {
+      width: 100%;
+      max-width: 360px;
+      background-color: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+      padding: 28px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+    }
+
+    .mini-modal-actions {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .send-success-btn {
+      width: 100%;
+      margin-top: 4px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: #E8761A;
+      border: none;
+      border-radius: 8px;
+      padding: 11px;
+      cursor: pointer;
+    }
+
+    .send-success-btn:hover {
+      background-color: #C85D0F;
+    }
+
+    /* ---------- Responsivo ---------- */
+
+    @media (max-width: 768px) {
+      .mobile-topbar {
+        display: flex;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 85vw;
+        max-width: 320px;
+        height: 100vh;
+        padding: 24px 20px;
+        z-index: 300;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        overflow-y: auto;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-close {
+        display: flex;
+      }
+
+      .topbar {
+        display: none;
+      }
+
+      .main {
+        padding: 24px 20px 40px;
+      }
+
+      .page-title {
+        font-size: 22px;
+      }
+
+      .page-subtitle {
+        font-size: 15px;
+      }
+
+      .filter-panel {
+        padding: 20px;
+      }
+
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pill-filter-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .filter-actions {
+        width: 100%;
+      }
+
+      .filter-actions .btn-filtrar {
+        flex: 1 1 auto;
+        justify-content: center;
+      }
+
+      .select-all-row {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .selection-bar {
+        left: 0;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 14px 20px;
+        gap: 10px;
+      }
+
+      .btn-enviar-biblioteca {
+        width: 100%;
+        text-align: center;
+      }
+
+      .select-all-left {
+        flex-wrap: wrap;
+        row-gap: 6px;
+      }
+
+      .buy-modal-overlay {
+        padding: 16px;
+      }
+
+      .buy-pkg-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .question-card {
+        padding: 16px;
+      }
+
+      .pagination {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="mobile-topbar">
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="mobile-logo">
+      Prol<span class="mobile-logo-dots"><span class="dot dot-teal"></span><span class="dot dot-pink"></span><span class="dot dot-orange"></span><span class="dot dot-blue"></span></span><span class="orange">uno.</span>
+    </div>
+  </header>
+
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <div class="app">
+
+    <aside class="sidebar">
+      <button class="sidebar-close" id="sidebar-close" aria-label="Fechar menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <a class="back-link" href="../../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Voltar
+      </a>
+
+      <h1 class="sidebar-title">Hub de Questões</h1>
+      <p class="sidebar-subtitle">Crie e venda suas questões</p>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item" href="../01-biblioteca/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h9"/></svg>
+          Biblioteca
+        </a>
+        <a class="nav-item active" href="../02-banco-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>
+          Banco de questões
+        </a>
+        <a class="nav-item" href="../03-questoes-externas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-5Z"/><path d="M14 3v6h6"/></svg>
+          Questões externas
+        </a>
+        <a class="nav-item" href="../04-estatisticas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Estatísticas
+        </a>
+        <a class="nav-item" href="../05-pagamentos/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+          Pagamentos
+        </a>
+        <a class="nav-item" href="../06-plano-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          Plano de Questões
+        </a>
+        <a class="nav-item" href="../07-simulados/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 3.5h6a1 1 0 0 1 1 1V6H8V4.5a1 1 0 0 1 1-1Z"/><path d="M9 12.5l2 2 4-4"/></svg>
+          Simulados
+        </a>
+      </nav>
+    </aside>
+
+    <div class="content-col">
+      <header class="topbar"></header>
+
+    <main class="main">
+      <h2 class="page-title">Banco de questões</h2>
+      <p class="page-subtitle">Explore o acervo com mais de 3 milhões de questões e envie as que quiser direto para a sua biblioteca.</p>
+
+      <div class="balance-card">
+        <div class="balance-info">
+          <p class="balance-label">Questões disponíveis no seu saldo</p>
+          <div class="balance-bar-track">
+            <div class="balance-bar-fill" id="balance-bar-fill" style="width: 58%;"></div>
+          </div>
+          <p class="balance-count"><strong id="balance-used">58</strong> de <strong id="balance-total">100</strong> questões já utilizadas (plano gratuito + compras)</p>
+        </div>
+        <button type="button" class="btn-comprar-questoes" id="btn-comprar-questoes">Comprar mais questões</button>
+      </div>
+
+      <div class="filter-panel">
+        <div class="filter-grid">
+          <div class="field">
+            <label>Pesquisa</label>
+            <div class="input-with-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" placeholder="Busque pelo título da questão">
+            </div>
+          </div>
+          <div class="field">
+            <label>Disciplina</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Disciplina</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Direito"><span>Direito</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Direito Administrativo"><span>Direito Administrativo</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Direito Constitucional"><span>Direito Constitucional</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Direito Tributário"><span>Direito Tributário</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Português"><span>Português</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Matemática"><span>Matemática</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Matemática Financeira"><span>Matemática Financeira</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Raciocínio Lógico"><span>Raciocínio Lógico</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Farmacologia"><span>Farmacologia</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Informática"><span>Informática</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Atualidades"><span>Atualidades</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Contabilidade"><span>Contabilidade</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Administração Pública"><span>Administração Pública</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Assunto</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Assunto</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Atos administrativos"><span>Atos administrativos</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Controle de constitucionalidade"><span>Controle de constitucionalidade</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Interpretação de texto"><span>Interpretação de texto</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Proposições"><span>Proposições</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Proposições lógicas"><span>Proposições lógicas</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Juros compostos"><span>Juros compostos</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Obrigação tributária"><span>Obrigação tributária</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Metabolização de fármacos"><span>Metabolização de fármacos</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Licitações e contratos"><span>Licitações e contratos</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Concordância verbal"><span>Concordância verbal</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Banca</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Banca</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="CEBRASPE"><span>CEBRASPE</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="FGV"><span>FGV</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="FCC"><span>FCC</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="CESGRANRIO"><span>CESGRANRIO</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="VUNESP"><span>VUNESP</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="IBFC"><span>IBFC</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="AOCP"><span>AOCP</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="IADES"><span>IADES</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Instituição</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Instituição</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="INSS"><span>INSS</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Receita Federal"><span>Receita Federal</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Polícia Federal"><span>Polícia Federal</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Tribunal de Justiça"><span>Tribunal de Justiça</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="TRF"><span>TRF</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="TRT"><span>TRT</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="TCU"><span>TCU</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Prefeitura Municipal"><span>Prefeitura Municipal</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Ano</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Ano</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="2026"><span>2026</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2025"><span>2025</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2024"><span>2024</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2023"><span>2023</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2022"><span>2022</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2021"><span>2021</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2020"><span>2020</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Cargo</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Cargo</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Analista"><span>Analista</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Técnico"><span>Técnico</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Auditor"><span>Auditor</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Escrivão"><span>Escrivão</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Agente"><span>Agente</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Perito"><span>Perito</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Procurador"><span>Procurador</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Área de Formação</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Área de Formação</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Direito"><span>Direito</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Administração"><span>Administração</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Contabilidade"><span>Contabilidade</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Tecnologia da Informação"><span>Tecnologia da Informação</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Engenharia"><span>Engenharia</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Saúde"><span>Saúde</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Educação"><span>Educação</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Carreiras</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Carreira</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira Fiscal"><span>Carreira Fiscal</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira Policial"><span>Carreira Policial</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira Jurídica"><span>Carreira Jurídica</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira Administrativa"><span>Carreira Administrativa</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira de Controle"><span>Carreira de Controle</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Escolaridade</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Escolaridade</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Fundamental"><span>Fundamental</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Médio"><span>Médio</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Superior"><span>Superior</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Dificuldade</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Dificuldade</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Fácil"><span>Fácil</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Médio"><span>Médio</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Difícil"><span>Difícil</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Tipo de Questão</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Tipo de Questão</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Múltipla escolha"><span>Múltipla escolha</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Certo e errado"><span>Certo e errado</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pill-filters">
+          <div class="pill-filter-row">
+            <span class="pill-filter-label">Incluir questões</span>
+            <div class="switch-options" data-mode="multi">
+              <label class="chip-option">
+                <input type="checkbox">
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Anuladas</span>
+              </label>
+              <label class="chip-option">
+                <input type="checkbox">
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Desatualizadas</span>
+              </label>
+            </div>
+          </div>
+          <div class="pill-filter-row">
+            <span class="pill-filter-label">Questões com</span>
+            <div class="switch-options" data-mode="multi">
+              <label class="chip-option">
+                <input type="checkbox">
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Gabarito comentado</span>
+              </label>
+              <label class="chip-option">
+                <input type="checkbox">
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Aula</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-footer-row">
+          <div class="active-filters" id="active-filters">
+            <span class="active-filters-label">Filtrar por:</span>
+            <div class="active-filters-tags" id="active-filters-tags"></div>
+          </div>
+
+          <div class="filter-actions">
+            <button type="button" class="btn-limpar-filtro" id="btn-limpar-filtro">Limpar Filtro</button>
+            <button class="btn-filtrar">Filtrar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="select-all-row">
+        <div class="select-all-left">
+          <label class="checkbox-label">
+            <input type="checkbox" id="select-all">
+            Selecionar página
+          </label>
+          <span class="select-all-pages-wrap">
+            <span class="select-all-dot">·</span>
+            <button class="select-all-pages" id="select-all-pages">Selecionar todas as <span id="total-questions-num">176</span></button>
+          </span>
+        </div>
+        <span class="selected-count"><strong id="selected-count-num">0</strong> questões selecionadas</span>
+      </div>
+
+      <div class="question-list">
+        <div class="question-card">
+          <input type="checkbox" class="question-check">
+          <div class="question-content">
+            <div class="tags-row">
+              <span class="tag tag-id">#612</span>
+              <span class="tag tag-integrated">Integrada em 3 produtos</span>
+            </div>
+            <div class="tags-row">
+              <span class="tag tag-neutral">Direito</span>
+              <span class="tag tag-neutral">Direito Administrativo</span>
+              <span class="tag tag-neutral">Atos administrativos</span>
+              <span class="tag tag-neutral">CEBRASPE</span>
+            </div>
+            <p class="question-preview">Texto de exemplo</p>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <input type="checkbox" class="question-check">
+          <div class="question-content">
+            <div class="tags-row">
+              <span class="tag tag-id">#611</span>
+            </div>
+            <div class="tags-row">
+              <span class="tag tag-neutral">Direito</span>
+              <span class="tag tag-neutral">Direito Constitucional</span>
+              <span class="tag tag-neutral">Controle de constitucionalidade</span>
+              <span class="tag tag-neutral">CEBRASPE</span>
+            </div>
+            <p class="question-preview">Texto de exemplo</p>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <input type="checkbox" class="question-check">
+          <div class="question-content">
+            <div class="tags-row">
+              <span class="tag tag-id">#609</span>
+              <span class="tag tag-integrated">Integrada em 1 produto</span>
+            </div>
+            <div class="tags-row">
+              <span class="tag tag-neutral">Linguagens</span>
+              <span class="tag tag-neutral">Português</span>
+              <span class="tag tag-neutral">Interpretação de texto</span>
+              <span class="tag tag-neutral">FGV</span>
+            </div>
+            <p class="question-preview">Texto de exemplo</p>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <input type="checkbox" class="question-check">
+          <div class="question-content">
+            <div class="tags-row">
+              <span class="tag tag-id">#607</span>
+            </div>
+            <div class="tags-row">
+              <span class="tag tag-neutral">Exatas</span>
+              <span class="tag tag-neutral">Raciocínio Lógico</span>
+              <span class="tag tag-neutral">Proposições</span>
+              <span class="tag tag-neutral">CEBRASPE</span>
+            </div>
+            <p class="question-preview">Texto de exemplo</p>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <input type="checkbox" class="question-check">
+          <div class="question-content">
+            <div class="tags-row">
+              <span class="tag tag-id">#605</span>
+              <span class="tag tag-integrated">Integrada em 2 produtos</span>
+            </div>
+            <div class="tags-row">
+              <span class="tag tag-neutral">Direito</span>
+              <span class="tag tag-neutral">Direito Tributário</span>
+              <span class="tag tag-neutral">Obrigação tributária</span>
+              <span class="tag tag-neutral">FCC</span>
+            </div>
+            <p class="question-preview">Texto de exemplo</p>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <input type="checkbox" class="question-check">
+          <div class="question-content">
+            <div class="tags-row">
+              <span class="tag tag-id">#603</span>
+            </div>
+            <div class="tags-row">
+              <span class="tag tag-neutral">Exatas</span>
+              <span class="tag tag-neutral">Matemática Financeira</span>
+              <span class="tag tag-neutral">Juros compostos</span>
+              <span class="tag tag-neutral">FGV</span>
+            </div>
+            <p class="question-preview">Texto de exemplo</p>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <input type="checkbox" class="question-check">
+          <div class="question-content">
+            <div class="tags-row">
+              <span class="tag tag-id">#601</span>
+            </div>
+            <div class="tags-row">
+              <span class="tag tag-neutral">Saúde</span>
+              <span class="tag tag-neutral">Farmacologia</span>
+              <span class="tag tag-neutral">Metabolização de fármacos</span>
+              <span class="tag tag-neutral">FGV</span>
+            </div>
+            <p class="question-preview">Texto de exemplo</p>
+            <div class="question-full-text">
+              <p><strong>(FGV)</strong> - Os fármacos são eliminados do organismo após sofrerem uma série de reações químicas chamadas, de maneira geral, de metabolização de fármacos. Em relação a tal fato, assinale a afirmativa <strong>incorreta</strong>.</p>
+              <p>
+                (A) As reações de metabolização se dão principalmente no fígado, mas também podem acontecer em outros órgãos, como no intestino ou no pulmão.<br>
+                (B) As reações de metabolização são reações enzimáticas, ou seja, são catalisadas por enzimas, na sua maioria no chamado citocromo P450 (presentes na fase I).<br>
+                (C) As chamadas fase I e fase II são, basicamente, as duas fases conhecidas da metabolização.<br>
+                (D) As reações de fase II são aquelas em os fármacos tornam-se mais solúveis, e, assim, mais fáceis de serem excretados.<br>
+                (E) os fármacos administrados por via oral sofrem a metabolização conhecida como "efeito de segunda passagem".
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination">
+        <button class="page-btn page-nav">‹</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <span class="page-ellipsis">...</span>
+        <button class="page-btn">18</button>
+        <button class="page-btn page-nav">›</button>
+      </div>
+    </main>
+
+    <div class="selection-bar" id="selection-bar">
+      <span class="selection-bar-text"><strong id="selection-bar-count">0</strong> questões selecionadas</span>
+      <button type="button" class="btn-enviar-biblioteca" id="btn-enviar-biblioteca">Enviar para biblioteca</button>
+    </div>
+    </div>
+
+  </div>
+
+  <div class="buy-modal-overlay" id="buy-modal-overlay">
+    <div class="buy-modal" role="dialog" aria-modal="true" aria-labelledby="buy-modal-title">
+      <div class="buy-modal-head">
+        <h2 class="buy-modal-title" id="buy-modal-title">Adquira mais questões para o seu banco</h2>
+        <button type="button" class="buy-modal-close" id="buy-modal-close" aria-label="Fechar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <p class="buy-modal-subtitle">As questões adquiridas são cobradas separadamente do seu plano.</p>
+
+      <div id="buy-checkout-view">
+      <div class="buy-tabs">
+        <button type="button" class="buy-tab active" id="buy-tab-pkg">Pacotes</button>
+        <button type="button" class="buy-tab" id="buy-tab-unit">Por unidade</button>
+      </div>
+
+      <div id="buy-pkg-view">
+        <div class="buy-pkg-grid">
+          <button type="button" class="buy-pkg-card selected" data-qty="50" data-price="22.50" data-save="10%">
+            <div class="buy-pkg-qty">50 questões</div>
+            <span class="buy-pkg-save">Economize 10%</span>
+          </button>
+          <button type="button" class="buy-pkg-card" data-qty="100" data-price="42.50" data-save="15%">
+            <div class="buy-pkg-qty">100 questões</div>
+            <span class="buy-pkg-save">Economize 15%</span>
+          </button>
+          <button type="button" class="buy-pkg-card" data-qty="250" data-price="100.00" data-save="20%">
+            <div class="buy-pkg-qty">250 questões</div>
+            <span class="buy-pkg-save">Economize 20%</span>
+          </button>
+          <button type="button" class="buy-pkg-card" data-qty="1000" data-price="350.00" data-save="30%">
+            <div class="buy-pkg-qty">1.000 questões</div>
+            <span class="buy-pkg-promo">Promoção</span>
+            <span class="buy-pkg-save">Economize 30%</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="buy-unit-view" style="display:none">
+        <div class="buy-unit-row">
+          <label for="buy-unit-qty">Quantidade de questões</label>
+          <input type="number" id="buy-unit-qty" value="5" min="5" step="1">
+          <p class="buy-unit-hint">Mínimo de 5 questões por compra. R$ 0,50 por questão.</p>
+        </div>
+      </div>
+
+      <div class="buy-summary-row"><span class="muted">Questões</span><span id="buy-sum-qty">50</span></div>
+      <div class="buy-summary-row"><span class="muted">Desconto</span><span id="buy-sum-discount">10%</span></div>
+      <div class="buy-summary-row total"><span>Total devido</span><span id="buy-sum-total">R$ 22,50</span></div>
+
+      <div class="buy-pay-tabs">
+        <button type="button" class="buy-pay-tab active" id="buy-pay-tab-card"><span class="buy-card-badge">VISA</span> Cartão</button>
+        <button type="button" class="buy-pay-tab" id="buy-pay-tab-pix">Pix</button>
+      </div>
+
+      <div id="buy-card-view">
+        <div class="buy-saved-cards" id="buy-saved-cards"></div>
+        <div class="buy-card-form" id="buy-card-form">
+          <div class="buy-card-form-row">
+            <label for="buy-card-number">Número do cartão</label>
+            <input type="text" id="buy-card-number" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000">
+          </div>
+          <div class="buy-card-form-row">
+            <label for="buy-card-name">Nome no cartão</label>
+            <input type="text" id="buy-card-name" placeholder="Como está impresso no cartão">
+          </div>
+          <div class="buy-card-form-cols">
+            <div class="buy-card-form-row">
+              <label for="buy-card-expiry">Validade</label>
+              <input type="text" id="buy-card-expiry" inputmode="numeric" maxlength="5" placeholder="MM/AA">
+            </div>
+            <div class="buy-card-form-row">
+              <label for="buy-card-cvv">CVV</label>
+              <input type="text" id="buy-card-cvv" inputmode="numeric" maxlength="4" placeholder="123">
+            </div>
+          </div>
+          <label class="buy-save-card">
+            <input type="checkbox" id="buy-card-save" checked>
+            Salvar cartão
+          </label>
+        </div>
+      </div>
+
+      <div id="buy-pix-view" style="display:none">
+        <div class="buy-pix-box">
+          <div class="buy-pix-qr-wrap" id="buy-pix-qr-wrap">
+            <svg class="buy-pix-qr-svg" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+              <rect width="25" height="25" fill="#ffffff"/>
+              <path fill="#20211f" d="M0 0h7v1h-7zM8 0h2v1h-2zM11 0h1v1h-1zM13 0h2v1h-2zM16 0h1v1h-1zM18 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h4v1h-4zM13 1h2v1h-2zM18 1h1v1h-1zM24 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM9 2h1v1h-1zM11 2h1v1h-1zM13 2h4v1h-4zM18 2h1v1h-1zM20 2h3v1h-3zM24 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM9 3h1v1h-1zM12 3h1v1h-1zM14 3h3v1h-3zM18 3h1v1h-1zM20 3h3v1h-3zM24 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h2v1h-2zM12 4h2v1h-2zM16 4h1v1h-1zM18 4h1v1h-1zM20 4h3v1h-3zM24 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM12 5h1v1h-1zM14 5h2v1h-2zM18 5h1v1h-1zM24 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM15 6h1v1h-1zM18 6h7v1h-7zM10 7h1v1h-1zM13 7h1v1h-1zM15 7h1v1h-1zM3 8h2v1h-2zM6 8h5v1h-5zM12 8h3v1h-3zM16 8h2v1h-2zM22 8h3v1h-3zM2 9h4v1h-4zM8 9h4v1h-4zM18 9h1v1h-1zM23 9h2v1h-2zM0 10h1v1h-1zM2 10h11v1h-11zM15 10h5v1h-5zM22 10h1v1h-1zM24 10h1v1h-1zM0 11h3v1h-3zM4 11h2v1h-2zM8 11h1v1h-1zM10 11h1v1h-1zM15 11h3v1h-3zM21 11h2v1h-2zM4 12h1v1h-1zM6 12h5v1h-5zM13 12h1v1h-1zM17 12h5v1h-5zM0 13h1v1h-1zM3 13h1v1h-1zM8 13h2v1h-2zM11 13h1v1h-1zM14 13h2v1h-2zM18 13h3v1h-3zM23 13h1v1h-1zM2 14h1v1h-1zM4 14h2v1h-2zM10 14h1v1h-1zM13 14h4v1h-4zM18 14h3v1h-3zM22 14h2v1h-2zM1 15h1v1h-1zM6 15h4v1h-4zM11 15h2v1h-2zM15 15h1v1h-1zM19 15h1v1h-1zM21 15h2v1h-2zM3 16h1v1h-1zM8 16h1v1h-1zM10 16h1v1h-1zM15 16h1v1h-1zM19 16h6v1h-6zM11 17h1v1h-1zM14 17h1v1h-1zM17 17h1v1h-1zM19 17h1v1h-1zM23 17h2v1h-2zM0 18h7v1h-7zM9 18h3v1h-3zM13 18h1v1h-1zM15 18h3v1h-3zM20 18h1v1h-1zM24 18h1v1h-1zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM11 19h3v1h-3zM16 19h2v1h-2zM21 19h2v1h-2zM24 19h1v1h-1zM0 20h1v1h-1zM2 20h3v1h-3zM6 20h1v1h-1zM8 20h1v1h-1zM12 20h1v1h-1zM14 20h1v1h-1zM16 20h2v1h-2zM20 20h2v1h-2zM23 20h2v1h-2zM0 21h1v1h-1zM2 21h3v1h-3zM6 21h1v1h-1zM8 21h5v1h-5zM14 21h1v1h-1zM16 21h5v1h-5zM23 21h2v1h-2zM0 22h1v1h-1zM2 22h3v1h-3zM6 22h1v1h-1zM9 22h1v1h-1zM11 22h1v1h-1zM14 22h1v1h-1zM18 22h1v1h-1zM22 22h3v1h-3zM0 23h1v1h-1zM6 23h1v1h-1zM8 23h2v1h-2zM11 23h3v1h-3zM17 23h7v1h-7zM0 24h7v1h-7zM10 24h1v1h-1zM12 24h5v1h-5zM18 24h1v1h-1zM20 24h5v1h-5z"/>
+            </svg>
+            <div class="buy-pix-qr-lock" id="buy-pix-qr-lock">
+              <span>Clique no botão<br>"<strong>Gerar QR code</strong>"<br>liberar o código</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div id="buy-pixgen-view" style="display:none">
+        <p class="buy-pixgen-total">Total a pagar: <strong id="buy-pixgen-total-value">R$ 22,50</strong></p>
+
+        <div class="buy-pix-qr-wrap unlocked">
+          <svg class="buy-pix-qr-svg" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+            <rect width="25" height="25" fill="#ffffff"/>
+            <path fill="#20211f" d="M0 0h7v1h-7zM8 0h2v1h-2zM11 0h1v1h-1zM13 0h2v1h-2zM16 0h1v1h-1zM18 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h4v1h-4zM13 1h2v1h-2zM18 1h1v1h-1zM24 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM9 2h1v1h-1zM11 2h1v1h-1zM13 2h4v1h-4zM18 2h1v1h-1zM20 2h3v1h-3zM24 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM9 3h1v1h-1zM12 3h1v1h-1zM14 3h3v1h-3zM18 3h1v1h-1zM20 3h3v1h-3zM24 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM9 4h2v1h-2zM12 4h2v1h-2zM16 4h1v1h-1zM18 4h1v1h-1zM20 4h3v1h-3zM24 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM12 5h1v1h-1zM14 5h2v1h-2zM18 5h1v1h-1zM24 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM15 6h1v1h-1zM18 6h7v1h-7zM10 7h1v1h-1zM13 7h1v1h-1zM15 7h1v1h-1zM3 8h2v1h-2zM6 8h5v1h-5zM12 8h3v1h-3zM16 8h2v1h-2zM22 8h3v1h-3zM2 9h4v1h-4zM8 9h4v1h-4zM18 9h1v1h-1zM23 9h2v1h-2zM0 10h1v1h-1zM2 10h11v1h-11zM15 10h5v1h-5zM22 10h1v1h-1zM24 10h1v1h-1zM0 11h3v1h-3zM4 11h2v1h-2zM8 11h1v1h-1zM10 11h1v1h-1zM15 11h3v1h-3zM21 11h2v1h-2zM4 12h1v1h-1zM6 12h5v1h-5zM13 12h1v1h-1zM17 12h5v1h-5zM0 13h1v1h-1zM3 13h1v1h-1zM8 13h2v1h-2zM11 13h1v1h-1zM14 13h2v1h-2zM18 13h3v1h-3zM23 13h1v1h-1zM2 14h1v1h-1zM4 14h2v1h-2zM10 14h1v1h-1zM13 14h4v1h-4zM18 14h3v1h-3zM22 14h2v1h-2zM1 15h1v1h-1zM6 15h4v1h-4zM11 15h2v1h-2zM15 15h1v1h-1zM19 15h1v1h-1zM21 15h2v1h-2zM3 16h1v1h-1zM8 16h1v1h-1zM10 16h1v1h-1zM15 16h1v1h-1zM19 16h6v1h-6zM11 17h1v1h-1zM14 17h1v1h-1zM17 17h1v1h-1zM19 17h1v1h-1zM23 17h2v1h-2zM0 18h7v1h-7zM9 18h3v1h-3zM13 18h1v1h-1zM15 18h3v1h-3zM20 18h1v1h-1zM24 18h1v1h-1zM0 19h1v1h-1zM6 19h1v1h-1zM8 19h2v1h-2zM11 19h3v1h-3zM16 19h2v1h-2zM21 19h2v1h-2zM24 19h1v1h-1zM0 20h1v1h-1zM2 20h3v1h-3zM6 20h1v1h-1zM8 20h1v1h-1zM12 20h1v1h-1zM14 20h1v1h-1zM16 20h2v1h-2zM20 20h2v1h-2zM23 20h2v1h-2zM0 21h1v1h-1zM2 21h3v1h-3zM6 21h1v1h-1zM8 21h5v1h-5zM14 21h1v1h-1zM16 21h5v1h-5zM23 21h2v1h-2zM0 22h1v1h-1zM2 22h3v1h-3zM6 22h1v1h-1zM9 22h1v1h-1zM11 22h1v1h-1zM14 22h1v1h-1zM18 22h1v1h-1zM22 22h3v1h-3zM0 23h1v1h-1zM6 23h1v1h-1zM8 23h2v1h-2zM11 23h3v1h-3zM17 23h7v1h-7zM0 24h7v1h-7zM10 24h1v1h-1zM12 24h5v1h-5zM18 24h1v1h-1zM20 24h5v1h-5z"/>
+          </svg>
+        </div>
+
+        <div class="buy-pixgen-steps">
+          <p class="buy-pixgen-steps-title">Passo a passo:</p>
+          <ol>
+            <li>Abra o aplicativo do banco;</li>
+            <li>Procure pelo PIX;</li>
+            <li>Selecione "Ler QR Code" ou copie e cole o código PIX.</li>
+          </ol>
+        </div>
+
+        <div class="buy-pixgen-code-row">
+          <span class="buy-pixgen-code-text" id="buy-pixgen-code-text">00020101021226820014br.gov.bcb.pix2560pix.stone.com.br/pix/v2/e4f6b3</span>
+          <button type="button" class="buy-pixgen-copy" id="buy-pixgen-copy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span id="buy-pixgen-copy-label">Copiar código</span>
+          </button>
+        </div>
+
+        <p class="buy-pixgen-expiry">O código Pix expira em <strong>20 minutos</strong>.</p>
+      </div>
+
+      <div id="buy-success-view" class="buy-success-view" style="display:none">
+        <div class="buy-success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        </div>
+        <p class="buy-success-title">Pagamento confirmado!</p>
+        <p class="buy-success-text" id="buy-success-text">As questões foram adicionadas ao seu banco.</p>
+      </div>
+
+      <div class="buy-modal-actions" id="buy-actions-checkout">
+        <button type="button" class="btn-buy-cancel" id="buy-btn-cancel">Cancelar</button>
+        <button type="button" class="btn-buy-pay" id="buy-btn-pay">Pagar R$ 22,50 agora</button>
+      </div>
+
+      <div class="buy-modal-actions" id="buy-actions-pixgen" style="display:none">
+        <button type="button" class="btn-buy-pay" id="buy-btn-verify" style="flex:1">Verificar pagamento</button>
+      </div>
+
+      <div class="buy-modal-actions" id="buy-actions-success" style="display:none">
+        <button type="button" class="btn-buy-cancel" id="buy-btn-success-close" style="flex:1">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mini-modal-overlay" id="send-confirm-overlay">
+    <div class="mini-modal" role="dialog" aria-modal="true" aria-labelledby="send-confirm-title">
+      <p class="buy-success-title" id="send-confirm-title">Enviar para a biblioteca?</p>
+      <p class="buy-success-text" id="send-confirm-text">Enviar as questões selecionadas para a biblioteca?</p>
+      <div class="mini-modal-actions">
+        <button type="button" class="btn-buy-cancel" id="send-confirm-cancel">Cancelar</button>
+        <button type="button" class="btn-buy-pay" id="send-confirm-ok">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mini-modal-overlay" id="send-success-overlay">
+    <div class="mini-modal" role="dialog" aria-modal="true" aria-labelledby="send-success-title">
+      <div class="buy-success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      </div>
+      <p class="buy-success-title" id="send-success-title">Questões enviadas!</p>
+      <p class="buy-success-text" id="send-success-text">As questões foram enviadas para a biblioteca.</p>
+      <button type="button" class="send-success-btn" id="send-success-close">Fechar</button>
+    </div>
+  </div>
+
+  <script>
+    // Seleção de questões
+    const questionChecks = document.querySelectorAll('.question-check');
+    const selectAll = document.getElementById('select-all');
+    const countEl = document.getElementById('selected-count-num');
+    const selectAllPagesBtn = document.getElementById('select-all-pages');
+    const totalQuestions = Number(document.getElementById('total-questions-num').textContent);
+
+    const mainEl = document.querySelector('.main');
+    const selectionBar = document.getElementById('selection-bar');
+    const selectionBarCount = document.getElementById('selection-bar-count');
+    const btnEnviarBiblioteca = document.getElementById('btn-enviar-biblioteca');
+    const balanceUsedEl = document.getElementById('balance-used');
+    const balanceTotalEl = document.getElementById('balance-total');
+    const balanceBarFill = document.getElementById('balance-bar-fill');
+
+    let allPagesSelected = false;
+
+    function updateSelection() {
+      const checkedCount = document.querySelectorAll('.question-check:checked').length;
+      const allPageChecked = checkedCount === questionChecks.length && checkedCount > 0;
+      const displayCount = allPagesSelected ? totalQuestions : checkedCount;
+
+      countEl.textContent = displayCount;
+      selectAll.checked = allPageChecked;
+
+      selectionBarCount.textContent = displayCount;
+      selectionBar.classList.toggle('visible', displayCount > 0);
+      mainEl.classList.toggle('has-selection-bar', displayCount > 0);
+    }
+
+    questionChecks.forEach((cb) => cb.addEventListener('change', () => {
+      allPagesSelected = false;
+      updateSelection();
+    }));
+
+    selectAll.addEventListener('change', () => {
+      questionChecks.forEach((cb) => { cb.checked = selectAll.checked; });
+      if (!selectAll.checked) allPagesSelected = false;
+      updateSelection();
+    });
+
+    selectAllPagesBtn.addEventListener('click', () => {
+      allPagesSelected = true;
+      questionChecks.forEach((cb) => { cb.checked = true; });
+      updateSelection();
+    });
+
+    function performSend(selectedCount) {
+      const used = parseInt(balanceUsedEl.textContent, 10);
+      const total = parseInt(balanceTotalEl.textContent, 10);
+
+      if (used + selectedCount > total) {
+        document.getElementById('btn-comprar-questoes').click();
+        return;
+      }
+
+      const newUsed = used + selectedCount;
+      balanceUsedEl.textContent = newUsed;
+      balanceBarFill.style.width = Math.min(100, (newUsed / total) * 100) + '%';
+
+      questionChecks.forEach((cb) => { cb.checked = false; });
+      allPagesSelected = false;
+      updateSelection();
+
+      openSendSuccess(`${selectedCount} ${selectedCount === 1 ? 'questão foi enviada' : 'questões foram enviadas'} para a biblioteca.`);
+    }
+
+    btnEnviarBiblioteca.addEventListener('click', () => {
+      const selectedCount = allPagesSelected ? totalQuestions : document.querySelectorAll('.question-check:checked').length;
+      if (selectedCount === 0) return;
+
+      const questionWord = selectedCount === 1 ? 'questão selecionada' : 'questões selecionadas';
+      openSendConfirm(`Enviar ${selectedCount} ${questionWord} para a biblioteca?`, () => performSend(selectedCount));
+    });
+
+    // Pop-up de confirmação de envio
+    const sendConfirmOverlay = document.getElementById('send-confirm-overlay');
+    const sendConfirmText = document.getElementById('send-confirm-text');
+    const sendConfirmCancel = document.getElementById('send-confirm-cancel');
+    const sendConfirmOk = document.getElementById('send-confirm-ok');
+
+    function openSendConfirm(message, onConfirm) {
+      sendConfirmText.textContent = message;
+      sendConfirmOk.onclick = () => {
+        closeSendConfirm();
+        onConfirm();
+      };
+      sendConfirmOverlay.classList.add('open');
+    }
+
+    function closeSendConfirm() {
+      sendConfirmOverlay.classList.remove('open');
+    }
+
+    sendConfirmCancel.addEventListener('click', closeSendConfirm);
+    sendConfirmOverlay.addEventListener('click', (e) => {
+      if (e.target === sendConfirmOverlay) closeSendConfirm();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sendConfirmOverlay.classList.contains('open')) closeSendConfirm();
+    });
+
+    // Pop-up de confirmação de envio (sucesso)
+    const sendSuccessOverlay = document.getElementById('send-success-overlay');
+    const sendSuccessText = document.getElementById('send-success-text');
+    const sendSuccessClose = document.getElementById('send-success-close');
+
+    function openSendSuccess(message) {
+      sendSuccessText.textContent = message;
+      sendSuccessOverlay.classList.add('open');
+    }
+
+    function closeSendSuccess() {
+      sendSuccessOverlay.classList.remove('open');
+    }
+
+    sendSuccessClose.addEventListener('click', closeSendSuccess);
+    sendSuccessOverlay.addEventListener('click', (e) => {
+      if (e.target === sendSuccessOverlay) closeSendSuccess();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sendSuccessOverlay.classList.contains('open')) closeSendSuccess();
+    });
+
+    // Limpar filtro
+    const filterPanelEl = document.querySelector('.filter-panel');
+    const btnLimparFiltro = document.getElementById('btn-limpar-filtro');
+    const filterInputs = Array.from(filterPanelEl.querySelectorAll('.filter-grid input[type="checkbox"], .pill-filters input[type="checkbox"]'));
+    const filterBaseline = filterInputs.map((el) => el.checked);
+
+    function hasActiveFilters() {
+      return filterInputs.some((el, i) => el.checked !== filterBaseline[i]);
+    }
+
+    function updateClearFilterVisibility() {
+      btnLimparFiltro.classList.toggle('visible', hasActiveFilters());
+    }
+
+    filterPanelEl.addEventListener('change', (e) => {
+      if (e.target.matches('input[type="checkbox"]')) updateClearFilterVisibility();
+    });
+
+    btnLimparFiltro.addEventListener('click', () => {
+      filterInputs.forEach((el, i) => {
+        if (el.checked !== filterBaseline[i]) {
+          el.checked = filterBaseline[i];
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+      updateClearFilterVisibility();
+    });
+
+    // Filtros multi-seleção (dropdowns de checkbox)
+    document.querySelectorAll('.multiselect').forEach((ms) => {
+      const trigger = ms.querySelector('.select');
+      const label = ms.querySelector('.multiselect-label');
+      const placeholder = label.textContent;
+      ms.dataset.category = placeholder;
+      const panel = ms.querySelector('.multiselect-panel');
+      const searchInput = ms.querySelector('.multiselect-search-input');
+      const options = ms.querySelectorAll('.multiselect-option');
+      const checkboxes = ms.querySelectorAll('input[type="checkbox"]');
+
+      function updateLabel() {
+        const checked = Array.from(checkboxes).filter((cb) => cb.checked);
+        if (checked.length === 0) {
+          label.textContent = placeholder;
+          label.classList.remove('has-value');
+        } else if (checked.length === 1) {
+          label.textContent = checked[0].value;
+          label.classList.add('has-value');
+        } else {
+          label.textContent = `${checked[0].value} +${checked.length - 1}`;
+          label.classList.add('has-value');
+        }
+      }
+
+      function resetSearch() {
+        searchInput.value = '';
+        options.forEach((opt) => { opt.style.display = ''; });
+      }
+
+      function closePanel() {
+        ms.classList.remove('open');
+        resetSearch();
+      }
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = ms.classList.contains('open');
+        document.querySelectorAll('.multiselect.open').forEach((other) => {
+          if (other !== ms) other.classList.remove('open');
+        });
+        if (isOpen) {
+          closePanel();
+        } else {
+          ms.classList.add('open');
+          searchInput.focus();
+        }
+      });
+
+      panel.addEventListener('click', (e) => e.stopPropagation());
+
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim().toLowerCase();
+        options.forEach((opt) => {
+          const matches = opt.textContent.trim().toLowerCase().includes(query);
+          opt.style.display = matches ? '' : 'none';
+        });
+      });
+
+      checkboxes.forEach((cb) => cb.addEventListener('change', () => {
+        updateLabel();
+        renderActiveFilters();
+      }));
+
+      document.addEventListener('click', () => {
+        if (ms.classList.contains('open')) closePanel();
+      });
+    });
+
+    // Filtros em switch (seleção única ou múltipla)
+    document.querySelectorAll('.switch-options').forEach((group) => {
+      const mode = group.dataset.mode;
+      const inputs = group.querySelectorAll('input[type="checkbox"]');
+      inputs.forEach((input) => {
+        input.addEventListener('change', () => {
+          if (mode === 'single' && input.checked) {
+            inputs.forEach((other) => {
+              if (other !== input) other.checked = false;
+            });
+          }
+        });
+      });
+    });
+
+    // Chips "Filtrar por:" com os filtros ativos
+    const activeFiltersEl = document.getElementById('active-filters');
+    const activeFiltersTags = document.getElementById('active-filters-tags');
+
+    function createFilterTag(category, value, onRemove) {
+      const tag = document.createElement('button');
+      tag.type = 'button';
+      tag.className = 'filter-tag';
+      tag.innerHTML = `
+        <svg class="tag-remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+        <span class="tag-category">${category}</span>
+        <span class="tag-value">${value}</span>
+      `;
+      tag.addEventListener('click', onRemove);
+      return tag;
+    }
+
+    function createGroupClearButton(category, onClearAll) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'filter-tag-group-clear';
+      btn.innerHTML = `
+        <svg class="tag-remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+        <span class="tag-category">${category}</span>
+      `;
+      btn.addEventListener('click', onClearAll);
+      return btn;
+    }
+
+    function createValueChip(value, onRemove) {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'filter-tag-value-chip';
+      chip.innerHTML = `
+        <span class="tag-value">${value}</span>
+        <svg class="tag-remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+      `;
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        onRemove();
+      });
+      return chip;
+    }
+
+    function appendFilterGroup(category, items, onClearAll) {
+      if (items.length === 0) return;
+      if (items.length === 1) {
+        activeFiltersTags.appendChild(createFilterTag(category, items[0].value, items[0].onRemove));
+        return;
+      }
+      const group = document.createElement('div');
+      group.className = 'filter-tag-group';
+      group.appendChild(createGroupClearButton(category, onClearAll));
+      items.forEach((item) => group.appendChild(createValueChip(item.value, item.onRemove)));
+      activeFiltersTags.appendChild(group);
+    }
+
+    function removeMultiselectFilter(checkbox) {
+      checkbox.checked = false;
+      checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function clearMultiselectFilter(ms) {
+      const checkboxes = ms.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach((cb) => { cb.checked = false; });
+      checkboxes[0].dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function renderActiveFilters() {
+      activeFiltersTags.innerHTML = '';
+
+      document.querySelectorAll('.multiselect').forEach((ms) => {
+        const category = ms.dataset.category;
+        const checked = Array.from(ms.querySelectorAll('input[type="checkbox"]:checked'));
+        appendFilterGroup(category, checked.map((cb) => ({
+          value: cb.value,
+          onRemove: () => removeMultiselectFilter(cb),
+        })), () => clearMultiselectFilter(ms));
+      });
+
+      activeFiltersEl.classList.toggle('has-tags', activeFiltersTags.children.length > 0);
+    }
+
+    renderActiveFilters();
+
+    // Menu mobile
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebarEl = document.querySelector('.sidebar');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+    const sidebarClose = document.getElementById('sidebar-close');
+
+    function openMobileMenu() {
+      sidebarEl.classList.add('open');
+      sidebarBackdrop.classList.add('open');
+    }
+
+    function closeMobileMenu() {
+      sidebarEl.classList.remove('open');
+      sidebarBackdrop.classList.remove('open');
+    }
+
+    mobileMenuToggle.addEventListener('click', openMobileMenu);
+    sidebarClose.addEventListener('click', closeMobileMenu);
+    sidebarBackdrop.addEventListener('click', closeMobileMenu);
+
+    // ===== Comprar mais questões (modal) =====
+    (function () {
+      const overlay = document.getElementById('buy-modal-overlay');
+      const btnOpen = document.getElementById('btn-comprar-questoes');
+      const btnClose = document.getElementById('buy-modal-close');
+      const btnCancel = document.getElementById('buy-btn-cancel');
+      const btnPay = document.getElementById('buy-btn-pay');
+
+      const tabPkg = document.getElementById('buy-tab-pkg');
+      const tabUnit = document.getElementById('buy-tab-unit');
+      const pkgView = document.getElementById('buy-pkg-view');
+      const unitView = document.getElementById('buy-unit-view');
+      const unitQtyInput = document.getElementById('buy-unit-qty');
+
+      const sumQty = document.getElementById('buy-sum-qty');
+      const sumDiscount = document.getElementById('buy-sum-discount');
+      const sumTotal = document.getElementById('buy-sum-total');
+
+      const payTabCard = document.getElementById('buy-pay-tab-card');
+      const payTabPix = document.getElementById('buy-pay-tab-pix');
+      const cardView = document.getElementById('buy-card-view');
+      const pixView = document.getElementById('buy-pix-view');
+      const pixQrWrap = document.getElementById('buy-pix-qr-wrap');
+
+      const cardNumberInput = document.getElementById('buy-card-number');
+      const cardExpiryInput = document.getElementById('buy-card-expiry');
+      const cardCvvInput = document.getElementById('buy-card-cvv');
+      const cardSaveCheckbox = document.getElementById('buy-card-save');
+      const savedCardsList = document.getElementById('buy-saved-cards');
+      const cardForm = document.getElementById('buy-card-form');
+
+      const checkoutView = document.getElementById('buy-checkout-view');
+      const pixgenView = document.getElementById('buy-pixgen-view');
+      const successView = document.getElementById('buy-success-view');
+      const actionsCheckout = document.getElementById('buy-actions-checkout');
+      const actionsPixgen = document.getElementById('buy-actions-pixgen');
+      const actionsSuccess = document.getElementById('buy-actions-success');
+
+      const pixgenTotalValue = document.getElementById('buy-pixgen-total-value');
+      const pixgenCodeText = document.getElementById('buy-pixgen-code-text');
+      const pixgenCopyBtn = document.getElementById('buy-pixgen-copy');
+      const pixgenCopyLabel = document.getElementById('buy-pixgen-copy-label');
+      const btnVerify = document.getElementById('buy-btn-verify');
+      const btnSuccessClose = document.getElementById('buy-btn-success-close');
+      const successText = document.getElementById('buy-success-text');
+
+      function formatBRL(value) {
+        return 'R$ ' + value.toFixed(2).replace('.', ',');
+      }
+
+      function isCardSelected() {
+        return payTabCard.classList.contains('active');
+      }
+
+      function isPixUnlocked() {
+        return pixQrWrap.classList.contains('unlocked');
+      }
+
+      function refreshPayButton() {
+        const totalText = sumTotal.textContent;
+        if (isCardSelected()) {
+          btnPay.textContent = `Pagar ${totalText} agora`;
+        } else if (!isPixUnlocked()) {
+          btnPay.textContent = 'Gerar QR code';
+        } else {
+          btnPay.textContent = `Confirmei o Pix — ${totalText}`;
+        }
+      }
+
+      function updateSummaryFromPkg(card) {
+        sumQty.textContent = card.dataset.qty;
+        sumDiscount.textContent = card.dataset.save;
+        sumTotal.textContent = formatBRL(parseFloat(card.dataset.price));
+        refreshPayButton();
+      }
+
+      function updateSummaryFromUnit() {
+        let qty = parseInt(unitQtyInput.value, 10);
+        if (isNaN(qty) || qty < 5) {
+          qty = 5;
+          unitQtyInput.value = 5;
+        }
+        sumQty.textContent = qty;
+        sumDiscount.textContent = '—';
+        sumTotal.textContent = formatBRL(qty * 0.5);
+        refreshPayButton();
+      }
+
+      overlay.querySelectorAll('.buy-pkg-card').forEach((card) => {
+        card.addEventListener('click', () => {
+          overlay.querySelectorAll('.buy-pkg-card').forEach((c) => c.classList.remove('selected'));
+          card.classList.add('selected');
+          updateSummaryFromPkg(card);
+        });
+      });
+
+      unitQtyInput.addEventListener('input', updateSummaryFromUnit);
+
+      function switchModeTab(mode) {
+        const isPkg = mode === 'pkg';
+        tabPkg.classList.toggle('active', isPkg);
+        tabUnit.classList.toggle('active', !isPkg);
+        pkgView.style.display = isPkg ? '' : 'none';
+        unitView.style.display = isPkg ? 'none' : '';
+        if (isPkg) {
+          updateSummaryFromPkg(overlay.querySelector('.buy-pkg-card.selected'));
+        } else {
+          updateSummaryFromUnit();
+        }
+      }
+
+      tabPkg.addEventListener('click', () => switchModeTab('pkg'));
+      tabUnit.addEventListener('click', () => switchModeTab('unit'));
+
+      function switchPayMethod(method) {
+        const isCard = method === 'card';
+        payTabCard.classList.toggle('active', isCard);
+        payTabPix.classList.toggle('active', !isCard);
+        cardView.style.display = isCard ? '' : 'none';
+        pixView.style.display = isCard ? 'none' : '';
+        if (!isCard) {
+          pixQrWrap.classList.remove('unlocked');
+        }
+        refreshPayButton();
+      }
+
+      payTabCard.addEventListener('click', () => switchPayMethod('card'));
+      payTabPix.addEventListener('click', () => switchPayMethod('pix'));
+
+      // ---- Formatação dos campos do cartão ----
+
+      function formatCardNumber(value) {
+        const digits = value.replace(/\D/g, '').slice(0, 16);
+        return digits.replace(/(.{4})(?=.)/g, '$1 ');
+      }
+
+      function formatExpiry(value) {
+        const digits = value.replace(/\D/g, '').slice(0, 4);
+        return digits.length <= 2 ? digits : `${digits.slice(0, 2)}/${digits.slice(2)}`;
+      }
+
+      cardNumberInput.addEventListener('input', () => {
+        cardNumberInput.value = formatCardNumber(cardNumberInput.value);
+      });
+      cardExpiryInput.addEventListener('input', () => {
+        cardExpiryInput.value = formatExpiry(cardExpiryInput.value);
+      });
+      cardCvvInput.addEventListener('input', () => {
+        cardCvvInput.value = cardCvvInput.value.replace(/\D/g, '').slice(0, 4);
+      });
+
+      // ---- Cartões cadastrados ----
+      // Para simular um usuário sem cartão cadastrado, deixe a lista vazia: [].
+
+      const savedCards = [
+        { last4: '4242', expiry: '08/28' },
+        { last4: '5510', expiry: '03/27' },
+      ];
+      let selectedCardIndex = 0; // índice do cartão salvo ou 'new' para novo cartão
+
+      function renderSavedCards() {
+        savedCardsList.innerHTML = '';
+        if (savedCards.length === 0) {
+          savedCardsList.style.display = 'none';
+          cardForm.style.display = '';
+          return;
+        }
+        savedCardsList.style.display = '';
+
+        savedCards.forEach((card, index) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'buy-saved-card' + (selectedCardIndex === index ? ' selected' : '');
+          btn.innerHTML = `
+            <span class="buy-saved-card-radio"></span>
+            <span class="buy-saved-card-info">
+              <span class="buy-saved-card-number">•••• •••• •••• ${card.last4}</span>
+              <span class="buy-saved-card-meta">Validade ${card.expiry}</span>
+            </span>`;
+          btn.addEventListener('click', () => selectCard(index));
+          savedCardsList.appendChild(btn);
+        });
+
+        const newBtn = document.createElement('button');
+        newBtn.type = 'button';
+        newBtn.className = 'buy-saved-card' + (selectedCardIndex === 'new' ? ' selected' : '');
+        newBtn.innerHTML = `
+          <span class="buy-saved-card-radio"></span>
+          <svg class="buy-saved-card-new-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          <span class="buy-saved-card-info">
+            <span class="buy-saved-card-number">Usar novo cartão</span>
+          </span>`;
+        newBtn.addEventListener('click', () => selectCard('new'));
+        savedCardsList.appendChild(newBtn);
+
+        cardForm.style.display = selectedCardIndex === 'new' ? '' : 'none';
+      }
+
+      function selectCard(index) {
+        selectedCardIndex = index;
+        renderSavedCards();
+      }
+
+      function resetCardSelection() {
+        selectedCardIndex = savedCards.length > 0 ? 0 : 'new';
+        cardNumberInput.value = '';
+        document.getElementById('buy-card-name').value = '';
+        cardExpiryInput.value = '';
+        cardCvvInput.value = '';
+        cardSaveCheckbox.checked = true;
+        renderSavedCards();
+      }
+
+      function saveNewCardIfChecked() {
+        if (selectedCardIndex !== 'new' || !cardSaveCheckbox.checked) return;
+        const digits = cardNumberInput.value.replace(/\D/g, '');
+        if (digits.length < 4) return;
+        savedCards.push({
+          last4: digits.slice(-4),
+          expiry: cardExpiryInput.value || '—',
+        });
+      }
+
+      // ---- Etapas do modal (checkout / QR Pix / sucesso) ----
+
+      function showStep(step) {
+        checkoutView.style.display = step === 'checkout' ? '' : 'none';
+        pixgenView.style.display = step === 'pixgen' ? '' : 'none';
+        successView.style.display = step === 'success' ? '' : 'none';
+        actionsCheckout.style.display = step === 'checkout' ? '' : 'none';
+        actionsPixgen.style.display = step === 'pixgen' ? '' : 'none';
+        actionsSuccess.style.display = step === 'success' ? '' : 'none';
+      }
+
+      function openPixQrStep() {
+        pixgenTotalValue.textContent = sumTotal.textContent;
+        pixgenCopyLabel.textContent = 'Copiar código';
+        btnVerify.disabled = false;
+        btnVerify.textContent = 'Verificar pagamento';
+        showStep('pixgen');
+      }
+
+      pixgenCopyBtn.addEventListener('click', () => {
+        const code = pixgenCodeText.textContent;
+        const showCopied = () => {
+          pixgenCopyLabel.textContent = 'Copiado!';
+          setTimeout(() => { pixgenCopyLabel.textContent = 'Copiar código'; }, 1500);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(code).then(showCopied).catch(() => {
+            fallbackCopy(code);
+            showCopied();
+          });
+        } else {
+          fallbackCopy(code);
+          showCopied();
+        }
+      });
+
+      function fallbackCopy(text) {
+        const helper = document.createElement('textarea');
+        helper.value = text;
+        helper.style.position = 'fixed';
+        helper.style.opacity = '0';
+        document.body.appendChild(helper);
+        helper.select();
+        try { document.execCommand('copy'); } catch (err) { /* clipboard unavailable */ }
+        document.body.removeChild(helper);
+      }
+
+      btnVerify.addEventListener('click', () => {
+        btnVerify.disabled = true;
+        btnVerify.textContent = 'Verificando...';
+        setTimeout(() => {
+          const qty = sumQty.textContent;
+          const total = sumTotal.textContent;
+          successText.textContent = `${qty} questões foram adicionadas ao seu banco por ${total}.`;
+          showStep('success');
+        }, 900);
+      });
+
+      btnSuccessClose.addEventListener('click', closeBuyModal);
+
+      function resetBuyModal() {
+        overlay.querySelectorAll('.buy-pkg-card').forEach((c) => c.classList.remove('selected'));
+        overlay.querySelector('.buy-pkg-card[data-qty="50"]').classList.add('selected');
+        unitQtyInput.value = 5;
+        pixQrWrap.classList.remove('unlocked');
+        switchModeTab('pkg');
+        switchPayMethod('card');
+        resetCardSelection();
+        showStep('checkout');
+      }
+
+      function openBuyModal() {
+        resetBuyModal();
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeBuyModal() {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      btnOpen.addEventListener('click', openBuyModal);
+      btnClose.addEventListener('click', closeBuyModal);
+      btnCancel.addEventListener('click', closeBuyModal);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeBuyModal(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) closeBuyModal();
+      });
+
+      btnPay.addEventListener('click', () => {
+        if (!isCardSelected() && !isPixUnlocked()) {
+          pixQrWrap.classList.add('unlocked');
+          openPixQrStep();
+          return;
+        }
+        const qty = sumQty.textContent;
+        const total = sumTotal.textContent;
+        if (isCardSelected()) saveNewCardIfChecked();
+        closeBuyModal();
+        alert(`Pagamento confirmado. ${qty} questões adicionadas ao seu banco por ${total}.`);
+      });
+    })();
+  </script>
+
+</body>
+</html>

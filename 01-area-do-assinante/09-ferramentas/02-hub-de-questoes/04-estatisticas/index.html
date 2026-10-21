@@ -1,0 +1,1985 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estatísticas de Questões</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #ffffff;
+      color: #1a1a1a;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ---------- Sidebar ---------- */
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background-color: #F1F1F1;
+      padding: 28px 20px;
+    }
+
+    .content-col {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ---------- Topbar ---------- */
+
+    .topbar {
+      width: 100%;
+      height: 56px;
+      flex-shrink: 0;
+      background-color: #F1F1F1;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #6b7280;
+      text-decoration: none;
+      margin-bottom: 18px;
+    }
+
+    .back-link svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .sidebar-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: #18181b;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 13px;
+      font-weight: 400;
+      color: #9a9a9f;
+      margin-bottom: 26px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #3f3f46;
+      text-decoration: none;
+    }
+
+    .nav-item svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+
+    .nav-item.active {
+      background-color: #ffffff;
+      color: #E8761A;
+      font-weight: 600;
+    }
+
+    /* ---------- Main ---------- */
+
+    .main {
+      flex: 1 1 auto;
+      background-color: #ffffff;
+      padding: 44px 48px 60px;
+    }
+
+    .page-title {
+      font-size: 30px;
+      font-weight: 700;
+      color: #18181b;
+    }
+
+    .page-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: #20212380;
+      width: 100%;
+      line-height: 1.5;
+      margin: 20px 0 30px;
+    }
+
+    /* ---------- Busca + filtro ---------- */
+
+    .search-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .search-field {
+      flex: 1 1 auto;
+      max-width: 420px;
+    }
+
+    .input-with-icon,
+    .select {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13.5px;
+      color: #a1a1aa;
+    }
+
+    .input-with-icon svg,
+    .select svg {
+      width: 15px;
+      height: 15px;
+      color: #a1a1aa;
+      flex-shrink: 0;
+    }
+
+    .select svg {
+      margin-left: auto;
+    }
+
+    .input-with-icon input {
+      border: none;
+      outline: none;
+      background: none;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      color: #1a1a1a;
+      width: 100%;
+    }
+
+    .input-with-icon input::placeholder {
+      color: #a1a1aa;
+    }
+
+    .btn-toggle-filters {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+      flex-shrink: 0;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      color: #3f3f46;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 11px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-toggle-filters svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+
+    .btn-toggle-filters .toggle-chevron {
+      transition: transform 0.15s ease;
+    }
+
+    .btn-toggle-filters.filters-open .toggle-chevron {
+      transform: rotate(180deg);
+    }
+
+    .btn-toggle-filters.filters-open {
+      border-color: #E8761A;
+      color: #E8761A;
+    }
+
+    /* ---------- Filter card ---------- */
+
+    .filter-panel {
+      display: none;
+      background-color: #fafafa;
+      border: 1px solid #e4e4e7;
+      border-radius: 14px;
+      padding: 26px 28px 24px;
+      margin-bottom: 20px;
+    }
+
+    .filter-panel.open {
+      display: block;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px 24px;
+      margin-bottom: 32px;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field > label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 400;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .select span {
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    button.select {
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .select svg {
+      transition: transform 0.15s ease;
+    }
+
+    .multiselect {
+      position: relative;
+    }
+
+    .multiselect.open .select svg {
+      transform: rotate(180deg);
+    }
+
+    .select .multiselect-label.has-value {
+      color: #52525b;
+      font-weight: 400;
+    }
+
+    .multiselect-panel {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+      z-index: 60;
+    }
+
+    .multiselect.open .multiselect-panel {
+      display: block;
+    }
+
+    .multiselect-search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #e4e4e7;
+      background-color: #fafafa;
+    }
+
+    .multiselect-search svg {
+      width: 15px;
+      height: 15px;
+      color: #a1a1aa;
+      flex-shrink: 0;
+    }
+
+    .multiselect-search input {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      outline: none;
+      background: none;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      color: #1a1a1a;
+    }
+
+    .multiselect-search input::placeholder {
+      color: #a1a1aa;
+    }
+
+    .multiselect-options {
+      max-height: 220px;
+      overflow-y: auto;
+      padding: 4px 0;
+    }
+
+    .multiselect-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      font-size: 13.5px;
+      line-height: 1.3;
+      color: #3f3f46;
+      cursor: pointer;
+      transition: background-color 0.12s ease;
+    }
+
+    .multiselect-option:nth-child(even) {
+      background-color: #fafafa;
+    }
+
+    .multiselect-option:hover {
+      background-color: #FFF4EC;
+    }
+
+    .multiselect-option span {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .multiselect-option input {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid #d4d4d8;
+      accent-color: #E8761A;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ---------- Filter footer ---------- */
+
+    .filter-footer-row {
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .active-filters {
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .active-filters.has-tags {
+      display: flex;
+    }
+
+    .active-filters-label {
+      flex-shrink: 0;
+      padding-top: 6px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #27272a;
+      white-space: nowrap;
+    }
+
+    .active-filters-tags {
+      display: flex;
+      flex: 1 1 auto;
+      min-width: 0;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-tag {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      gap: 7px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background-color: #F4F4F5;
+      border: 1px solid #e4e4e7;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12.5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.12s ease, border-color 0.12s ease;
+    }
+
+    .filter-tag:hover {
+      background-color: #FFF4EC;
+      border-color: #F3C79A;
+    }
+
+    .filter-tag .tag-remove {
+      width: 14px;
+      height: 14px;
+      color: #E8761A;
+      flex-shrink: 0;
+    }
+
+    .filter-tag .tag-category {
+      color: #71717a;
+      font-weight: 500;
+    }
+
+    .filter-tag .tag-value {
+      color: #27272a;
+      font-weight: 600;
+    }
+
+    .filter-tag-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      padding: 4px 4px 4px 12px;
+      border-radius: 999px;
+      background-color: #F4F4F5;
+      border: 1px solid #e4e4e7;
+    }
+
+    .filter-tag-group-clear {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #71717a;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .filter-tag-group-clear .tag-remove {
+      width: 14px;
+      height: 14px;
+      color: #E8761A;
+      flex-shrink: 0;
+    }
+
+    .filter-tag-value-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #27272a;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.12s ease, border-color 0.12s ease;
+    }
+
+    .filter-tag-value-chip:hover {
+      background-color: #FFF4EC;
+      border-color: #F3C79A;
+    }
+
+    .filter-tag-value-chip .tag-remove {
+      width: 12px;
+      height: 12px;
+      color: #E8761A;
+      flex-shrink: 0;
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    .btn-filtrar {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: #E8761A;
+      border: none;
+      border-radius: 6px;
+      padding: 11px 32px;
+      cursor: pointer;
+    }
+
+    .btn-limpar-filtro {
+      display: none;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #71717a;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-limpar-filtro:hover {
+      color: #3f3f46;
+      text-decoration: underline;
+    }
+
+    .btn-limpar-filtro.visible {
+      display: inline-flex;
+    }
+
+    /* ---------- Pill filters ---------- */
+
+    .pill-filters {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .pill-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .pill-filter-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #27272a;
+      white-space: nowrap;
+    }
+
+    .switch-options {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      border: 1.5px solid #e4e4e7;
+      background-color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #3f3f46;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+    }
+
+    .chip-option input {
+      display: none;
+    }
+
+    .chip-option .chip-check {
+      display: none;
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+
+    .chip-option:not(:has(input:checked)):hover {
+      border-color: #d4d4d8;
+      background-color: #fafafa;
+    }
+
+    .chip-option:has(input:checked) {
+      background-color: #FFF4EC;
+      border-color: #E8761A;
+      color: #E8761A;
+    }
+
+    .chip-option:has(input:checked) .chip-check {
+      display: inline-flex;
+    }
+
+    /* ---------- Question cards ---------- */
+
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .question-card {
+      border: 1px solid #ececee;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .question-card-band {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 20px;
+      background-color: #fafafa;
+      border-bottom: 1px solid #ececee;
+    }
+
+    .band-breadcrumb {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-width: 0;
+      font-size: 13.5px;
+    }
+
+    .card-index {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 24px;
+      padding: 0 6px;
+      border-radius: 6px;
+      background-color: #ececee;
+      color: #55555A;
+      font-size: 12.5px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .tag-id {
+      background-color: #FCE4CC;
+      color: #B4600F;
+      flex-shrink: 0;
+    }
+
+    .tag-integrated {
+      background-color: #D8F3E3;
+      color: #1F9254;
+    }
+
+    .breadcrumb-item {
+      color: #E8761A;
+      font-weight: 400;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .breadcrumb-item:hover {
+      text-decoration: underline;
+    }
+
+    .breadcrumb-chevron {
+      width: 13px;
+      height: 13px;
+      color: #c4c4c9;
+      flex-shrink: 0;
+    }
+
+    .question-card-body {
+      padding: 18px 20px 20px;
+    }
+
+    .question-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: 22px;
+      row-gap: 4px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .meta-label {
+      color: #1a1a1a;
+      font-weight: 700;
+    }
+
+    .meta-value {
+      color: #E8761A;
+      font-weight: 400;
+    }
+
+    .question-preview {
+      font-size: 15px;
+      color: #3459AD;
+    }
+
+    .card-stats-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #ececee;
+    }
+
+    .stats-summary {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: 22px;
+      row-gap: 4px;
+      font-size: 14px;
+      color: #1a1a1a;
+    }
+
+    .stats-summary strong {
+      font-weight: 700;
+    }
+
+    .btn-more-stats {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #a1a1aa;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-more-stats:hover {
+      color: #71717a;
+    }
+
+    .btn-more-stats svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      transition: transform 0.15s ease;
+    }
+
+    .btn-more-stats.open svg {
+      transform: rotate(180deg);
+    }
+
+    .stats-detail {
+      display: none;
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid #ececee;
+    }
+
+    .stats-detail.open {
+      display: block;
+    }
+
+    .stats-detail-section + .stats-detail-section {
+      margin-top: 24px;
+    }
+
+    .stats-detail-title {
+      font-size: 13px;
+      color: #a1a1aa;
+      margin-bottom: 10px;
+    }
+
+    .stats-legend {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #1a1a1a;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-item strong {
+      font-weight: 700;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .dot-green {
+      background-color: #3EA557;
+    }
+
+    .dot-red {
+      background-color: #C42B2B;
+    }
+
+    .rendimento-bar {
+      display: flex;
+      width: 100%;
+      height: 26px;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .rendimento-fill-green {
+      background-color: #3EA557;
+      height: 100%;
+    }
+
+    .rendimento-fill-red {
+      background-color: #C42B2B;
+      height: 100%;
+    }
+
+    .alt-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .alt-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .alt-label {
+      width: 56px;
+      flex-shrink: 0;
+      text-align: right;
+      font-size: 13px;
+      color: #3f3f46;
+    }
+
+    .alt-track {
+      position: relative;
+      flex: 1 1 auto;
+      height: 20px;
+      background-image: repeating-linear-gradient(to right, #e4e4e7 0, #e4e4e7 1px, transparent 1px, transparent calc(100% / 6));
+      border-right: 1px solid #e4e4e7;
+    }
+
+    .alt-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background-color: #E8761A;
+      border-radius: 2px;
+    }
+
+    .alt-axis {
+      display: flex;
+      justify-content: space-between;
+      margin-left: 68px;
+      margin-top: 4px;
+      font-size: 12px;
+      color: #a1a1aa;
+    }
+
+    /* ---------- Menu mobile (topbar + drawer) ---------- */
+
+    .mobile-topbar {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      height: 56px;
+      background-color: #F1F1F1;
+      padding: 0 16px;
+    }
+
+    .mobile-menu-toggle {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: none;
+      border: none;
+      color: #18181b;
+      cursor: pointer;
+    }
+
+    .mobile-menu-toggle svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .mobile-logo {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: #18181b;
+      white-space: nowrap;
+    }
+
+    .mobile-logo .orange {
+      color: #E8761A;
+    }
+
+    .mobile-logo-dots {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .mobile-logo-dots .dot {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .mobile-logo-dots .dot-teal { width: 5px; height: 5px; background-color: #35C6C1; top: 0; left: 5px; }
+    .mobile-logo-dots .dot-pink { width: 5px; height: 5px; background-color: #E85AA0; top: 7px; left: 0; }
+    .mobile-logo-dots .dot-orange { width: 5px; height: 5px; background-color: #E8761A; top: 8px; left: 13px; }
+    .mobile-logo-dots .dot-blue { width: 4px; height: 4px; background-color: #4C6FE0; top: 14px; left: 7px; }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.45);
+      z-index: 250;
+    }
+
+    .sidebar-backdrop.open {
+      display: block;
+    }
+
+    .sidebar-close {
+      display: none;
+      position: absolute;
+      top: 22px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #18181b;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .sidebar-close svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ---------- Responsivo ---------- */
+
+    @media (max-width: 768px) {
+      .mobile-topbar {
+        display: flex;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 85vw;
+        max-width: 320px;
+        height: 100vh;
+        padding: 24px 20px;
+        z-index: 300;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        overflow-y: auto;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-close {
+        display: flex;
+      }
+
+      .topbar {
+        display: none;
+      }
+
+      .main {
+        padding: 24px 20px 40px;
+      }
+
+      .page-title {
+        font-size: 22px;
+      }
+
+      .page-subtitle {
+        font-size: 15px;
+      }
+
+      .search-filter-row {
+        flex-wrap: wrap;
+      }
+
+      .search-field {
+        max-width: none;
+        flex: 1 1 100%;
+      }
+
+      .filter-panel {
+        padding: 20px;
+      }
+
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pill-filter-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .filter-actions {
+        width: 100%;
+      }
+
+      .filter-actions .btn-filtrar {
+        flex: 1 1 auto;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="mobile-topbar">
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="mobile-logo">
+      Prol<span class="mobile-logo-dots"><span class="dot dot-teal"></span><span class="dot dot-pink"></span><span class="dot dot-orange"></span><span class="dot dot-blue"></span></span><span class="orange">uno.</span>
+    </div>
+  </header>
+
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <div class="app">
+
+    <aside class="sidebar">
+      <button class="sidebar-close" id="sidebar-close" aria-label="Fechar menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <a class="back-link" href="../../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Voltar
+      </a>
+
+      <h1 class="sidebar-title">Hub de Questões</h1>
+      <p class="sidebar-subtitle">Crie e venda suas questões</p>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item" href="../01-biblioteca/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h9"/></svg>
+          Biblioteca
+        </a>
+        <a class="nav-item" href="../02-banco-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>
+          Banco de questões
+        </a>
+        <a class="nav-item" href="../03-questoes-externas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-5Z"/><path d="M14 3v6h6"/></svg>
+          Questões externas
+        </a>
+        <a class="nav-item active" href="../04-estatisticas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Estatísticas
+        </a>
+        <a class="nav-item" href="../05-pagamentos/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+          Pagamentos
+        </a>
+        <a class="nav-item" href="../06-plano-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          Plano de Questões
+        </a>
+        <a class="nav-item" href="../07-simulados/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 3.5h6a1 1 0 0 1 1 1V6H8V4.5a1 1 0 0 1 1-1Z"/><path d="M9 12.5l2 2 4-4"/></svg>
+          Simulados
+        </a>
+      </nav>
+    </aside>
+
+    <div class="content-col">
+      <header class="topbar"></header>
+
+    <main class="main">
+      <h2 class="page-title">Estatísticas de questões</h2>
+      <p class="page-subtitle">Acompanhe o desempenho e os dados das questões cadastradas na plataforma.</p>
+
+      <div class="search-filter-row">
+        <div class="search-field">
+          <div class="input-with-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Buscar por questão">
+          </div>
+        </div>
+        <button type="button" class="btn-toggle-filters" id="btn-toggle-filters">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3Z"/></svg>
+          Filtrar
+          <svg class="toggle-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </div>
+
+      <div class="filter-panel" id="filter-panel">
+        <div class="filter-grid">
+          <div class="field">
+            <label>Pesquisa</label>
+            <div class="input-with-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" placeholder="Busque pelo título da questão">
+            </div>
+          </div>
+          <div class="field">
+            <label>Disciplina</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Disciplina</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Direito"><span>Direito</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Direito Administrativo"><span>Direito Administrativo</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Direito Constitucional"><span>Direito Constitucional</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Direito Tributário"><span>Direito Tributário</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Português"><span>Português</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Matemática"><span>Matemática</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Matemática Financeira"><span>Matemática Financeira</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Raciocínio Lógico"><span>Raciocínio Lógico</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Farmacologia"><span>Farmacologia</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Informática"><span>Informática</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Atualidades"><span>Atualidades</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Contabilidade"><span>Contabilidade</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Administração Pública"><span>Administração Pública</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Assunto</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Assunto</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Atos administrativos"><span>Atos administrativos</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Controle de constitucionalidade"><span>Controle de constitucionalidade</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Interpretação de texto"><span>Interpretação de texto</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Proposições"><span>Proposições</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Proposições lógicas"><span>Proposições lógicas</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Juros compostos"><span>Juros compostos</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Obrigação tributária"><span>Obrigação tributária</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Metabolização de fármacos"><span>Metabolização de fármacos</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Licitações e contratos"><span>Licitações e contratos</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Concordância verbal"><span>Concordância verbal</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Banca</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Banca</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="CEBRASPE"><span>CEBRASPE</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="FGV"><span>FGV</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="FCC"><span>FCC</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="CESGRANRIO"><span>CESGRANRIO</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="VUNESP"><span>VUNESP</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="IBFC"><span>IBFC</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="AOCP"><span>AOCP</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="IADES"><span>IADES</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Instituição</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Instituição</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="INSS"><span>INSS</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Receita Federal"><span>Receita Federal</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Polícia Federal"><span>Polícia Federal</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Tribunal de Justiça"><span>Tribunal de Justiça</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="TRF"><span>TRF</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="TRT"><span>TRT</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="TCU"><span>TCU</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Prefeitura Municipal"><span>Prefeitura Municipal</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Ano</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Ano</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="2026"><span>2026</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2025"><span>2025</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2024"><span>2024</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2023"><span>2023</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2022"><span>2022</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2021"><span>2021</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="2020"><span>2020</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Cargo</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Cargo</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Analista"><span>Analista</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Técnico"><span>Técnico</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Auditor"><span>Auditor</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Escrivão"><span>Escrivão</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Agente"><span>Agente</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Perito"><span>Perito</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Procurador"><span>Procurador</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Área de Formação</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Área de Formação</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Direito"><span>Direito</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Administração"><span>Administração</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Contabilidade"><span>Contabilidade</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Tecnologia da Informação"><span>Tecnologia da Informação</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Engenharia"><span>Engenharia</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Saúde"><span>Saúde</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Educação"><span>Educação</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Carreiras</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Carreira</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira Fiscal"><span>Carreira Fiscal</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira Policial"><span>Carreira Policial</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira Jurídica"><span>Carreira Jurídica</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira Administrativa"><span>Carreira Administrativa</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Carreira de Controle"><span>Carreira de Controle</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Escolaridade</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Escolaridade</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Fundamental"><span>Fundamental</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Médio"><span>Médio</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Superior"><span>Superior</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Dificuldade</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Dificuldade</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Fácil"><span>Fácil</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Médio"><span>Médio</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Difícil"><span>Difícil</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label>Tipo de Questão</label>
+            <div class="multiselect">
+              <button type="button" class="select">
+                <span class="multiselect-label">Tipo de Questão</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="multiselect-panel">
+                <div class="multiselect-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                </div>
+                <div class="multiselect-options">
+                  <label class="multiselect-option"><input type="checkbox" value="Múltipla escolha"><span>Múltipla escolha</span></label>
+                  <label class="multiselect-option"><input type="checkbox" value="Certo e errado"><span>Certo e errado</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pill-filters">
+          <div class="pill-filter-row">
+            <span class="pill-filter-label">Status</span>
+            <div class="switch-options" data-mode="multi">
+              <label class="chip-option">
+                <input type="checkbox" checked>
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Ativas</span>
+              </label>
+              <label class="chip-option">
+                <input type="checkbox" checked>
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Rascunhos</span>
+              </label>
+              <label class="chip-option">
+                <input type="checkbox" checked>
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Bloqueadas</span>
+              </label>
+            </div>
+          </div>
+          <div class="pill-filter-row">
+            <span class="pill-filter-label">Incluir questões</span>
+            <div class="switch-options" data-mode="multi">
+              <label class="chip-option">
+                <input type="checkbox" checked>
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Inéditas</span>
+              </label>
+              <label class="chip-option">
+                <input type="checkbox">
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Anuladas</span>
+              </label>
+              <label class="chip-option">
+                <input type="checkbox">
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Desatualizadas</span>
+              </label>
+            </div>
+          </div>
+          <div class="pill-filter-row">
+            <span class="pill-filter-label">Questões com</span>
+            <div class="switch-options" data-mode="multi">
+              <label class="chip-option">
+                <input type="checkbox">
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Gabarito comentado</span>
+              </label>
+              <label class="chip-option">
+                <input type="checkbox">
+                <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Aula</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-footer-row">
+          <div class="active-filters" id="active-filters">
+            <span class="active-filters-label">Filtrar por:</span>
+            <div class="active-filters-tags" id="active-filters-tags"></div>
+          </div>
+
+          <div class="filter-actions">
+            <button type="button" class="btn-limpar-filtro" id="btn-limpar-filtro">Limpar Filtro</button>
+            <button class="btn-filtrar">Filtrar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="question-list">
+        <div class="question-card">
+          <div class="question-card-band">
+            <div class="band-breadcrumb">
+              <span class="card-index">1</span>
+              <span class="tag tag-id">#612</span>
+              <a class="breadcrumb-item" href="#">Direito Administrativo</a>
+              <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+              <a class="breadcrumb-item" href="#">Atos administrativos</a>
+            </div>
+          </div>
+          <div class="question-card-body">
+            <div class="question-meta-row">
+              <span><span class="meta-label">Ano:</span> <span class="meta-value">2023</span></span>
+              <span><span class="meta-label">Banca:</span> <span class="meta-value">CEBRASPE</span></span>
+              <span><span class="meta-label">Prova:</span> <span class="meta-value">CEBRASPE - 2023 - PF - Agente Administrativo</span></span>
+            </div>
+            <p class="question-preview">Acerca dos atos administrativos, julgue o item: os atos vinculados não admitem apreciação de conveniência e oportunidade por parte do administrador.</p>
+            <div class="card-stats-row">
+              <div class="stats-summary">
+                <span>Acertos: <strong>1</strong></span>
+                <span>Erros: <strong>2</strong></span>
+                <span>Aproveitamento: <strong>33.33%</strong></span>
+              </div>
+              <button type="button" class="btn-more-stats">
+                Mais estatísticas
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="stats-detail">
+              <div class="stats-detail-section">
+                <p class="stats-detail-title">Rendimento</p>
+                <div class="stats-legend">
+                  <span class="legend-item"><span class="legend-dot dot-green"></span>Acertos: <strong>1</strong></span>
+                  <span class="legend-item"><span class="legend-dot dot-red"></span>Erros: <strong>2</strong></span>
+                </div>
+                <div class="rendimento-bar">
+                  <div class="rendimento-fill-green" style="width: 33.33%"></div>
+                  <div class="rendimento-fill-red" style="width: 66.67%"></div>
+                </div>
+              </div>
+              <div class="stats-detail-section">
+                <p class="stats-detail-title">Respostas por alternativas</p>
+                <div class="alt-chart">
+                  <div class="alt-row">
+                    <span class="alt-label">Item A</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 33.33%"></div></div>
+                  </div>
+                  <div class="alt-row">
+                    <span class="alt-label">Item B</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 0%"></div></div>
+                  </div>
+                  <div class="alt-row">
+                    <span class="alt-label">Item C</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 33.33%"></div></div>
+                  </div>
+                  <div class="alt-row">
+                    <span class="alt-label">Item D</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 0%"></div></div>
+                  </div>
+                  <div class="alt-row">
+                    <span class="alt-label">Item E</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 33.33%"></div></div>
+                  </div>
+                  <div class="alt-axis">
+                    <span>0%</span><span>16.67%</span><span>33.33%</span><span>50%</span><span>66.67%</span><span>83.33%</span><span>100%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="question-card-band">
+            <div class="band-breadcrumb">
+              <span class="card-index">2</span>
+              <span class="tag tag-id">#611</span>
+              <a class="breadcrumb-item" href="#">Direito Constitucional</a>
+              <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+              <a class="breadcrumb-item" href="#">Controle de constitucionalidade</a>
+            </div>
+          </div>
+          <div class="question-card-body">
+            <div class="question-meta-row">
+              <span><span class="meta-label">Ano:</span> <span class="meta-value">2022</span></span>
+              <span><span class="meta-label">Banca:</span> <span class="meta-value">CEBRASPE</span></span>
+              <span><span class="meta-label">Prova:</span> <span class="meta-value">CEBRASPE - 2022 - TCU - Auditor Federal de Controle Externo</span></span>
+            </div>
+            <p class="question-preview">No que se refere ao controle de constitucionalidade, assinale a alternativa que apresenta corretamente a diferença entre controle difuso e concentrado.</p>
+            <div class="card-stats-row">
+              <div class="stats-summary">
+                <span>Acertos: <strong>14</strong></span>
+                <span>Erros: <strong>6</strong></span>
+                <span>Aproveitamento: <strong>70%</strong></span>
+              </div>
+              <button type="button" class="btn-more-stats">
+                Mais estatísticas
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="stats-detail">
+              <div class="stats-detail-section">
+                <p class="stats-detail-title">Rendimento</p>
+                <div class="stats-legend">
+                  <span class="legend-item"><span class="legend-dot dot-green"></span>Acertos: <strong>14</strong></span>
+                  <span class="legend-item"><span class="legend-dot dot-red"></span>Erros: <strong>6</strong></span>
+                </div>
+                <div class="rendimento-bar">
+                  <div class="rendimento-fill-green" style="width: 70%"></div>
+                  <div class="rendimento-fill-red" style="width: 30%"></div>
+                </div>
+              </div>
+              <div class="stats-detail-section">
+                <p class="stats-detail-title">Respostas por alternativas</p>
+                <div class="alt-chart">
+                  <div class="alt-row">
+                    <span class="alt-label">Item A</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 70%"></div></div>
+                  </div>
+                  <div class="alt-row">
+                    <span class="alt-label">Item B</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 10%"></div></div>
+                  </div>
+                  <div class="alt-row">
+                    <span class="alt-label">Item C</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 5%"></div></div>
+                  </div>
+                  <div class="alt-row">
+                    <span class="alt-label">Item D</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 5%"></div></div>
+                  </div>
+                  <div class="alt-row">
+                    <span class="alt-label">Item E</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 10%"></div></div>
+                  </div>
+                  <div class="alt-axis">
+                    <span>0%</span><span>16.67%</span><span>33.33%</span><span>50%</span><span>66.67%</span><span>83.33%</span><span>100%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="question-card-band">
+            <div class="band-breadcrumb">
+              <span class="card-index">3</span>
+              <span class="tag tag-id">#609</span>
+              <a class="breadcrumb-item" href="#">Português</a>
+              <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+              <a class="breadcrumb-item" href="#">Interpretação de texto</a>
+            </div>
+          </div>
+          <div class="question-card-body">
+            <div class="question-meta-row">
+              <span><span class="meta-label">Ano:</span> <span class="meta-value">2024</span></span>
+              <span><span class="meta-label">Banca:</span> <span class="meta-value">FGV</span></span>
+              <span><span class="meta-label">Prova:</span> <span class="meta-value">FGV - 2024 - TJ-SP - Analista Judiciário</span></span>
+            </div>
+            <p class="question-preview">Com base no texto apresentado, é correto afirmar que o autor defende a tese de que a linguagem escrita reflete diretamente o pensamento do falante.</p>
+            <div class="card-stats-row">
+              <div class="stats-summary">
+                <span>Acertos: <strong>8</strong></span>
+                <span>Erros: <strong>3</strong></span>
+                <span>Aproveitamento: <strong>72.73%</strong></span>
+              </div>
+              <button type="button" class="btn-more-stats">
+                Mais estatísticas
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+            </div>
+            <div class="stats-detail">
+              <div class="stats-detail-section">
+                <p class="stats-detail-title">Rendimento</p>
+                <div class="stats-legend">
+                  <span class="legend-item"><span class="legend-dot dot-green"></span>Acertos: <strong>8</strong></span>
+                  <span class="legend-item"><span class="legend-dot dot-red"></span>Erros: <strong>3</strong></span>
+                </div>
+                <div class="rendimento-bar">
+                  <div class="rendimento-fill-green" style="width: 72.73%"></div>
+                  <div class="rendimento-fill-red" style="width: 27.27%"></div>
+                </div>
+              </div>
+              <div class="stats-detail-section">
+                <p class="stats-detail-title">Respostas por alternativas</p>
+                <div class="alt-chart">
+                  <div class="alt-row">
+                    <span class="alt-label">Item A</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 72.73%"></div></div>
+                  </div>
+                  <div class="alt-row">
+                    <span class="alt-label">Item B</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 9.09%"></div></div>
+                  </div>
+                  <div class="alt-row">
+                    <span class="alt-label">Item C</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 0%"></div></div>
+                  </div>
+                  <div class="alt-row">
+                    <span class="alt-label">Item D</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 9.09%"></div></div>
+                  </div>
+                  <div class="alt-row">
+                    <span class="alt-label">Item E</span>
+                    <div class="alt-track"><div class="alt-fill" style="width: 9.09%"></div></div>
+                  </div>
+                  <div class="alt-axis">
+                    <span>0%</span><span>16.67%</span><span>33.33%</span><span>50%</span><span>66.67%</span><span>83.33%</span><span>100%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    </div>
+
+  </div>
+
+  <script>
+    // Ocultar/mostrar painel de filtros
+    const btnToggleFilters = document.getElementById('btn-toggle-filters');
+    const filterPanelEl = document.getElementById('filter-panel');
+
+    btnToggleFilters.addEventListener('click', () => {
+      const willOpen = !filterPanelEl.classList.contains('open');
+      filterPanelEl.classList.toggle('open', willOpen);
+      btnToggleFilters.classList.toggle('filters-open', willOpen);
+    });
+
+    // Limpar filtro
+    const btnLimparFiltro = document.getElementById('btn-limpar-filtro');
+    const filterInputs = Array.from(filterPanelEl.querySelectorAll('.filter-grid input[type="checkbox"], .pill-filters input[type="checkbox"]'));
+    const filterBaseline = filterInputs.map((el) => el.checked);
+
+    function hasActiveFilters() {
+      return filterInputs.some((el, i) => el.checked !== filterBaseline[i]);
+    }
+
+    function updateClearFilterVisibility() {
+      btnLimparFiltro.classList.toggle('visible', hasActiveFilters());
+    }
+
+    filterPanelEl.addEventListener('change', (e) => {
+      if (e.target.matches('input[type="checkbox"]')) updateClearFilterVisibility();
+    });
+
+    btnLimparFiltro.addEventListener('click', () => {
+      filterInputs.forEach((el, i) => {
+        if (el.checked !== filterBaseline[i]) {
+          el.checked = filterBaseline[i];
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+      updateClearFilterVisibility();
+    });
+
+    // Filtros multi-seleção (dropdowns de checkbox)
+    document.querySelectorAll('.multiselect').forEach((ms) => {
+      const trigger = ms.querySelector('.select');
+      const label = ms.querySelector('.multiselect-label');
+      const placeholder = label.textContent;
+      ms.dataset.category = placeholder;
+      const panel = ms.querySelector('.multiselect-panel');
+      const searchInput = ms.querySelector('.multiselect-search-input');
+      const options = ms.querySelectorAll('.multiselect-option');
+      const checkboxes = ms.querySelectorAll('input[type="checkbox"]');
+
+      function updateLabel() {
+        const checked = Array.from(checkboxes).filter((cb) => cb.checked);
+        if (checked.length === 0) {
+          label.textContent = placeholder;
+          label.classList.remove('has-value');
+        } else if (checked.length === 1) {
+          label.textContent = checked[0].value;
+          label.classList.add('has-value');
+        } else {
+          label.textContent = `${checked[0].value} +${checked.length - 1}`;
+          label.classList.add('has-value');
+        }
+      }
+
+      function resetSearch() {
+        searchInput.value = '';
+        options.forEach((opt) => { opt.style.display = ''; });
+      }
+
+      function closePanel() {
+        ms.classList.remove('open');
+        resetSearch();
+      }
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = ms.classList.contains('open');
+        document.querySelectorAll('.multiselect.open').forEach((other) => {
+          if (other !== ms) other.classList.remove('open');
+        });
+        if (isOpen) {
+          closePanel();
+        } else {
+          ms.classList.add('open');
+          searchInput.focus();
+        }
+      });
+
+      panel.addEventListener('click', (e) => e.stopPropagation());
+
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim().toLowerCase();
+        options.forEach((opt) => {
+          const matches = opt.textContent.trim().toLowerCase().includes(query);
+          opt.style.display = matches ? '' : 'none';
+        });
+      });
+
+      checkboxes.forEach((cb) => cb.addEventListener('change', () => {
+        updateLabel();
+        renderActiveFilters();
+      }));
+
+      document.addEventListener('click', () => {
+        if (ms.classList.contains('open')) closePanel();
+      });
+    });
+
+    // Filtros em switch (seleção única ou múltipla)
+    document.querySelectorAll('.switch-options').forEach((group) => {
+      const mode = group.dataset.mode;
+      const inputs = group.querySelectorAll('input[type="checkbox"]');
+      inputs.forEach((input) => {
+        input.addEventListener('change', () => {
+          if (mode === 'single' && input.checked) {
+            inputs.forEach((other) => {
+              if (other !== input) other.checked = false;
+            });
+          }
+        });
+      });
+    });
+
+    // Chips "Filtrar por:" com os filtros ativos
+    const activeFiltersEl = document.getElementById('active-filters');
+    const activeFiltersTags = document.getElementById('active-filters-tags');
+
+    function createFilterTag(category, value, onRemove) {
+      const tag = document.createElement('button');
+      tag.type = 'button';
+      tag.className = 'filter-tag';
+      tag.innerHTML = `
+        <svg class="tag-remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+        <span class="tag-category">${category}</span>
+        <span class="tag-value">${value}</span>
+      `;
+      tag.addEventListener('click', onRemove);
+      return tag;
+    }
+
+    function createGroupClearButton(category, onClearAll) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'filter-tag-group-clear';
+      btn.innerHTML = `
+        <svg class="tag-remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+        <span class="tag-category">${category}</span>
+      `;
+      btn.addEventListener('click', onClearAll);
+      return btn;
+    }
+
+    function createValueChip(value, onRemove) {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'filter-tag-value-chip';
+      chip.innerHTML = `
+        <span class="tag-value">${value}</span>
+        <svg class="tag-remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+      `;
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        onRemove();
+      });
+      return chip;
+    }
+
+    function appendFilterGroup(category, items, onClearAll) {
+      if (items.length === 0) return;
+      if (items.length === 1) {
+        activeFiltersTags.appendChild(createFilterTag(category, items[0].value, items[0].onRemove));
+        return;
+      }
+      const group = document.createElement('div');
+      group.className = 'filter-tag-group';
+      group.appendChild(createGroupClearButton(category, onClearAll));
+      items.forEach((item) => group.appendChild(createValueChip(item.value, item.onRemove)));
+      activeFiltersTags.appendChild(group);
+    }
+
+    function removeMultiselectFilter(checkbox) {
+      checkbox.checked = false;
+      checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function clearMultiselectFilter(ms) {
+      const checkboxes = ms.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach((cb) => { cb.checked = false; });
+      checkboxes[0].dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function renderActiveFilters() {
+      activeFiltersTags.innerHTML = '';
+
+      document.querySelectorAll('.multiselect').forEach((ms) => {
+        const category = ms.dataset.category;
+        const checked = Array.from(ms.querySelectorAll('input[type="checkbox"]:checked'));
+        appendFilterGroup(category, checked.map((cb) => ({
+          value: cb.value,
+          onRemove: () => removeMultiselectFilter(cb),
+        })), () => clearMultiselectFilter(ms));
+      });
+
+      activeFiltersEl.classList.toggle('has-tags', activeFiltersTags.children.length > 0);
+    }
+
+    renderActiveFilters();
+
+    // Mais estatísticas (expandir card)
+    document.querySelector('.question-list').addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn-more-stats');
+      if (!btn) return;
+      const detail = btn.closest('.question-card-body').querySelector('.stats-detail');
+      const willOpen = !detail.classList.contains('open');
+      detail.classList.toggle('open', willOpen);
+      btn.classList.toggle('open', willOpen);
+    });
+
+    // Menu mobile
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebarEl = document.querySelector('.sidebar');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+    const sidebarClose = document.getElementById('sidebar-close');
+
+    function openMobileMenu() {
+      sidebarEl.classList.add('open');
+      sidebarBackdrop.classList.add('open');
+    }
+
+    function closeMobileMenu() {
+      sidebarEl.classList.remove('open');
+      sidebarBackdrop.classList.remove('open');
+    }
+
+    mobileMenuToggle.addEventListener('click', openMobileMenu);
+    sidebarClose.addEventListener('click', closeMobileMenu);
+    sidebarBackdrop.addEventListener('click', closeMobileMenu);
+  </script>
+
+</body>
+</html>
