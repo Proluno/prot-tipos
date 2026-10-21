@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Simulados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #181818;
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── NAVBAR ─── */
+  nav {
+    background-color: #181818;
+    height: 72px;
+    width: 100%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 56px;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  .nav-logo {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+  }
+
+  .nav-logo span {
+    position: absolute;
+    border-radius: 2px;
+  }
+
+  .nav-logo .dot-teal {
+    width: 6px;
+    height: 6px;
+    background-color: #35C6C1;
+    top: 0;
+    left: 6px;
+  }
+
+  .nav-logo .dot-pink {
+    width: 6px;
+    height: 6px;
+    background-color: #E85AA0;
+    top: 9px;
+    left: 0;
+  }
+
+  .nav-logo .dot-orange {
+    width: 6px;
+    height: 6px;
+    background-color: #E8761A;
+    border-radius: 50%;
+    top: 10px;
+    left: 20px;
+  }
+
+  .nav-logo .dot-blue {
+    width: 4px;
+    height: 4px;
+    background-color: #4C6FE0;
+    border-radius: 50%;
+    top: 20px;
+    left: 10px;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin: 0 auto;
+  }
+
+  .nav-links a,
+  .nav-links button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .nav-links a.active,
+  .nav-links button.active {
+    font-weight: 700;
+  }
+
+  .nav-links a svg,
+  .nav-links button svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+  }
+
+  .nav-dropdown {
+    position: relative;
+  }
+
+  .nav-dropdown-toggle {
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    padding: 0;
+  }
+
+  .nav-dropdown.open .nav-dropdown-toggle svg {
+    transform: rotate(180deg);
+  }
+
+  .nav-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 20px);
+    left: 0;
+    min-width: 170px;
+    background-color: #232325;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 8px 0;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+    z-index: 50;
+  }
+
+  .nav-dropdown.open .nav-dropdown-menu {
+    display: block;
+  }
+
+  .nav-dropdown-menu a {
+    display: block;
+    padding: 11px 20px;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .nav-dropdown-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .nav-dropdown-menu a.active {
+    color: #E8761A;
+  }
+
+  .nav-user {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .nav-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #181818;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  .nav-user svg {
+    width: 14px;
+    height: 14px;
+    color: #ffffff;
+    flex-shrink: 0;
+  }
+
+  /* ─── MOBILE MENU ─── */
+  .mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 4px;
+    flex-shrink: 0;
+  }
+
+  .mobile-menu-btn svg { width: 24px; height: 24px; }
+
+  .mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 150;
+  }
+
+  .mobile-menu-overlay.open { display: block; }
+
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 82%;
+    max-width: 320px;
+    background-color: #1e1e20;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 151;
+    padding: 20px 20px 24px;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+  }
+
+  .mobile-menu.open { transform: translateX(0); }
+
+  .mobile-menu-close {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    color: #9a9a9f;
+    cursor: pointer;
+    padding: 4px;
+    margin-bottom: 8px;
+  }
+
+  .mobile-menu-close svg { width: 20px; height: 20px; }
+
+  .mobile-menu-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 20px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .mobile-menu-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #181818;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .mobile-menu-name { font-size: 15px; font-weight: 700; color: #ffffff; margin-bottom: 2px; }
+  .mobile-menu-email { font-size: 12.5px; color: #9a9a9f; }
+
+  .mobile-menu-nav { display: flex; flex-direction: column; flex: 1 1 auto; }
+
+  .mobile-menu-section {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #6b6b70;
+    margin: 18px 0 6px;
+  }
+
+  .mobile-menu-section:first-child { margin-top: 0; }
+
+  .mobile-menu-link {
+    display: block;
+    padding: 9px 0;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: #e5e5e5;
+    text-decoration: none;
+  }
+
+  .mobile-menu-link.strong { font-weight: 700; color: #ffffff; font-size: 15.5px; }
+  .mobile-menu-link.sub { padding-left: 4px; color: #c9c9cd; }
+  .mobile-menu-link.active { color: #E8761A; }
+
+  .mobile-menu-logout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #EF4444;
+    font-family: 'Inter', sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    padding: 16px 0 4px;
+    margin-top: 16px;
+    cursor: pointer;
+  }
+
+  .mobile-menu-logout svg { width: 18px; height: 18px; }
+
+  /* ─── HERO BANNER ─── */
+  .hero-banner {
+    position: relative;
+    width: 100%;
+    flex-shrink: 0;
+    line-height: 0;
+  }
+
+  .hero-banner img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .hero-banner::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 35%;
+    background: linear-gradient(to bottom, rgba(24, 24, 24, 0) 0%, #181818 100%);
+    pointer-events: none;
+  }
+
+  /* ─── MAIN CONTENT ─── */
+  main {
+    flex: 1 1 auto;
+    padding: 56px 15% 60px;
+  }
+
+  h1.page-title {
+    font-size: 34px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+    margin-bottom: 18px;
+  }
+
+  .page-subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    color: #9a9a9f;
+    line-height: 1.55;
+    max-width: 1020px;
+    margin-bottom: 40px;
+  }
+
+  /* ─── SIMULADO CARDS ─── */
+  .simulados-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+
+  .simulado-card {
+    display: block;
+    background-color: #1e1e20;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .simulado-card:hover {
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  .simulado-cover {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+
+  .simulado-body {
+    padding: 18px 18px 20px;
+  }
+
+  .simulado-title {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  .simulado-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    margin-top: 14px;
+  }
+
+  .simulado-badge.blue {
+    background-color: rgba(59, 130, 246, 0.15);
+    color: #3B82F6;
+  }
+
+  .simulado-badge.yellow {
+    background-color: rgba(234, 179, 8, 0.15);
+    color: #EAB308;
+  }
+
+  .simulado-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #9a9a9f;
+  }
+
+  .simulado-meta + .simulado-meta {
+    margin-top: 6px;
+  }
+
+  .simulado-meta svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+  }
+
+  .simulado-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  /* ─── CARD MENU (3 PONTOS) ─── */
+  .card-menu {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 5;
+  }
+
+  .card-menu-trigger {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .card-menu-trigger:hover { background-color: rgba(0, 0, 0, 0.7); }
+  .card-menu-trigger svg { width: 16px; height: 16px; }
+
+  .card-menu-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    min-width: 160px;
+    background-color: #232325;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    z-index: 6;
+  }
+
+  .card-menu-dropdown.open { display: block; }
+
+  .card-menu-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 10px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #e5e5e5;
+    cursor: pointer;
+  }
+
+  .card-menu-item:hover { background-color: rgba(255, 255, 255, 0.06); }
+
+  /* ─── TOAST ─── */
+  .app-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background-color: #242426;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 200;
+  }
+
+  .app-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ─── CONFIRM MODAL ─── */
+  .confirm-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 100;
+  }
+
+  .confirm-overlay.open { display: flex; }
+
+  .confirm-box {
+    width: 100%;
+    max-width: 400px;
+    background-color: #1e1e20;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+  }
+
+  .confirm-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background-color: rgba(232, 118, 26, 0.15);
+    color: #E8761A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+  }
+
+  .confirm-icon svg { width: 24px; height: 24px; }
+
+  .confirm-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 10px;
+  }
+
+  .confirm-text {
+    font-size: 14px;
+    color: #9a9a9f;
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+
+  .confirm-text strong { color: #ffffff; font-weight: 600; }
+
+  .confirm-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .confirm-actions button,
+  .confirm-actions a {
+    flex: 1 1 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 11px 16px;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .btn-confirm-cancel {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+  }
+
+  .btn-confirm-cancel:hover { border-color: rgba(255, 255, 255, 0.3); }
+
+  .btn-confirm-start {
+    background-color: #E8761A;
+    border: none;
+    color: #ffffff;
+  }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 640px) {
+    nav { padding: 0 16px; justify-content: center; position: relative; }
+
+    .nav-links, .nav-user { display: none; }
+
+    .mobile-menu-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    main { padding: 32px 20px 40px; }
+
+    h1.page-title { font-size: 26px; }
+    .page-subtitle { font-size: 14.5px; margin-bottom: 28px; }
+
+    .simulados-grid {
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <button class="mobile-menu-btn" onclick="openMobileMenu()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-logo">
+      <span class="dot-teal"></span>
+      <span class="dot-pink"></span>
+      <span class="dot-orange"></span>
+      <span class="dot-blue"></span>
+    </div>
+
+    <ul class="nav-links" style="list-style:none;">
+      <li><a href="../../01-produtos/index.html">Produtos</a></li>
+      <li><a href="../../02-pagamentos/index.html">Pagamentos</a></li>
+      <li class="nav-dropdown" id="questoes-dropdown">
+        <button class="nav-dropdown-toggle active" type="button" onclick="toggleNavDropdown(this)">
+          Questões
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="../01-gratuitas/index.html">Gratuitas</a>
+          <a href="../02-integradas/index.html">Integradas</a>
+          <a href="../03-estatisticas/index.html">Estatísticas</a>
+          <a href="index.html" class="active">Simulados</a>
+        </div>
+      </li>
+      <li>
+        <a href="../../04-ferramentas/index.html">
+          Ferramentas
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-user">
+      <div class="nav-avatar">JT</div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+  <aside class="mobile-menu" id="mobile-menu">
+    <button class="mobile-menu-close" onclick="closeMobileMenu()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <div class="mobile-menu-profile">
+      <div class="mobile-menu-avatar">JT</div>
+      <div>
+        <p class="mobile-menu-name">julia teste</p>
+        <p class="mobile-menu-email">juliatestealuna@gmail.com</p>
+      </div>
+    </div>
+
+    <div class="mobile-menu-nav">
+      <p class="mobile-menu-section">Páginas</p>
+      <a href="../../01-produtos/index.html" class="mobile-menu-link strong">Meus Produtos</a>
+      <a href="../../02-pagamentos/index.html" class="mobile-menu-link">Pagamentos</a>
+
+      <p class="mobile-menu-section">Questões</p>
+      <a href="../01-gratuitas/index.html" class="mobile-menu-link sub">Gratuitas</a>
+      <a href="../02-integradas/index.html" class="mobile-menu-link sub">Integradas</a>
+      <a href="../03-estatisticas/index.html" class="mobile-menu-link sub">Estatísticas</a>
+      <a href="index.html" class="mobile-menu-link sub active">Simulados</a>
+
+      <p class="mobile-menu-section">Ferramentas</p>
+      <a href="../../04-ferramentas/01-mentoreasy/index.html" class="mobile-menu-link sub">Mentoreasy</a>
+      <a href="../../04-ferramentas/02-planejamento-inteligente/index.html" class="mobile-menu-link sub">Planejamento Inteligente</a>
+    </div>
+
+    <button class="mobile-menu-logout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Encerrar sessão
+    </button>
+  </aside>
+
+  <!-- HERO BANNER -->
+  <div class="hero-banner">
+    <img src="../../assets/imagens/banner-aprova-fisco.png" alt="Aprova Fisco - Prof. Sérgio Carvalho" />
+  </div>
+
+  <!-- MAIN -->
+  <main>
+    <h1 class="page-title">Simulados</h1>
+    <p class="page-subtitle">Acesse os seus simulados e acompanhe seu desempenho em cada um deles.</p>
+
+    <div class="simulados-grid">
+      <a class="simulado-card" href="relatorio-simulado.html">
+        <img class="simulado-cover" src="../../assets/imagens/capa-simulado-julia.png" alt="Capa do Simulado da Júlia" />
+        <div class="simulado-body">
+          <h3 class="simulado-title">Simulado da Júlia</h3>
+          <p class="simulado-meta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            Tempo: 04:00
+          </p>
+          <p class="simulado-meta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="6" r="1"/><line x1="8" y1="6" x2="20" y2="6"/><circle cx="4" cy="12" r="1"/><line x1="8" y1="12" x2="20" y2="12"/><circle cx="4" cy="18" r="1"/><line x1="8" y1="18" x2="20" y2="18"/></svg>
+            0 questões
+          </p>
+          <span class="simulado-badge blue">Finalizado</span>
+        </div>
+      </a>
+
+      <div class="simulado-card" style="position: relative;">
+        <div class="card-menu">
+          <button class="card-menu-trigger" onclick="toggleCardMenu(event, this)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>
+          </button>
+          <div class="card-menu-dropdown">
+            <button class="card-menu-item" onclick="menuFazerSimulado(event, 'resolucao-simulado.html', 'Simulado de direito constitucional')">Fazer simulado</button>
+            <button class="card-menu-item" onclick="menuBaixarPdf(event, 'Simulado de direito constitucional')">Baixar PDF</button>
+          </div>
+        </div>
+
+        <a class="simulado-card-link" href="resolucao-simulado.html" onclick="return confirmStart(event, this, 'Simulado de direito constitucional')">
+          <img class="simulado-cover" src="../../assets/imagens/capa-simulado-direito-constitucional.png" alt="Capa do Simulado de Direito Constitucional" />
+          <div class="simulado-body">
+            <h3 class="simulado-title">Simulado de direito constitucional</h3>
+            <p class="simulado-meta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+              Tempo: 05:00
+            </p>
+            <p class="simulado-meta">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="6" r="1"/><line x1="8" y1="6" x2="20" y2="6"/><circle cx="4" cy="12" r="1"/><line x1="8" y1="12" x2="20" y2="12"/><circle cx="4" cy="18" r="1"/><line x1="8" y1="18" x2="20" y2="18"/></svg>
+              100 questões
+            </p>
+            <span class="simulado-badge yellow">A fazer</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- CONFIRM START MODAL -->
+  <div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-box">
+      <div class="confirm-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+      </div>
+      <p class="confirm-title">Iniciar simulado?</p>
+      <p class="confirm-text">Você está prestes a iniciar o <strong id="confirm-nome">simulado</strong>. Assim que confirmar, o cronômetro começa a contar. Deseja continuar?</p>
+      <div class="confirm-actions">
+        <button class="btn-confirm-cancel" onclick="closeConfirmModal()">Cancelar</button>
+        <a class="btn-confirm-start" id="confirm-start-link" href="#">Sim, iniciar</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openMobileMenu() {
+      document.getElementById('mobile-menu').classList.add('open');
+      document.getElementById('mobile-menu-overlay').classList.add('open');
+    }
+
+    function closeMobileMenu() {
+      document.getElementById('mobile-menu').classList.remove('open');
+      document.getElementById('mobile-menu-overlay').classList.remove('open');
+    }
+
+    let pendingHref = null;
+
+    function openStartConfirm(href, nome) {
+      pendingHref = href;
+      document.getElementById('confirm-nome').textContent = nome;
+      document.getElementById('confirm-start-link').setAttribute('href', href);
+      document.getElementById('confirm-overlay').classList.add('open');
+    }
+
+    function confirmStart(event, link, nome) {
+      event.preventDefault();
+      openStartConfirm(link.getAttribute('href'), nome);
+      return false;
+    }
+
+    function closeConfirmModal() {
+      document.getElementById('confirm-overlay').classList.remove('open');
+    }
+
+    document.getElementById('confirm-overlay').addEventListener('click', (e) => {
+      if (e.target.id === 'confirm-overlay') closeConfirmModal();
+    });
+
+    /* ─── MENU DE 3 PONTOS ─── */
+    function toggleCardMenu(event, btn) {
+      event.preventDefault();
+      event.stopPropagation();
+      const dropdown = btn.nextElementSibling;
+      const wasOpen = dropdown.classList.contains('open');
+      document.querySelectorAll('.card-menu-dropdown.open').forEach((el) => el.classList.remove('open'));
+      if (!wasOpen) dropdown.classList.add('open');
+    }
+
+    function closeAllCardMenus() {
+      document.querySelectorAll('.card-menu-dropdown.open').forEach((el) => el.classList.remove('open'));
+    }
+
+    function menuFazerSimulado(event, href, nome) {
+      event.preventDefault();
+      event.stopPropagation();
+      closeAllCardMenus();
+      openStartConfirm(href, nome);
+    }
+
+    function menuBaixarPdf(event, nome) {
+      event.preventDefault();
+      event.stopPropagation();
+      closeAllCardMenus();
+      showToast(`Gerando PDF do ${nome}...`);
+    }
+
+    function showToast(message) {
+      let toast = document.getElementById('app-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'app-toast';
+        toast.className = 'app-toast';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(window.__toastTimeout);
+      window.__toastTimeout = setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    function toggleNavDropdown(btn) {
+      const dropdown = btn.closest('.nav-dropdown');
+      const wasOpen = dropdown.classList.contains('open');
+      document.querySelectorAll('.nav-dropdown.open').forEach((el) => el.classList.remove('open'));
+      if (!wasOpen) dropdown.classList.add('open');
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.nav-dropdown')) {
+        document.querySelectorAll('.nav-dropdown.open').forEach((el) => el.classList.remove('open'));
+      }
+      if (!e.target.closest('.card-menu')) {
+        closeAllCardMenus();
+      }
+    });
+  </script>
+
+</body>
+</html>

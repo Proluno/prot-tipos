@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Relatório Detalhado do Simulado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #181818;
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── NAVBAR ─── */
+  nav {
+    background-color: #181818;
+    height: 72px;
+    width: 100%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 56px;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  .nav-logo { position: relative; width: 26px; height: 26px; flex-shrink: 0; }
+  .nav-logo span { position: absolute; border-radius: 2px; }
+  .nav-logo .dot-teal { width: 6px; height: 6px; background-color: #35C6C1; top: 0; left: 6px; }
+  .nav-logo .dot-pink { width: 6px; height: 6px; background-color: #E85AA0; top: 9px; left: 0; }
+  .nav-logo .dot-orange { width: 6px; height: 6px; background-color: #E8761A; border-radius: 50%; top: 10px; left: 20px; }
+  .nav-logo .dot-blue { width: 4px; height: 4px; background-color: #4C6FE0; border-radius: 50%; top: 20px; left: 10px; }
+
+  .nav-links { display: flex; align-items: center; gap: 40px; margin: 0 auto; }
+
+  .nav-links a,
+  .nav-links button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .nav-links a.active,
+  .nav-links button.active { font-weight: 700; }
+
+  .nav-links a svg,
+  .nav-links button svg { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.15s; }
+
+  .nav-dropdown { position: relative; }
+
+  .nav-dropdown-toggle { background: none; border: none; font-family: 'Inter', sans-serif; padding: 0; }
+  .nav-dropdown.open .nav-dropdown-toggle svg { transform: rotate(180deg); }
+
+  .nav-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 20px);
+    left: 0;
+    min-width: 170px;
+    background-color: #232325;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 8px 0;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+    z-index: 50;
+  }
+
+  .nav-dropdown.open .nav-dropdown-menu { display: block; }
+
+  .nav-dropdown-menu a {
+    display: block;
+    padding: 11px 20px;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: #ffffff;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .nav-dropdown-menu a:hover { background-color: rgba(255, 255, 255, 0.06); }
+  .nav-dropdown-menu a.active { color: #E8761A; }
+
+  .nav-user { display: flex; align-items: center; gap: 6px; flex-shrink: 0; cursor: pointer; }
+
+  .nav-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #181818;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  .nav-user svg { width: 14px; height: 14px; color: #ffffff; flex-shrink: 0; }
+
+  /* ─── MOBILE MENU ─── */
+  .mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 4px;
+    flex-shrink: 0;
+  }
+
+  .mobile-menu-btn svg { width: 24px; height: 24px; }
+
+  .mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 150;
+  }
+
+  .mobile-menu-overlay.open { display: block; }
+
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 82%;
+    max-width: 320px;
+    background-color: #1e1e20;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    z-index: 151;
+    padding: 20px 20px 24px;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+  }
+
+  .mobile-menu.open { transform: translateX(0); }
+
+  .mobile-menu-close {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    color: #9a9a9f;
+    cursor: pointer;
+    padding: 4px;
+    margin-bottom: 8px;
+  }
+
+  .mobile-menu-close svg { width: 20px; height: 20px; }
+
+  .mobile-menu-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 20px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .mobile-menu-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: #181818;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .mobile-menu-name { font-size: 15px; font-weight: 700; color: #ffffff; margin-bottom: 2px; }
+  .mobile-menu-email { font-size: 12.5px; color: #9a9a9f; }
+
+  .mobile-menu-nav { display: flex; flex-direction: column; flex: 1 1 auto; }
+
+  .mobile-menu-section {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #6b6b70;
+    margin: 18px 0 6px;
+  }
+
+  .mobile-menu-section:first-child { margin-top: 0; }
+
+  .mobile-menu-link {
+    display: block;
+    padding: 9px 0;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: #e5e5e5;
+    text-decoration: none;
+  }
+
+  .mobile-menu-link.strong { font-weight: 700; color: #ffffff; font-size: 15.5px; }
+  .mobile-menu-link.sub { padding-left: 4px; color: #c9c9cd; }
+  .mobile-menu-link.active { color: #E8761A; }
+
+  .mobile-menu-logout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #EF4444;
+    font-family: 'Inter', sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    padding: 16px 0 4px;
+    margin-top: 16px;
+    cursor: pointer;
+  }
+
+  .mobile-menu-logout svg { width: 18px; height: 18px; }
+
+  /* ─── MAIN CONTENT ─── */
+  main { flex: 1 1 auto; padding: 56px 15% 60px; }
+
+  .page-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  h1.page-title {
+    font-size: 34px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+  }
+
+  .btn-voltar {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .btn-voltar:hover { border-color: rgba(255, 255, 255, 0.3); }
+  .btn-voltar svg { width: 15px; height: 15px; }
+
+  .page-subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    color: #9a9a9f;
+    line-height: 1.55;
+    max-width: 1020px;
+    margin-bottom: 40px;
+  }
+
+  .page-subtitle strong { color: #ffffff; font-weight: 600; }
+
+  /* ─── CARDS ─── */
+  .cards { display: flex; flex-direction: column; gap: 24px; }
+
+  .card {
+    background-color: #1e1e20;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+    padding: 28px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .card-title { font-size: 18px; font-weight: 700; color: #ffffff; }
+
+  /* ─── STATS ─── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 18px;
+  }
+
+  .stat-card { background-color: #242426; border-radius: 12px; padding: 20px; }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .stat-icon svg { width: 20px; height: 20px; }
+
+  .stat-icon.orange { background-color: rgba(232, 118, 26, 0.15); color: #E8761A; }
+  .stat-icon.green { background-color: rgba(34, 197, 94, 0.15); color: #22C55E; }
+  .stat-icon.red { background-color: rgba(239, 68, 68, 0.15); color: #EF4444; }
+  .stat-icon.blue { background-color: rgba(59, 130, 246, 0.15); color: #3B82F6; }
+  .stat-icon.gray { background-color: rgba(255, 255, 255, 0.08); color: #9a9a9f; }
+
+  .stat-value { font-size: 26px; font-weight: 700; color: #ffffff; margin-bottom: 4px; }
+  .stat-label { display: flex; align-items: center; gap: 5px; font-size: 13.5px; font-weight: 400; color: #9a9a9f; }
+
+  /* ─── RANKING ─── */
+  .ranking-podium {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .podium-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 160px;
+  }
+
+  .podium-crown {
+    margin-bottom: 6px;
+    color: #EAB308;
+  }
+
+  .podium-crown svg { width: 22px; height: 22px; }
+
+  .podium-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: #242426;
+    border: 3px solid #3a3a3c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #cfcfcf;
+    margin-bottom: 12px;
+  }
+
+  .podium-col.first .podium-avatar {
+    width: 84px;
+    height: 84px;
+    font-size: 20px;
+    border-color: #EAB308;
+    box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.15);
+  }
+
+  .podium-col.second .podium-avatar { border-color: #9a9a9f; }
+  .podium-col.third .podium-avatar { border-color: #C17A4D; }
+
+  .podium-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: center;
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+
+  .podium-xp {
+    font-size: 14px;
+    font-weight: 700;
+    color: #22C55E;
+    margin-bottom: 14px;
+  }
+
+  .podium-bar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px 10px 0 0;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  .podium-col.first .podium-bar {
+    height: 88px;
+    background-color: rgba(234, 179, 8, 0.12);
+    border: 1.5px solid rgba(234, 179, 8, 0.4);
+    border-bottom: none;
+    color: #EAB308;
+  }
+
+  .podium-col.second .podium-bar {
+    height: 60px;
+    background-color: #242426;
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-bottom: none;
+    color: #9a9a9f;
+  }
+
+  .podium-col.third .podium-bar {
+    height: 46px;
+    background-color: rgba(193, 122, 77, 0.12);
+    border: 1.5px solid rgba(193, 122, 77, 0.4);
+    border-bottom: none;
+    color: #C17A4D;
+  }
+
+  .ranking-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .ranking-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background-color: #242426;
+    border-radius: 10px;
+    padding: 10px 16px;
+  }
+
+  .ranking-position {
+    font-size: 13px;
+    font-weight: 700;
+    color: #9a9a9f;
+    width: 26px;
+    flex-shrink: 0;
+  }
+
+  .rank-avatar-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #34343a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #cfcfcf;
+    flex-shrink: 0;
+  }
+
+  .ranking-name {
+    flex: 1 1 auto;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ranking-xp {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    flex-shrink: 0;
+  }
+
+  .sua-posicao {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid #2c2c2e;
+  }
+
+  .sua-posicao-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #9a9a9f;
+    margin-bottom: 10px;
+  }
+
+  .ranking-row.highlight {
+    background-color: rgba(232, 118, 26, 0.08);
+    border: 1.5px solid rgba(232, 118, 26, 0.4);
+  }
+
+  .ranking-row.highlight .ranking-position { color: #E8761A; }
+
+  /* ─── GABARITO GRID ─── */
+  .gabarito-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+  }
+
+  .gabarito-cell {
+    background-color: #242426;
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+
+  .cell-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: #9a9a9f;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 6px;
+  }
+
+  .id-copy {
+    cursor: pointer;
+  }
+
+  .id-copy:hover {
+    color: #E8761A;
+    text-decoration: underline;
+  }
+
+  .id-copy.copied {
+    color: #22C55E;
+    text-decoration: none;
+  }
+
+  .cell-answer {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #e5e5e5;
+    white-space: nowrap;
+  }
+
+  .cell-answer svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .cell-answer .dash { color: #6d6d72; font-weight: 500; }
+  .cell-answer .correta-letra { color: #6d6d72; font-weight: 500; }
+
+  .gabarito-cell.correta { border-color: rgba(34, 197, 94, 0.45); background-color: rgba(34, 197, 94, 0.08); }
+  .gabarito-cell.correta .cell-answer { color: #22C55E; }
+  .gabarito-cell.correta .cell-answer svg { color: #22C55E; }
+
+  .gabarito-cell.errada { border-color: rgba(239, 68, 68, 0.45); background-color: rgba(239, 68, 68, 0.08); }
+  .gabarito-cell.errada .cell-answer { color: #EF4444; }
+  .gabarito-cell.errada .cell-answer svg { color: #EF4444; }
+
+  .gabarito-cell.nao-respondida .cell-answer { color: #6d6d72; }
+
+  .gabarito-legend {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid #2c2c2e;
+  }
+
+  .legend-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .legend-chip svg { width: 12px; height: 12px; }
+
+  .legend-chip.correta { background-color: rgba(34, 197, 94, 0.15); color: #22C55E; }
+  .legend-chip.errada { background-color: rgba(239, 68, 68, 0.15); color: #EF4444; }
+  .legend-chip.nao-respondida { background-color: rgba(255, 255, 255, 0.08); color: #9a9a9f; }
+
+  .gabarito-cell { cursor: pointer; transition: border-color 0.15s; }
+  .gabarito-cell:hover { border-color: rgba(255, 255, 255, 0.25); }
+
+  .card-subtitle {
+    font-size: 13.5px;
+    font-weight: 400;
+    color: #9a9a9f;
+    margin-top: -14px;
+    margin-bottom: 24px;
+  }
+
+  /* ─── QUESTION MODAL ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 100;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal-box {
+    width: 100%;
+    max-width: 720px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #1e1e20;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid #2c2c2e;
+    padding: 0 20px;
+    flex-shrink: 0;
+  }
+
+  .modal-tabs {
+    display: flex;
+    gap: 28px;
+    overflow-x: auto;
+  }
+
+  .modal-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #9a9a9f;
+    padding: 16px 0;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .modal-tab svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  .modal-tab.active { color: #E8761A; border-bottom-color: #E8761A; }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: #9a9a9f;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 8px;
+  }
+
+  .modal-close:hover { color: #ffffff; }
+  .modal-close svg { width: 18px; height: 18px; }
+
+  .modal-body { padding: 24px; overflow-y: auto; }
+
+  .modal-pane { display: none; }
+  .modal-pane.active { display: block; }
+
+  /* Comentários */
+  .comment-item {
+    background-color: #242426;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+
+  .comment-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+
+  .comment-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #E8761A;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .comment-avatar.professor { background-color: #3B82F6; }
+
+  .comment-item.from-professor {
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    background-color: rgba(59, 130, 246, 0.06);
+  }
+
+  .comment-badge {
+    background-color: rgba(59, 130, 246, 0.15);
+    color: #3B82F6;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+
+  .comment-name { font-size: 14px; font-weight: 700; color: #ffffff; }
+  .comment-time { font-size: 12px; color: #6d6d72; margin-left: 6px; font-weight: 400; }
+
+  .comment-text { font-size: 14px; color: #e5e5e5; line-height: 1.5; margin-bottom: 10px; }
+
+  .comment-actions { display: flex; align-items: center; gap: 18px; }
+
+  .comment-actions button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #9a9a9f;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .comment-actions button svg { width: 13px; height: 13px; }
+  .comment-actions button:hover { color: #ffffff; }
+  .comment-actions button.danger { color: #EF4444; }
+  .comment-actions button.danger:hover { color: #F87171; }
+
+  .comment-empty {
+    font-size: 14px;
+    color: #6d6d72;
+    text-align: center;
+    padding: 24px 0;
+  }
+
+  .comment-form { display: flex; gap: 12px; align-items: flex-start; }
+
+  .comment-form textarea {
+    flex: 1 1 auto;
+    background-color: #242426;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #ffffff;
+    resize: vertical;
+    min-height: 44px;
+  }
+
+  .comment-form textarea::placeholder { color: #6d6d72; }
+
+  .comment-form-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+
+  .btn-comentar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ffffff;
+    background-color: #E8761A;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    cursor: pointer;
+  }
+
+  .btn-comentar:disabled { background-color: rgba(232, 118, 26, 0.3); color: rgba(255,255,255,0.55); cursor: not-allowed; }
+  .btn-comentar svg { width: 14px; height: 14px; }
+
+  /* Professor */
+  .professor-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .professor-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #3B82F6;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .professor-name { font-size: 14px; font-weight: 700; color: #ffffff; }
+  .professor-role { font-size: 12px; color: #9a9a9f; }
+
+  .professor-line {
+    font-size: 14.5px;
+    color: #cfcfcf;
+    line-height: 1.7;
+    padding: 4px 0;
+  }
+
+  .professor-line.gabarito { color: #22C55E; font-weight: 700; }
+
+  .info-icon { display: inline-flex; color: #6d6d72; cursor: help; }
+  .info-icon svg { width: 13px; height: 13px; }
+
+  /* Aula */
+  .aula-title { font-size: 15px; font-weight: 700; color: #ffffff; margin-bottom: 16px; }
+
+  .aula-player {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #242426, #17171a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .aula-play-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.12);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    cursor: pointer;
+  }
+
+  .aula-play-btn svg { width: 22px; height: 22px; margin-left: 3px; }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 640px) {
+    nav { padding: 0 16px; justify-content: center; position: relative; }
+
+    .nav-links, .nav-user { display: none; }
+
+    .mobile-menu-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    main { padding: 32px 20px 40px; }
+
+    h1.page-title { font-size: 24px; }
+    .page-subtitle { font-size: 14.5px; margin-bottom: 28px; }
+
+    .card { padding: 18px; }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .ranking-podium {
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .podium-col { width: 96px; }
+
+    .podium-avatar { width: 48px; height: 48px; font-size: 13px; margin-bottom: 8px; }
+    .podium-col.first .podium-avatar { width: 62px; height: 62px; font-size: 15px; }
+
+    .podium-name { font-size: 11.5px; }
+    .podium-xp { font-size: 12px; margin-bottom: 10px; }
+
+    .podium-col.first .podium-bar { height: 60px; font-size: 20px; }
+    .podium-col.second .podium-bar { height: 42px; font-size: 20px; }
+    .podium-col.third .podium-bar { height: 32px; font-size: 20px; }
+
+    .ranking-name { font-size: 13px; }
+    .ranking-xp { font-size: 13px; }
+
+    .modal-header { padding: 0 12px; gap: 8px; }
+    .modal-tabs { gap: 14px; }
+    .modal-tab { font-size: 12px; gap: 5px; }
+    .modal-tab svg { width: 14px; height: 14px; }
+    .modal-close { padding: 6px; }
+    .modal-body { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <button class="mobile-menu-btn" onclick="openMobileMenu()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="nav-logo">
+      <span class="dot-teal"></span>
+      <span class="dot-pink"></span>
+      <span class="dot-orange"></span>
+      <span class="dot-blue"></span>
+    </div>
+
+    <ul class="nav-links" style="list-style:none;">
+      <li><a href="../../01-produtos/index.html">Produtos</a></li>
+      <li><a href="../../02-pagamentos/index.html">Pagamentos</a></li>
+      <li class="nav-dropdown" id="questoes-dropdown">
+        <button class="nav-dropdown-toggle active" type="button" onclick="toggleNavDropdown(this)">
+          Questões
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a href="../01-gratuitas/index.html">Gratuitas</a>
+          <a href="../02-integradas/index.html">Integradas</a>
+          <a href="../03-estatisticas/index.html">Estatísticas</a>
+          <a href="index.html" class="active">Simulados</a>
+        </div>
+      </li>
+      <li>
+        <a href="../../04-ferramentas/index.html">
+          Ferramentas
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-user">
+      <div class="nav-avatar">JT</div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+  <aside class="mobile-menu" id="mobile-menu">
+    <button class="mobile-menu-close" onclick="closeMobileMenu()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <div class="mobile-menu-profile">
+      <div class="mobile-menu-avatar">JT</div>
+      <div>
+        <p class="mobile-menu-name">julia teste</p>
+        <p class="mobile-menu-email">juliatestealuna@gmail.com</p>
+      </div>
+    </div>
+
+    <div class="mobile-menu-nav">
+      <p class="mobile-menu-section">Páginas</p>
+      <a href="../../01-produtos/index.html" class="mobile-menu-link strong">Meus Produtos</a>
+      <a href="../../02-pagamentos/index.html" class="mobile-menu-link">Pagamentos</a>
+
+      <p class="mobile-menu-section">Questões</p>
+      <a href="../01-gratuitas/index.html" class="mobile-menu-link sub">Gratuitas</a>
+      <a href="../02-integradas/index.html" class="mobile-menu-link sub">Integradas</a>
+      <a href="../03-estatisticas/index.html" class="mobile-menu-link sub">Estatísticas</a>
+      <a href="index.html" class="mobile-menu-link sub active">Simulados</a>
+
+      <p class="mobile-menu-section">Ferramentas</p>
+      <a href="../../04-ferramentas/01-mentoreasy/index.html" class="mobile-menu-link sub">Mentoreasy</a>
+      <a href="../../04-ferramentas/02-planejamento-inteligente/index.html" class="mobile-menu-link sub">Planejamento Inteligente</a>
+    </div>
+
+    <button class="mobile-menu-logout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Encerrar sessão
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+    <div class="page-header-row">
+      <h1 class="page-title">Relatórios Detalhados do Simulado</h1>
+      <a class="btn-voltar" href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Voltar aos simulados
+      </a>
+    </div>
+    <p class="page-subtitle" id="page-subtitle">Resultado do <strong>Simulado</strong>.</p>
+
+    <div class="cards">
+
+      <!-- CARD: DESEMPENHO -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Desempenho</span>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon orange">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-5Z"/><path d="M14 3v6h6"/></svg>
+            </div>
+            <div class="stat-value" id="stat-respondidas">—</div>
+            <div class="stat-label">Questões respondidas</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            </div>
+            <div class="stat-value" id="stat-corretas">—</div>
+            <div class="stat-label">Questões certas</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon red">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </div>
+            <div class="stat-value" id="stat-erradas">—</div>
+            <div class="stat-label">Questões erradas</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon gray">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            </div>
+            <div class="stat-value" id="stat-nao-respondidas">—</div>
+            <div class="stat-label">Não respondida</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            </div>
+            <div class="stat-value" id="stat-taxa">—</div>
+            <div class="stat-label">
+              Taxa de acertos
+              <span class="info-icon" title="Calculada sobre o total de questões do simulado: as que ficaram sem resposta entram na conta como erradas.">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="16" x2="12" y2="11"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD: GABARITO -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Gabarito por questão</span>
+        </div>
+        <p class="card-subtitle">Clique em uma questão para ver comentários, a explicação do professor, estatísticas e a aula relacionada.</p>
+
+        <div class="gabarito-grid" id="report-list"></div>
+
+        <div class="gabarito-legend">
+          <span class="legend-chip correta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            Acertou
+          </span>
+          <span class="legend-chip errada">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            Errou
+          </span>
+          <span class="legend-chip nao-respondida">Não respondida</span>
+        </div>
+      </div>
+
+      <!-- CARD: RANKING -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Ranking</span>
+        </div>
+
+        <div class="ranking-podium">
+          <div class="podium-col second">
+            <div class="podium-avatar">KA</div>
+            <div class="podium-name">Kaique Abreu</div>
+            <div class="podium-xp">98%</div>
+            <div class="podium-bar">2</div>
+          </div>
+
+          <div class="podium-col first">
+            <div class="podium-crown">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.5 18h19l1.2-9.5-5.7 4-5-7-5 7-5.7-4L2.5 18Z"/></svg>
+            </div>
+            <div class="podium-avatar">DB</div>
+            <div class="podium-name">Douglas da Silva Barcelos</div>
+            <div class="podium-xp">100%</div>
+            <div class="podium-bar">1</div>
+          </div>
+
+          <div class="podium-col third">
+            <div class="podium-avatar">HF</div>
+            <div class="podium-name">Heithor Freire</div>
+            <div class="podium-xp">95%</div>
+            <div class="podium-bar">3</div>
+          </div>
+        </div>
+
+        <div class="ranking-list">
+          <div class="ranking-row">
+            <span class="ranking-position">4°</span>
+            <span class="rank-avatar-sm">BS</span>
+            <span class="ranking-name">Bernardo Soledade</span>
+            <span class="ranking-xp">92%</span>
+          </div>
+          <div class="ranking-row">
+            <span class="ranking-position">5°</span>
+            <span class="rank-avatar-sm">RA</span>
+            <span class="ranking-name">Rodrigo Almeida de Oliveira</span>
+            <span class="ranking-xp">89%</span>
+          </div>
+          <div class="ranking-row">
+            <span class="ranking-position">6°</span>
+            <span class="rank-avatar-sm">LS</span>
+            <span class="ranking-name">Leonardo Swiatovy</span>
+            <span class="ranking-xp">86%</span>
+          </div>
+          <div class="ranking-row">
+            <span class="ranking-position">7°</span>
+            <span class="rank-avatar-sm">FM</span>
+            <span class="ranking-name">Felipe Marques</span>
+            <span class="ranking-xp">84%</span>
+          </div>
+          <div class="ranking-row">
+            <span class="ranking-position">8°</span>
+            <span class="rank-avatar-sm">LF</span>
+            <span class="ranking-name">Luiz Fernando Quintas Teixeira</span>
+            <span class="ranking-xp">81%</span>
+          </div>
+          <div class="ranking-row">
+            <span class="ranking-position">9°</span>
+            <span class="rank-avatar-sm">BF</span>
+            <span class="ranking-name">Bruno Fortino Petroveski</span>
+            <span class="ranking-xp">79%</span>
+          </div>
+          <div class="ranking-row">
+            <span class="ranking-position">10°</span>
+            <span class="rank-avatar-sm">MJ</span>
+            <span class="ranking-name">Marcos Jesus</span>
+            <span class="ranking-xp">77%</span>
+          </div>
+        </div>
+
+        <div class="sua-posicao">
+          <span class="sua-posicao-label">Sua posição</span>
+          <div class="ranking-row highlight">
+            <span class="ranking-position" id="sua-posicao-rank">—</span>
+            <span class="rank-avatar-sm">JT</span>
+            <span class="ranking-name">Você</span>
+            <span class="ranking-xp" id="sua-posicao-xp">—</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- QUESTION MODAL -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-tabs">
+          <button class="modal-tab" data-tab="comentarios" onclick="switchModalTab('comentarios')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <span id="tab-label-comentarios">Comentários (0)</span>
+          </button>
+          <button class="modal-tab" data-tab="professor" onclick="switchModalTab('professor')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5Z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            Professor
+          </button>
+          <button class="modal-tab" data-tab="aula" onclick="switchModalTab('aula')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+            Aula (1)
+          </button>
+        </div>
+        <button class="modal-close" onclick="closeQuestionModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- COMENTÁRIOS -->
+        <div class="modal-pane" data-pane="comentarios">
+          <div id="comment-list"></div>
+          <div class="comment-form">
+            <div class="comment-avatar">JT</div>
+            <div style="flex:1 1 auto;">
+              <textarea id="comment-input" placeholder="Adicione um comentário..." oninput="onCommentInput()"></textarea>
+              <div class="comment-form-footer">
+                <button class="btn-comentar" id="btn-comentar" disabled onclick="submitComment()">
+                  Comentar
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFESSOR -->
+        <div class="modal-pane" data-pane="professor" id="pane-professor"></div>
+
+        <!-- AULA -->
+        <div class="modal-pane" data-pane="aula" id="pane-aula"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openMobileMenu() {
+      document.getElementById('mobile-menu').classList.add('open');
+      document.getElementById('mobile-menu-overlay').classList.add('open');
+    }
+
+    function closeMobileMenu() {
+      document.getElementById('mobile-menu').classList.remove('open');
+      document.getElementById('mobile-menu-overlay').classList.remove('open');
+    }
+
+    function toggleNavDropdown(btn) {
+      const dropdown = btn.closest('.nav-dropdown');
+      const wasOpen = dropdown.classList.contains('open');
+      document.querySelectorAll('.nav-dropdown.open').forEach((el) => el.classList.remove('open'));
+      if (!wasOpen) dropdown.classList.add('open');
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.nav-dropdown')) {
+        document.querySelectorAll('.nav-dropdown.open').forEach((el) => el.classList.remove('open'));
+      }
+    });
+
+    function formatTime(s) {
+      const h = Math.floor(s / 3600).toString().padStart(2, '0');
+      const m = Math.floor((s % 3600) / 60).toString().padStart(2, '0');
+      const sec = (s % 60).toString().padStart(2, '0');
+      return `${h}:${m}:${sec}`;
+    }
+
+    const STATUS_ICON = {
+      correta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+      errada: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+      'nao-respondida': ''
+    };
+
+    const raw = localStorage.getItem('resultadoSimulado');
+    const resultado = raw ? JSON.parse(raw) : null;
+
+    if (resultado) {
+      document.getElementById('page-subtitle').innerHTML =
+        `Resultado do <strong>${resultado.nome}</strong>, tempo total de ${formatTime(resultado.tempoSegundos)}.`;
+
+      const naoRespondidas = resultado.total - resultado.respondidas;
+
+      document.getElementById('stat-respondidas').textContent = `${resultado.respondidas}/${resultado.total}`;
+      document.getElementById('stat-corretas').textContent = resultado.corretas;
+      document.getElementById('stat-erradas').textContent = resultado.erradas;
+      document.getElementById('stat-nao-respondidas').textContent = naoRespondidas;
+
+      const taxa = resultado.total > 0 ? Math.round((resultado.corretas / resultado.total) * 100) : 0;
+      document.getElementById('stat-taxa').textContent = `${taxa}%`;
+
+      document.getElementById('sua-posicao-xp').textContent = `${taxa}%`;
+      document.getElementById('sua-posicao-rank').textContent = '1.842°';
+
+      document.getElementById('report-list').innerHTML = resultado.detalhe.map((q, i) => `
+        <div class="gabarito-cell ${q.status}" onclick="openQuestionModal(${i})">
+          <div class="cell-header">${q.numero}: <span class="id-copy" title="Clique para copiar o ID" onclick="copyQuestionId(event, ${q.id}, this)">ID${q.id}</span></div>
+          <div class="cell-answer">
+            ${q.selecionada ? q.selecionada : '<span class="dash">---</span>'}
+            ${STATUS_ICON[q.status]}
+            <span class="correta-letra">(${q.correta})</span>
+          </div>
+        </div>
+      `).join('');
+    } else {
+      document.getElementById('report-list').innerHTML =
+        '<p style="color:#9a9a9f; font-size: 14.5px; padding: 8px 4px;">Nenhum resultado encontrado. Finalize um simulado para ver o relatório aqui.</p>';
+    }
+
+    function copyQuestionId(event, id, el) {
+      event.stopPropagation();
+      const text = String(id);
+      const original = el.textContent;
+      const onCopied = () => {
+        el.textContent = 'Copiado!';
+        el.classList.add('copied');
+        setTimeout(() => {
+          el.textContent = original;
+          el.classList.remove('copied');
+        }, 1000);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(onCopied).catch(() => fallbackCopy(text, onCopied));
+      } else {
+        fallbackCopy(text, onCopied);
+      }
+    }
+
+    function fallbackCopy(text, callback) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      callback();
+    }
+
+    /* ─── QUESTION MODAL ─── */
+    function letterFor(i) { return String.fromCharCode(65 + i); }
+
+    const commentsStore = {};
+    let currentQuestionIndex = null;
+
+    function getCurrentQuestion() {
+      return resultado.detalhe[currentQuestionIndex];
+    }
+
+    function openQuestionModal(index) {
+      currentQuestionIndex = index;
+      document.getElementById('modal-overlay').classList.add('open');
+      switchModalTab('comentarios');
+    }
+
+    function closeQuestionModal() {
+      document.getElementById('modal-overlay').classList.remove('open');
+    }
+
+    document.getElementById('modal-overlay').addEventListener('click', (e) => {
+      if (e.target.id === 'modal-overlay') closeQuestionModal();
+    });
+
+    function switchModalTab(tab) {
+      document.querySelectorAll('.modal-tab').forEach((btn) => btn.classList.toggle('active', btn.dataset.tab === tab));
+      document.querySelectorAll('.modal-pane').forEach((p) => p.classList.toggle('active', p.dataset.pane === tab));
+
+      const activeBtn = document.querySelector(`.modal-tab[data-tab="${tab}"]`);
+      if (activeBtn) activeBtn.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+
+      if (tab === 'comentarios') renderComments();
+      if (tab === 'professor') renderProfessor();
+      if (tab === 'aula') renderAula();
+    }
+
+    const TESTIMONIAL_POOL = [
+      { name: 'Marina Costa', avatar: 'MC', time: '2 dias atrás', text: 'Questão excelente para fixar o conteúdo! O comentário do professor deixou tudo muito claro.' },
+      { name: 'Thiago Ramalho', avatar: 'TR', time: '5 dias atrás', text: 'Caiu praticamente igual na minha prova. Muito boa pra treinar esse assunto, ajudou demais.' },
+      { name: 'Aline Ferreira', avatar: 'AF', time: '1 semana atrás', text: 'Depois de errar essa questão duas vezes, finalmente entendi o raciocínio da banca. Excelente pra revisão!' }
+    ];
+
+    const PROFESSOR_COMMENT_Q1 = {
+      name: 'Prof. Ricardo Almeida',
+      avatar: 'RA',
+      time: '3 dias atrás',
+      isProfessor: true,
+      text: 'Essa é uma das questões que mais gera dúvida em sala! O segredo é lembrar que a soberania é um FUNDAMENTO da República (art. 1º), e não um objetivo ou princípio da ordem econômica, não confundam os artigos. Qualquer dúvida, comentem aqui que eu respondo.'
+    };
+
+    function seedComments(q) {
+      if (!commentsStore[q.numero]) {
+        commentsStore[q.numero] = TESTIMONIAL_POOL.map((c) => ({ ...c }));
+      }
+    }
+
+    function renderComments() {
+      const q = getCurrentQuestion();
+      seedComments(q);
+      const list = commentsStore[q.numero] || [];
+      document.getElementById('tab-label-comentarios').textContent = `Comentários (${list.length})`;
+
+      const container = document.getElementById('comment-list');
+      container.innerHTML = list.length === 0
+        ? '<p class="comment-empty">Nenhum comentário ainda. Seja o primeiro a comentar!</p>'
+        : list.map((c, i) => `
+          <div class="comment-item ${c.isProfessor ? 'from-professor' : ''}">
+            <div class="comment-header">
+              <div class="comment-avatar ${c.isProfessor ? 'professor' : ''}">${c.avatar}</div>
+              <span class="comment-name">${c.name}</span>
+              ${c.isProfessor ? '<span class="comment-badge">Professor</span>' : ''}
+              <span class="comment-time">${c.time}</span>
+            </div>
+            <p class="comment-text">${c.text}</p>
+            <div class="comment-actions">
+              <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14Z"/></svg>Útil</button>
+              <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17l-5-5 5-5M4 12h11a4 4 0 0 1 4 4v1"/></svg>Responder</button>
+              <button class="danger" onclick="deleteComment(${i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>Excluir</button>
+            </div>
+          </div>
+        `).join('');
+
+      document.getElementById('comment-input').value = '';
+      document.getElementById('btn-comentar').disabled = true;
+    }
+
+    function onCommentInput() {
+      const val = document.getElementById('comment-input').value.trim();
+      document.getElementById('btn-comentar').disabled = val.length === 0;
+    }
+
+    function submitComment() {
+      const input = document.getElementById('comment-input');
+      const text = input.value.trim();
+      if (!text) return;
+      const q = getCurrentQuestion();
+      if (!commentsStore[q.numero]) commentsStore[q.numero] = [];
+      commentsStore[q.numero].push({ name: 'Você', avatar: 'JT', time: 'agora', text });
+      renderComments();
+    }
+
+    function deleteComment(i) {
+      const q = getCurrentQuestion();
+      commentsStore[q.numero].splice(i, 1);
+      renderComments();
+    }
+
+    function renderProfessor() {
+      const q = getCurrentQuestion();
+      if (!q.alternativas) {
+        document.getElementById('pane-professor').innerHTML =
+          '<p class="professor-line">Refaça o simulado para ver o comentário do professor desta questão.</p>';
+        return;
+      }
+      const lines = q.alternativas.map((alt, i) => {
+        const isCorrect = i === q.correctIndex;
+        return `<p class="professor-line ${isCorrect ? 'gabarito' : ''}">${letterFor(i).toLowerCase()}) ${alt}${isCorrect ? ', alternativa correta.' : ''}</p>`;
+      }).join('');
+
+      const extraTip = q.id === 501 ? `
+        <div class="comment-item from-professor" style="margin-top:20px;">
+          <div class="comment-header">
+            <div class="comment-avatar professor">${PROFESSOR_COMMENT_Q1.avatar}</div>
+            <span class="comment-name">${PROFESSOR_COMMENT_Q1.name}</span>
+            <span class="comment-badge">Professor</span>
+            <span class="comment-time">${PROFESSOR_COMMENT_Q1.time}</span>
+          </div>
+          <p class="comment-text">${PROFESSOR_COMMENT_Q1.text}</p>
+        </div>
+      ` : '';
+
+      document.getElementById('pane-professor').innerHTML = `
+        <div class="professor-header">
+          <div class="professor-avatar">RA</div>
+          <div>
+            <p class="professor-name">Prof. Ricardo Almeida</p>
+            <p class="professor-role">Direito Constitucional</p>
+          </div>
+        </div>
+        <p class="professor-line" style="margin-bottom:14px;">
+          Essa questão exige atenção ao texto constitucional sobre "${q.assunto}". A alternativa correta é a
+          <strong style="color:#22C55E;">${q.correta}</strong> porque reproduz fielmente o que dispõe a Constituição
+          sobre o tema, sem extrapolações ou interpretações equivocadas. As demais alternativas trazem afirmações que,
+          embora pareçam plausíveis à primeira vista, contrariam o texto constitucional ou generalizam indevidamente
+          o conteúdo cobrado. Fiquem atentos a esse tipo de pegadinha, a banca costuma testar justamente esses detalhes.
+        </p>
+        ${lines}
+        ${extraTip}
+      `;
+    }
+
+    function renderAula() {
+      const q = getCurrentQuestion();
+      const titulo = q.materia ? `${q.materia} - ${q.assunto} - Aula 01.mp4` : `${q.assunto} - Aula 01.mp4`;
+      document.getElementById('pane-aula').innerHTML = `
+        <p class="aula-title">${titulo}</p>
+        <div class="aula-player">
+          <div class="aula-play-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+          </div>
+        </div>
+      `;
+    }
+  </script>
+
+</body>
+</html>

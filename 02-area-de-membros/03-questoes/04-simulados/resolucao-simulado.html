@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Resolução do Simulado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #181818;
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ─── HEADER ─── */
+  header.focus-header {
+    background-color: #181818;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    width: 100%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 15%;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  .focus-header-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  /* ─── MAIN CONTENT ─── */
+  main {
+    flex: 1 1 auto;
+    padding: 32px 15% 60px;
+  }
+
+  /* ─── SESSION BAR ─── */
+  .session-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .question-progress {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .question-progress span {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #9a9a9f;
+  }
+
+  .progress-nav-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid #3a3a3c;
+    background: none;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .progress-nav-btn svg { width: 15px; height: 15px; }
+
+  .progress-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .session-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .pill-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #1e1e20;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 9px 16px;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .pill-control:hover { border-color: rgba(255, 255, 255, 0.2); }
+  .pill-control svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .pill-control.timer { cursor: default; color: #ffffff; }
+  .pill-control.timer svg { color: #E8761A; }
+
+  .btn-finalizar {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    background-color: #E8761A;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 22px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* ─── QUESTION MAP ─── */
+  .map-panel {
+    display: none;
+    background-color: #1e1e20;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+
+  .map-panel.open { display: block; }
+
+  .map-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .map-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .map-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+
+  .map-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    aspect-ratio: 1 / 1;
+    background-color: #242426;
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+  }
+
+  .map-cell:hover { border-color: rgba(255, 255, 255, 0.2); }
+
+  .map-cell .cell-header {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #9a9a9f;
+  }
+
+  .map-cell .cell-answer {
+    font-size: 11px;
+    font-weight: 700;
+    color: #6d6d72;
+  }
+
+  .map-cell.answered {
+    border-color: rgba(34, 197, 94, 0.45);
+    background-color: rgba(34, 197, 94, 0.08);
+  }
+
+  .map-cell.answered .cell-answer { color: #22C55E; }
+
+  .map-cell.current { border-color: #E8761A; }
+
+  .map-legend {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .legend-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .legend-chip svg { width: 12px; height: 12px; }
+
+  .legend-chip.answered { background-color: rgba(34, 197, 94, 0.15); color: #22C55E; }
+  .legend-chip.nao-respondida { background-color: rgba(255, 255, 255, 0.08); color: #9a9a9f; }
+
+  /* ─── QUESTION CARD ─── */
+  .question-wrapper { position: relative; }
+
+  .question-card {
+    background-color: #1e1e20;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+    padding: 28px;
+    transition: filter 0.2s;
+  }
+
+  .question-wrapper.paused .question-card {
+    filter: blur(9px);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .question-meta-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background-color: #242426;
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-bottom: 24px;
+  }
+
+  .question-id-badge {
+    background-color: #E8761A;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 5px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .question-breadcrumb {
+    font-size: 13px;
+    font-weight: 600;
+    color: #b6b6ba;
+  }
+
+  .question-breadcrumb .sep {
+    color: #5a5a5d;
+    margin: 0 6px;
+    font-weight: 400;
+  }
+
+  .btn-add-aux {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 14px;
+    padding: 0;
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #E8761A;
+    cursor: pointer;
+  }
+
+  .btn-add-aux:hover { text-decoration: underline; }
+  .btn-add-aux svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  .aux-text-field {
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 14px;
+    color: #cfcfcf;
+    line-height: 1.6;
+  }
+
+  .aux-text-field.hidden { display: none; }
+
+  .question-text {
+    font-size: 15.5px;
+    color: #e7e7e9;
+    line-height: 1.65;
+    margin-bottom: 24px;
+  }
+
+  .alternatives { display: flex; flex-direction: column; margin-bottom: 22px; }
+
+  .alt-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 6px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .alt-row:hover { background-color: rgba(255, 255, 255, 0.04); }
+
+  .alt-letter {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid #4a4a4d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #cfcfcf;
+    flex-shrink: 0;
+  }
+
+  .alt-text { font-size: 14.5px; color: #e5e5e5; line-height: 1.5; flex: 1 1 auto; }
+
+  .alt-scissor-slot {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: 34px;
+    flex-shrink: 0;
+  }
+
+  .alt-scissor {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: none;
+    border: none;
+    color: #9a9a9f;
+    cursor: pointer;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.12s;
+  }
+
+  .alt-scissor-line {
+    width: 8px;
+    height: 0;
+    border-top: 1.5px dashed #5a5a5d;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.12s;
+  }
+
+  .alt-row:hover .alt-scissor,
+  .alt-row:hover .alt-scissor-line { opacity: 1; }
+
+  .alt-scissor:hover { background-color: rgba(255, 255, 255, 0.08); color: #ffffff; }
+  .alt-scissor.active { opacity: 1; color: #E8761A; }
+  .alt-row.struck .alt-scissor-line { opacity: 1; border-top-color: #E8761A; }
+  .alt-scissor svg { width: 15px; height: 15px; }
+
+  .alt-row.struck .alt-text { text-decoration: line-through; opacity: 0.55; }
+  .alt-row.struck .alt-letter { opacity: 0.55; }
+
+  .alt-row.selected .alt-letter {
+    background-color: #E8761A;
+    border-color: #E8761A;
+    color: #ffffff;
+  }
+
+  .alt-row.locked { cursor: default; }
+  .alt-row.locked:hover { background-color: transparent; }
+
+  /* ─── PAUSE OVERLAY ─── */
+  .pause-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 18px;
+    z-index: 40;
+  }
+
+  .question-wrapper.paused .pause-overlay { display: flex; }
+
+  .pause-overlay svg { width: 44px; height: 44px; color: #ffffff; }
+
+  .pause-overlay h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .btn-continuar {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    background-color: #E8761A;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 26px;
+    cursor: pointer;
+  }
+
+  /* ─── CONFIRM MODAL ─── */
+  .confirm-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 120;
+  }
+
+  .confirm-overlay.open { display: flex; }
+
+  .confirm-box {
+    width: 100%;
+    max-width: 400px;
+    background-color: #1e1e20;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+  }
+
+  .confirm-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background-color: rgba(232, 118, 26, 0.15);
+    color: #E8761A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+  }
+
+  .confirm-icon svg { width: 24px; height: 24px; }
+
+  .confirm-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 10px;
+  }
+
+  .confirm-text {
+    font-size: 14px;
+    color: #9a9a9f;
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+
+  .confirm-text strong { color: #ffffff; font-weight: 600; }
+
+  .confirm-actions { display: flex; gap: 12px; }
+
+  .confirm-actions button {
+    flex: 1 1 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 11px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .btn-confirm-cancel {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+  }
+
+  .btn-confirm-cancel:hover { border-color: rgba(255, 255, 255, 0.3); }
+
+  .btn-confirm-finalizar {
+    background-color: #E8761A;
+    border: none;
+    color: #ffffff;
+  }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 640px) {
+    header.focus-header {
+      padding: 14px 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .focus-header-title { font-size: 15px; }
+
+    .btn-finalizar {
+      font-size: 13px;
+      padding: 9px 16px;
+    }
+
+    main { padding: 20px 16px 90px; }
+
+    .session-bar {
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    /* Navegador de questões vira uma barra fixa no rodapé da tela */
+    .question-progress {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      gap: 10px;
+      width: 100%;
+      justify-content: space-between;
+      background-color: #1e1e20;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px 20px;
+      z-index: 30;
+    }
+
+    .question-progress span { font-size: 11.5px; }
+
+    .progress-nav-btn {
+      width: 34px;
+      height: 34px;
+    }
+
+    .session-controls {
+      gap: 8px;
+      width: 100%;
+    }
+
+    .pill-control {
+      padding: 8px 12px;
+      font-size: 12.5px;
+      gap: 6px;
+      flex: 1 1 auto;
+      justify-content: center;
+    }
+
+    #map-btn { flex: 1 1 auto; width: 100%; }
+
+    .map-panel { padding: 18px; }
+
+    .question-card { padding: 18px; }
+
+    .question-meta-bar {
+      padding: 8px 12px;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .question-breadcrumb { font-size: 12px; }
+
+    .question-text {
+      font-size: 14.5px;
+      margin-bottom: 18px;
+    }
+
+    .alternatives { margin-bottom: 16px; }
+
+    .alt-row {
+      padding: 8px 4px;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .alt-letter {
+      width: 25px;
+      height: 25px;
+      font-size: 12px;
+      margin-top: 1px;
+    }
+
+    .alt-text { font-size: 13.5px; }
+
+    .pause-overlay h2 { font-size: 17px; }
+    .pause-overlay svg { width: 36px; height: 36px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="focus-header">
+    <span class="focus-header-title">Simulado de Direito Constitucional</span>
+    <button class="btn-finalizar" onclick="openFinalizarModal()">Finalizar simulado</button>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+    <!-- SESSION BAR -->
+    <div class="session-bar">
+      <div class="question-progress">
+        <button class="progress-nav-btn" id="prev-btn" onclick="prevQuestion()" title="Questão anterior">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <span id="progress-label">QUESTÃO 1 DE 4</span>
+        <button class="progress-nav-btn" id="next-btn" onclick="nextQuestion()" title="Próxima questão">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+
+      <div class="session-controls">
+        <div class="pill-control timer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          <span id="timer-display">00:00:00</span>
+        </div>
+
+        <button class="pill-control" id="pause-btn" onclick="togglePause()">
+          <svg id="pause-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+          <span id="pause-label">Pausar</span>
+        </button>
+
+        <button class="pill-control" id="map-btn" onclick="toggleMap()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          Mapa de questões
+        </button>
+      </div>
+    </div>
+
+    <!-- MAPA DE QUESTÕES -->
+    <div class="map-panel" id="map-panel">
+      <div class="map-panel-header">
+        <span class="map-title">Mapa de questões</span>
+      </div>
+      <div class="map-grid" id="map-grid"></div>
+      <div class="map-legend">
+        <span class="legend-chip answered">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          Respondida
+        </span>
+        <span class="legend-chip nao-respondida">Não respondida</span>
+      </div>
+    </div>
+
+    <!-- QUESTION -->
+    <div class="question-wrapper" id="question-wrapper">
+      <div class="question-card">
+        <div class="question-meta-bar">
+          <span class="question-id-badge" id="question-id">ID: 501</span>
+          <span class="question-breadcrumb" id="question-breadcrumb"></span>
+        </div>
+
+        <div id="aux-container"></div>
+
+        <p class="question-text" id="question-text"></p>
+
+        <div class="alternatives" id="alternatives"></div>
+      </div>
+
+      <!-- PAUSE OVERLAY -->
+      <div class="pause-overlay">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+        <h2>Simulado pausado</h2>
+        <button class="btn-continuar" onclick="togglePause()">Continuar simulado</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- CONFIRM FINALIZAR MODAL -->
+  <div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-box">
+      <div class="confirm-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <p class="confirm-title">Finalizar simulado?</p>
+      <p class="confirm-text" id="confirm-text">Você respondeu <strong id="confirm-respondidas">0</strong> de <strong id="confirm-total">0</strong> questões. Depois de finalizar, não será possível alterar suas respostas. Deseja continuar?</p>
+      <div class="confirm-actions">
+        <button class="btn-confirm-cancel" onclick="closeFinalizarModal()">Cancelar</button>
+        <button class="btn-confirm-finalizar" onclick="finalizarSimulado()">Sim, finalizar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#map-btn') && !e.target.closest('#map-panel')) {
+        document.getElementById('map-panel').classList.remove('open');
+      }
+    });
+
+    /* ─── DADOS DO SIMULADO ─── */
+    const SIMULADO_NOME = 'Simulado de Direito Constitucional';
+
+    const TIMER_MODE = 'crescente'; // 'crescente' ou 'decrescente', conforme configurado pelo professor
+    const TIMER_DURATION = 240; // usado apenas quando TIMER_MODE = 'decrescente' (em segundos)
+
+    const TOTAL_QUESTOES = 100;
+
+    const QUESTION_BANK = [
+      {
+        assunto: 'PRINCÍPIOS FUNDAMENTAIS',
+        banca: 'CESPE/CEBRASPE',
+        textoAuxiliar: 'Os fundamentos da República Federativa do Brasil estão previstos no art. 1º da Constituição Federal: soberania, cidadania, dignidade da pessoa humana, os valores sociais do trabalho e da livre iniciativa, e o pluralismo político.',
+        text: 'A Constituição Federal de 1988 estabelece, em seu artigo 1º, os fundamentos da República Federativa do Brasil. Assinale a alternativa que apresenta corretamente um dos fundamentos constitucionais expressos nesse artigo:',
+        alternatives: [
+          'A separação absoluta entre os Poderes, sem qualquer mecanismo de controle recíproco.',
+          'A soberania.',
+          'A supremacia do interesse público sobre o individual em qualquer circunstância.',
+          'A centralização administrativa como regra geral.',
+          'A prevalência do Poder Executivo sobre os demais Poderes.'
+        ],
+        correct: 1
+      },
+      {
+        assunto: 'DIREITOS E GARANTIAS FUNDAMENTAIS',
+        banca: 'CESPE/CEBRASPE',
+        textoAuxiliar: 'Os remédios constitucionais (habeas corpus, habeas data, mandado de segurança, mandado de injunção e ação popular) são instrumentos processuais destinados a proteger direitos fundamentais específicos, cada um com objeto e legitimidade próprios.',
+        text: 'Sobre os direitos e garantias fundamentais previstos na Constituição Federal, assinale a alternativa correta:',
+        alternatives: [
+          'Os direitos fundamentais são absolutos e não admitem qualquer espécie de restrição.',
+          'O habeas corpus pode ser utilizado para questionar qualquer ato administrativo, independentemente de restrição à liberdade de locomoção.',
+          'O remédio constitucional cabível para proteger direito líquido e certo, não amparado por habeas corpus ou habeas data, é o mandado de segurança.',
+          'As garantias fundamentais aplicam-se exclusivamente aos cidadãos brasileiros natos.',
+          'O direito de petição depende do pagamento de taxas para o seu exercício.'
+        ],
+        correct: 2
+      },
+      {
+        assunto: 'ORGANIZAÇÃO DO ESTADO',
+        banca: 'CESPE/CEBRASPE',
+        text: 'Em relação à organização político-administrativa da República Federativa do Brasil, é correto afirmar que:',
+        alternatives: [
+          'Os Municípios não possuem autonomia político-administrativa, estando subordinados aos Estados.',
+          'O Distrito Federal pode ser dividido em Municípios.',
+          'Compete exclusivamente à União legislar sobre todas as matérias de interesse local.',
+          'A União, os Estados, o Distrito Federal e os Municípios são entes federativos autônomos, nos termos da Constituição.',
+          'Os Territórios Federais integram a organização federativa como entes autônomos permanentes.'
+        ],
+        correct: 3
+      },
+      {
+        assunto: 'CONTROLE DE CONSTITUCIONALIDADE',
+        banca: 'CESPE/CEBRASPE',
+        text: 'Sobre o controle de constitucionalidade das leis no ordenamento jurídico brasileiro, assinale a alternativa correta:',
+        alternatives: [
+          'O controle de constitucionalidade concentrado é exercido, em regra, pelo Supremo Tribunal Federal.',
+          'O controle difuso de constitucionalidade só pode ser exercido pelos Tribunais Superiores.',
+          'A Ação Direta de Inconstitucionalidade pode ser proposta por qualquer cidadão.',
+          'Não é possível o controle de constitucionalidade de emendas constitucionais.',
+          'A declaração de inconstitucionalidade em controle difuso produz, sempre, efeitos erga omnes automaticamente.'
+        ],
+        correct: 0
+      },
+      {
+        assunto: 'PODER LEGISLATIVO',
+        banca: 'FGV',
+        text: 'Sobre o Poder Legislativo federal brasileiro, é correto afirmar que:',
+        alternatives: [
+          'O Congresso Nacional é composto exclusivamente pela Câmara dos Deputados.',
+          'O Senado Federal representa os Estados e o Distrito Federal, com três senadores por unidade federativa.',
+          'Os Deputados Federais têm mandato de seis anos.',
+          'Compete exclusivamente à Câmara dos Deputados a elaboração de leis complementares.',
+          'O Senado Federal não participa do julgamento de crimes de responsabilidade do Presidente da República.'
+        ],
+        correct: 1
+      },
+      {
+        assunto: 'PODER EXECUTIVO',
+        banca: 'FCC',
+        text: 'Acerca do Poder Executivo na Constituição Federal de 1988, assinale a alternativa correta:',
+        alternatives: [
+          'O Presidente da República é eleito para mandato de 4 anos, permitida uma reeleição para o período subsequente.',
+          'O Vice-Presidente da República não pode substituir o Presidente em caso de impedimento.',
+          'Os Ministros de Estado são escolhidos exclusivamente entre membros do Congresso Nacional.',
+          'Compete ao Poder Judiciário a iniciativa privativa de leis orçamentárias.',
+          'O Presidente da República não pode editar medidas provisórias em nenhuma hipótese.'
+        ],
+        correct: 0
+      },
+      {
+        assunto: 'PODER JUDICIÁRIO',
+        banca: 'VUNESP',
+        text: 'Em relação à organização do Poder Judiciário brasileiro, é correto afirmar que:',
+        alternatives: [
+          'O Supremo Tribunal Federal é composto por 15 Ministros.',
+          'Compete ao Superior Tribunal de Justiça a guarda precípua da Constituição Federal.',
+          'Os Tribunais Regionais Federais integram a Justiça Federal comum.',
+          'Os juízes togados não possuem garantia de vitaliciedade.',
+          'O Conselho Nacional de Justiça tem competência jurisdicional para julgar recursos de mérito.'
+        ],
+        correct: 2
+      },
+      {
+        assunto: 'PROCESSO LEGISLATIVO',
+        banca: 'CESPE/CEBRASPE',
+        text: 'Sobre o processo legislativo previsto na Constituição Federal, assinale a alternativa correta:',
+        alternatives: [
+          'As emendas à Constituição são aprovadas por maioria simples, em turno único, em cada Casa do Congresso Nacional.',
+          'As leis complementares exigem, para sua aprovação, maioria absoluta dos votos dos membros de cada Casa Legislativa.',
+          'As medidas provisórias, uma vez editadas, têm vigência permanente, independentemente de conversão em lei.',
+          'A iniciativa popular de leis não é admitida no ordenamento constitucional brasileiro.',
+          'O veto presidencial a projeto de lei é absoluto e não pode ser derrubado pelo Congresso Nacional.'
+        ],
+        correct: 1
+      },
+      {
+        assunto: 'ORDEM SOCIAL',
+        banca: 'FGV',
+        text: 'No que se refere à ordem social disciplinada pela Constituição Federal, é correto afirmar que:',
+        alternatives: [
+          'A seguridade social compreende um conjunto integrado de ações relativas à saúde, à previdência e à assistência social.',
+          'A saúde é direito exclusivo dos trabalhadores contribuintes do Regime Geral de Previdência Social.',
+          'A assistência social depende de contribuição prévia do beneficiário para ser prestada.',
+          'A educação básica não é considerada direito social pela Constituição.',
+          'O acesso à cultura não constitui dever do Estado.'
+        ],
+        correct: 0
+      },
+      {
+        assunto: 'ORDEM ECONÔMICA',
+        banca: 'FCC',
+        text: 'Sobre os princípios gerais da atividade econômica previstos na Constituição Federal, assinale a alternativa correta:',
+        alternatives: [
+          'A livre concorrência não é reconhecida como princípio da ordem econômica.',
+          'A ordem econômica é fundada exclusivamente na propriedade estatal dos meios de produção.',
+          'A defesa do consumidor é um dos princípios que orientam a ordem econômica.',
+          'O Estado é vedado de exercer qualquer forma de intervenção no domínio econômico.',
+          'A função social da propriedade não se aplica às empresas privadas.'
+        ],
+        correct: 2
+      },
+      {
+        assunto: 'NACIONALIDADE',
+        banca: 'VUNESP',
+        text: 'Acerca da nacionalidade na Constituição Federal de 1988, é correto afirmar que:',
+        alternatives: [
+          'São considerados brasileiros natos apenas os nascidos no território nacional, independentemente da nacionalidade dos pais.',
+          'É vedada, em qualquer hipótese, a aquisição de outra nacionalidade pelo brasileiro nato.',
+          'Não é possível a perda da nacionalidade brasileira em nenhuma circunstância.',
+          'São elegíveis para o cargo de Presidente da República apenas os brasileiros natos.',
+          'O brasileiro naturalizado pode ocupar o cargo de Ministro do Supremo Tribunal Federal sem qualquer restrição adicional.'
+        ],
+        correct: 3
+      },
+      {
+        assunto: 'DIREITOS POLÍTICOS',
+        banca: 'CESPE/CEBRASPE',
+        text: 'Sobre os direitos políticos previstos na Constituição Federal, assinale a alternativa correta:',
+        alternatives: [
+          'O alistamento eleitoral e o voto são obrigatórios para os maiores de dezoito e menores de setenta anos.',
+          'O voto é facultativo para todos os cidadãos brasileiros, sem exceção.',
+          'Os estrangeiros residentes no Brasil podem se alistar como eleitores.',
+          'A cassação de direitos políticos é admitida como sanção autônoma no ordenamento constitucional.',
+          'O militar conscrito, durante o serviço militar obrigatório, pode alistar-se como eleitor.'
+        ],
+        correct: 0
+      },
+      {
+        assunto: 'REMÉDIOS CONSTITUCIONAIS',
+        banca: 'FGV',
+        text: 'Quanto aos remédios constitucionais, assinale a alternativa correta:',
+        alternatives: [
+          'O habeas data destina-se a assegurar o conhecimento de informações relativas à pessoa do impetrante constantes de registros públicos.',
+          'O mandado de injunção é cabível para proteger a liberdade de locomoção.',
+          'A ação popular pode ser proposta por qualquer pessoa jurídica de direito privado.',
+          'O habeas corpus exige o pagamento de custas processuais para seu ajuizamento.',
+          'O mandado de segurança coletivo não pode ser impetrado por partido político.'
+        ],
+        correct: 0
+      },
+      {
+        assunto: 'EMENDA CONSTITUCIONAL',
+        banca: 'FCC',
+        text: 'Em relação ao processo de emenda à Constituição Federal, é correto afirmar que:',
+        alternatives: [
+          'A Constituição pode ser emendada mediante proposta de um terço, no mínimo, dos membros da Câmara dos Deputados ou do Senado Federal.',
+          'Não há limitação material ao poder de emenda constitucional.',
+          'A emenda constitucional pode abolir a forma federativa de Estado.',
+          'A proposta de emenda rejeitada pode ser reapresentada na mesma sessão legislativa, sem restrições.',
+          'As emendas constitucionais dependem de sanção do Presidente da República.'
+        ],
+        correct: 0
+      },
+      {
+        assunto: 'ESTADO DE DEFESA E ESTADO DE SÍTIO',
+        banca: 'VUNESP',
+        text: 'Sobre o sistema constitucional de crises, é correto afirmar que:',
+        alternatives: [
+          'O estado de defesa é decretado pelo Congresso Nacional, por iniciativa própria.',
+          'O estado de sítio depende de autorização do Congresso Nacional para ser decretado pelo Presidente da República.',
+          'O estado de defesa pode ser decretado por prazo indeterminado.',
+          'Durante o estado de sítio, é vedada qualquer restrição a direitos fundamentais.',
+          'O estado de defesa e o estado de sítio são sinônimos no texto constitucional.'
+        ],
+        correct: 1
+      },
+      {
+        assunto: 'INTERVENÇÃO FEDERAL',
+        banca: 'CESPE/CEBRASPE',
+        text: 'Quanto à intervenção federal disciplinada pela Constituição, assinale a alternativa correta:',
+        alternatives: [
+          'A intervenção federal nos Estados é sempre decretada de ofício pelo Presidente da República, sem hipóteses taxativas.',
+          'A União pode intervir nos Estados e no Distrito Federal apenas nas hipóteses taxativamente previstas na Constituição.',
+          'Os Municípios podem sofrer intervenção direta da União, independentemente do Estado a que pertencem.',
+          'O decreto de intervenção não está sujeito a qualquer controle do Congresso Nacional.',
+          'A intervenção federal é medida permanente, não comportando prazo de duração.'
+        ],
+        correct: 1
+      },
+      {
+        assunto: 'ADMINISTRAÇÃO PÚBLICA',
+        banca: 'FGV',
+        text: 'Sobre os princípios constitucionais da Administração Pública, é correto afirmar que:',
+        alternatives: [
+          'A Administração Pública direta e indireta obedecerá aos princípios de legalidade, impessoalidade, moralidade, publicidade e eficiência.',
+          'A investidura em cargo público independe de aprovação prévia em concurso público.',
+          'Os atos administrativos discricionários não se submetem a controle de legalidade.',
+          'A publicidade dos atos administrativos é dispensável quando o agente público entender conveniente.',
+          'A moralidade administrativa não constitui princípio autônomo, mas mero desdobramento da legalidade.'
+        ],
+        correct: 0
+      },
+      {
+        assunto: 'REPARTIÇÃO DE COMPETÊNCIAS',
+        banca: 'FCC',
+        text: 'Acerca da repartição constitucional de competências, é correto afirmar que:',
+        alternatives: [
+          'Compete privativamente aos Municípios legislar sobre direito civil.',
+          'Compete à União, aos Estados e ao Distrito Federal legislar concorrentemente sobre direito tributário.',
+          'Os Estados possuem competência privativa para legislar sobre direito penal.',
+          'Compete exclusivamente à União instituir, arrecadar e fiscalizar todos os tributos municipais.',
+          'Os Municípios não possuem competência para legislar sobre assuntos de interesse local.'
+        ],
+        correct: 1
+      },
+      {
+        assunto: 'SISTEMA TRIBUTÁRIO NACIONAL',
+        banca: 'VUNESP',
+        text: 'No âmbito do Sistema Tributário Nacional disciplinado pela Constituição, assinale a alternativa correta:',
+        alternatives: [
+          'Os impostos, em regra, não podem ter caráter pessoal e ser graduados segundo a capacidade econômica do contribuinte.',
+          'É vedado à União instituir tributo que não seja uniforme em todo o território nacional, ressalvadas exceções constitucionais.',
+          'As taxas podem ter base de cálculo idêntica à dos impostos, sem qualquer vedação constitucional.',
+          'A imunidade tributária recíproca não se aplica aos entes federativos entre si.',
+          'As contribuições de melhoria são cobradas independentemente da realização de obra pública.'
+        ],
+        correct: 1
+      },
+      {
+        assunto: 'DEFESA DO ESTADO E DAS INSTITUIÇÕES DEMOCRÁTICAS',
+        banca: 'CESPE/CEBRASPE',
+        text: 'Sobre o sistema de defesa do Estado e das instituições democráticas na Constituição Federal, é correto afirmar que:',
+        alternatives: [
+          'As Forças Armadas destinam-se à defesa da Pátria, à garantia dos poderes constitucionais e, por iniciativa de qualquer destes, da lei e da ordem.',
+          'A segurança pública é dever exclusivo das Forças Armadas, não competindo aos Estados.',
+          'As polícias civis não se subordinam aos governadores dos Estados e do Distrito Federal.',
+          'A segurança pública não é considerada direito e responsabilidade de todos, mas dever exclusivo do Estado.',
+          'A polícia federal não possui atribuição para apurar infrações penais contra a ordem política e social.'
+        ],
+        correct: 0
+      }
+    ];
+
+    const questions = Array.from({ length: TOTAL_QUESTOES }, (_, i) => {
+      const base = QUESTION_BANK[i % QUESTION_BANK.length];
+      return { ...base, id: 501 + i, materia: 'Direito Constitucional' };
+    });
+
+    const state = {
+      current: 0,
+      answers: {},
+      struck: {},
+      auxOpen: {},
+      seconds: TIMER_MODE === 'decrescente' ? TIMER_DURATION : 0,
+      timerId: null,
+      paused: false
+    };
+
+    function letterFor(i) { return String.fromCharCode(65 + i); }
+
+    function formatTime(s) {
+      const h = Math.floor(s / 3600).toString().padStart(2, '0');
+      const m = Math.floor((s % 3600) / 60).toString().padStart(2, '0');
+      const sec = (s % 60).toString().padStart(2, '0');
+      return `${h}:${m}:${sec}`;
+    }
+
+    function renderQuestion() {
+      const q = questions[state.current];
+      const answer = state.answers[state.current];
+
+      document.getElementById('progress-label').textContent = `QUESTÃO ${state.current + 1} DE ${questions.length}`;
+      document.getElementById('question-id').textContent = `ID: ${q.id}`;
+      document.getElementById('question-breadcrumb').innerHTML =
+        `${q.materia}<span class="sep">/</span>${q.assunto}<span class="sep">/</span>${q.banca}`;
+      document.getElementById('question-text').textContent = q.text;
+
+      const auxEl = document.getElementById('aux-container');
+      auxEl.innerHTML = q.textoAuxiliar ? `
+        <button type="button" class="btn-add-aux" onclick="toggleAux(${state.current})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+          Texto auxiliar
+        </button>
+        <div class="aux-text-field ${state.auxOpen[state.current] ? '' : 'hidden'}">${q.textoAuxiliar}</div>
+      ` : '';
+
+      const altsEl = document.getElementById('alternatives');
+      altsEl.innerHTML = q.alternatives.map((alt, i) => {
+        let cls = 'alt-row';
+        if (answer) {
+          cls += ' locked';
+          if (i === answer.selected) cls += ' selected';
+        }
+        const struck = isStruck(state.current, i);
+        if (struck) cls += ' struck';
+        return `<div class="${cls}" onclick="selectAlternative(${i})">
+          <span class="alt-scissor-slot">
+            <button type="button" class="alt-scissor ${struck ? 'active' : ''}" onclick="toggleStrike(event, ${state.current}, ${i})" title="${struck ? 'Desfazer risco' : 'Riscar alternativa'}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+            </button>
+            <span class="alt-scissor-line"></span>
+          </span>
+          <span class="alt-letter">${letterFor(i)}</span>
+          <span class="alt-text">${alt}</span>
+        </div>`;
+      }).join('');
+
+      document.getElementById('prev-btn').disabled = state.current === 0;
+      document.getElementById('next-btn').disabled = state.current === questions.length - 1;
+
+      renderMap();
+    }
+
+    function selectAlternative(i) {
+      if (state.answers[state.current]) return;
+      const q = questions[state.current];
+      state.answers[state.current] = {
+        selected: i,
+        correct: i === q.correct
+      };
+      renderQuestion();
+    }
+
+    function isStruck(qIndex, altIndex) {
+      return !!(state.struck[qIndex] && state.struck[qIndex][altIndex]);
+    }
+
+    function toggleStrike(event, qIndex, altIndex) {
+      event.stopPropagation();
+      if (!state.struck[qIndex]) state.struck[qIndex] = {};
+      state.struck[qIndex][altIndex] = !state.struck[qIndex][altIndex];
+      renderQuestion();
+    }
+
+    function toggleAux(index) {
+      state.auxOpen[index] = !state.auxOpen[index];
+      renderQuestion();
+    }
+
+    function goToQuestion(i) {
+      state.current = i;
+      renderQuestion();
+      document.getElementById('map-panel').classList.remove('open');
+    }
+
+    function prevQuestion() {
+      if (state.current > 0) goToQuestion(state.current - 1);
+    }
+
+    function nextQuestion() {
+      if (state.current < questions.length - 1) goToQuestion(state.current + 1);
+    }
+
+    function renderMap() {
+      const grid = document.getElementById('map-grid');
+      grid.innerHTML = questions.map((q, i) => {
+        const answer = state.answers[i];
+        let cls = 'map-cell';
+        if (answer) cls += ' answered';
+        if (i === state.current) cls += ' current';
+        const answerText = answer ? letterFor(answer.selected) : '-';
+        return `<button class="${cls}" onclick="goToQuestion(${i})">
+          <div class="cell-header">${i + 1}</div>
+          <div class="cell-answer">${answerText}</div>
+        </button>`;
+      }).join('');
+    }
+
+    function toggleMap() {
+      document.getElementById('map-panel').classList.toggle('open');
+    }
+
+    /* ─── CRONÔMETRO ─── */
+    function updateTimerDisplay() {
+      document.getElementById('timer-display').textContent = formatTime(state.seconds);
+    }
+
+    function tick() {
+      if (TIMER_MODE === 'decrescente') {
+        state.seconds = Math.max(0, state.seconds - 1);
+        if (state.seconds === 0) clearInterval(state.timerId);
+      } else {
+        state.seconds++;
+      }
+      updateTimerDisplay();
+    }
+
+    function startTimer() {
+      state.timerId = setInterval(tick, 1000);
+    }
+
+    /* ─── PAUSAR ─── */
+    function togglePause() {
+      state.paused = !state.paused;
+      document.getElementById('question-wrapper').classList.toggle('paused', state.paused);
+
+      if (state.paused) {
+        clearInterval(state.timerId);
+        document.getElementById('pause-label').textContent = 'Continuar';
+      } else {
+        startTimer();
+        document.getElementById('pause-label').textContent = 'Pausar';
+      }
+    }
+
+    /* ─── FINALIZAR ─── */
+    function openFinalizarModal() {
+      document.getElementById('confirm-respondidas').textContent = Object.keys(state.answers).length;
+      document.getElementById('confirm-total').textContent = questions.length;
+      document.getElementById('confirm-overlay').classList.add('open');
+    }
+
+    function closeFinalizarModal() {
+      document.getElementById('confirm-overlay').classList.remove('open');
+    }
+
+    document.getElementById('confirm-overlay').addEventListener('click', (e) => {
+      if (e.target.id === 'confirm-overlay') closeFinalizarModal();
+    });
+
+    function finalizarSimulado() {
+      clearInterval(state.timerId);
+      const respondidas = Object.values(state.answers);
+      const resultado = {
+        nome: SIMULADO_NOME,
+        total: questions.length,
+        respondidas: respondidas.length,
+        corretas: respondidas.filter((a) => a.correct).length,
+        erradas: respondidas.filter((a) => !a.correct).length,
+        tempoSegundos: state.seconds,
+        detalhe: questions.map((q, i) => {
+          const answer = state.answers[i];
+          return {
+            numero: i + 1,
+            id: q.id,
+            materia: q.materia,
+            assunto: q.assunto,
+            banca: q.banca,
+            texto: q.text,
+            alternativas: q.alternatives,
+            correctIndex: q.correct,
+            selecionada: answer ? letterFor(answer.selected) : null,
+            correta: letterFor(q.correct),
+            status: answer ? (answer.correct ? 'correta' : 'errada') : 'nao-respondida'
+          };
+        })
+      };
+      localStorage.setItem('resultadoSimulado', JSON.stringify(resultado));
+      window.location.href = 'relatorio-simulado.html';
+    }
+
+    updateTimerDisplay();
+    renderQuestion();
+    startTimer();
+  </script>
+
+</body>
+</html>
