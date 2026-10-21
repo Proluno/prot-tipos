@@ -4,14 +4,14 @@ Protótipos navegáveis dos três projetos da Proluno, publicados via GitHub Pag
 
 | Projeto | Pasta |
 |---|---|
-| Área do Assinante | `area-do-assinante/` |
-| Área de Membros | `area-de-membros/` |
-| SIP — Sistema Integrado da Proluno | `sip/` |
+| Área do Assinante | `01-area-do-assinante/` |
+| Área de Membros | `02-area-de-membros/` |
+| SIP — Sistema Integrado da Proluno | `03-sip/` |
 
-Cada item de menu tem a própria pasta com um `index.html`. Para colocar um protótipo
+Cada item de menu tem a própria pasta (numerada na ordem do menu) com um `index.html`. Para colocar um protótipo
 no ar, substitua o `index.html` da pasta correspondente pelo HTML do protótipo.
 
 Endereço de cada página: `https://<usuario>.github.io/<repositorio>/<caminho-da-pasta>/`
-— por exemplo `.../area-do-assinante/financeiro/extrato/`.
+— por exemplo `.../01-area-do-assinante/05-financeiro/04-extrato/`.
 
 Estilo compartilhado das páginas-índice: `assets/style.css`.
