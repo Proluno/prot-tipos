@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criação de simulado</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #ffffff;
+      color: #1a1a1a;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ---------- Sidebar ---------- */
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background-color: #F1F1F1;
+      padding: 28px 20px;
+    }
+
+    .content-col {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ---------- Topbar ---------- */
+
+    .topbar {
+      width: 100%;
+      height: 56px;
+      flex-shrink: 0;
+      background-color: #F1F1F1;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #6b7280;
+      text-decoration: none;
+      margin-bottom: 18px;
+    }
+
+    .back-link svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .sidebar-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: #18181b;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 13px;
+      font-weight: 400;
+      color: #9a9a9f;
+      margin-bottom: 26px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #3f3f46;
+      text-decoration: none;
+    }
+
+    .nav-item svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+
+    .nav-item.active {
+      background-color: #ffffff;
+      color: #E8761A;
+      font-weight: 600;
+    }
+
+    /* ---------- Main ---------- */
+
+    .main {
+      flex: 1 1 auto;
+      background-color: #ffffff;
+      padding: 44px 48px 60px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .title-back-icon {
+      width: 22px;
+      height: 22px;
+      color: #18181b;
+      flex-shrink: 0;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #18181b;
+    }
+
+    .page-subtitle {
+      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: #20212380;
+      width: 100%;
+      line-height: 1.5;
+      margin: 20px 0 30px;
+    }
+
+    /* ---------- Wizard card ---------- */
+
+    .wizard-card {
+      border: 1px solid #e4e4e7;
+      border-radius: 14px;
+      padding: 40px 44px;
+    }
+
+    .stepper {
+      display: flex;
+      align-items: flex-start;
+      width: 50%;
+      margin: 0 auto 40px;
+    }
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+      background-color: #e4e4e7;
+      color: #8b8b93;
+      flex-shrink: 0;
+    }
+
+    .step-circle.active {
+      background-color: #E8761A;
+      color: #ffffff;
+    }
+
+    .step-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #8b8b93;
+      white-space: nowrap;
+    }
+
+    .step-label.active {
+      color: #18181b;
+    }
+
+    .step-connector {
+      flex: 1 1 auto;
+      height: 2px;
+      background-color: #e4e4e7;
+      margin-top: 17px;
+    }
+
+    /* ---------- Form ---------- */
+
+    .form-group {
+      flex: 1 1 0;
+      margin-bottom: 28px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 24px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 15px;
+      font-weight: 500;
+      color: #27272a;
+      margin-bottom: 10px;
+    }
+
+    .required-mark {
+      color: #E8761A;
+    }
+
+    .form-input,
+    .form-select {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      padding: 13px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      color: #1a1a1a;
+    }
+
+    .form-input::placeholder {
+      color: #a1a1aa;
+    }
+
+    .form-select {
+      cursor: pointer;
+      color: #a1a1aa;
+    }
+
+    .form-select svg {
+      width: 16px;
+      height: 16px;
+      color: #a1a1aa;
+      flex-shrink: 0;
+    }
+
+    .switch-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .switch-row + .switch-row {
+      margin-top: 14px;
+    }
+
+    .switch-row-label + .tooltip-wrap {
+      margin-left: -4px;
+    }
+
+    .tooltip-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: default;
+    }
+
+    .tooltip-icon {
+      width: 15px;
+      height: 15px;
+      color: #a1a1aa;
+    }
+
+    .tooltip-box {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: 230px;
+      background-color: #18181b;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 400;
+      line-height: 1.5;
+      padding: 9px 12px;
+      border-radius: 6px;
+      z-index: 20;
+    }
+
+    .tooltip-box::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #18181b;
+    }
+
+    .tooltip-wrap:hover .tooltip-box {
+      display: block;
+    }
+
+    .switch-row-label {
+      font-size: 15px;
+      font-weight: 500;
+      color: #27272a;
+    }
+
+    .switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      background-color: #d4d4d8;
+      border-radius: 999px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      transition: transform 0.15s ease;
+    }
+
+    .switch.on {
+      background-color: #E8761A;
+    }
+
+    .switch.on::after {
+      transform: translateX(18px);
+    }
+
+    /* ---------- Custom select (Cronômetro) ---------- */
+
+    .custom-select {
+      position: relative;
+    }
+
+    .form-select {
+      cursor: pointer;
+    }
+
+    .form-select svg {
+      transition: transform 0.15s ease;
+    }
+
+    .form-select.open svg {
+      transform: rotate(180deg);
+    }
+
+    .select-value.filled {
+      color: #1a1a1a;
+    }
+
+    .select-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      z-index: 10;
+    }
+
+    .select-menu.open {
+      display: block;
+    }
+
+    .select-option {
+      padding: 12px 16px;
+      font-size: 15px;
+      color: #27272a;
+      cursor: pointer;
+    }
+
+    .select-option:hover {
+      background-color: #f4f4f5;
+    }
+
+    .select-option.selected {
+      color: #E8761A;
+      font-weight: 600;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 4px 12px 4px 10px;
+      border-radius: 999px;
+    }
+
+    .status-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-badge-ativo {
+      background-color: #D3F5DF;
+      color: #17803D;
+    }
+
+    .status-badge-ativo .status-badge-dot {
+      background-color: #17803D;
+    }
+
+    .status-badge-rascunho {
+      background-color: #FCEFC6;
+      color: #92730B;
+    }
+
+    .status-badge-rascunho .status-badge-dot {
+      background-color: #92730B;
+    }
+
+    .select-option.selected .status-badge {
+      outline: 2px solid #E8761A;
+      outline-offset: 1px;
+    }
+
+    /* ---------- Wizard footer ---------- */
+
+    .wizard-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 14px;
+      margin-top: 36px;
+    }
+
+    .btn-voltar {
+      display: inline-flex;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a1a1a;
+      background-color: #E3E7EC;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 30px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      background-color: #F3C6A0;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 30px;
+      cursor: not-allowed;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-next svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .btn-next.enabled {
+      background-color: #E8761A;
+      cursor: pointer;
+    }
+
+    /* ---------- Menu mobile (topbar + drawer) ---------- */
+
+    .mobile-topbar {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      height: 56px;
+      background-color: #F1F1F1;
+      padding: 0 16px;
+    }
+
+    .mobile-menu-toggle {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: none;
+      border: none;
+      color: #18181b;
+      cursor: pointer;
+    }
+
+    .mobile-menu-toggle svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .mobile-logo {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: #18181b;
+      white-space: nowrap;
+    }
+
+    .mobile-logo .orange {
+      color: #E8761A;
+    }
+
+    .mobile-logo-dots {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .mobile-logo-dots .dot {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .mobile-logo-dots .dot-teal { width: 5px; height: 5px; background-color: #35C6C1; top: 0; left: 5px; }
+    .mobile-logo-dots .dot-pink { width: 5px; height: 5px; background-color: #E85AA0; top: 7px; left: 0; }
+    .mobile-logo-dots .dot-orange { width: 5px; height: 5px; background-color: #E8761A; top: 8px; left: 13px; }
+    .mobile-logo-dots .dot-blue { width: 4px; height: 4px; background-color: #4C6FE0; top: 14px; left: 7px; }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.45);
+      z-index: 250;
+    }
+
+    .sidebar-backdrop.open {
+      display: block;
+    }
+
+    .sidebar-close {
+      display: none;
+      position: absolute;
+      top: 22px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #18181b;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .sidebar-close svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ---------- Responsivo ---------- */
+
+    @media (max-width: 768px) {
+      .mobile-topbar {
+        display: flex;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 85vw;
+        max-width: 320px;
+        height: 100vh;
+        padding: 24px 20px;
+        z-index: 300;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        overflow-y: auto;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-close {
+        display: flex;
+      }
+
+      .topbar {
+        display: none;
+      }
+
+      .main {
+        padding: 24px 20px 40px;
+      }
+
+      .page-title {
+        font-size: 20px;
+      }
+
+      .page-subtitle {
+        font-size: 15px;
+      }
+
+      .wizard-card {
+        padding: 24px 20px;
+      }
+
+      .stepper {
+        width: 100%;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+
+      .wizard-footer {
+        flex-wrap: wrap;
+      }
+
+      .btn-voltar,
+      .btn-next {
+        flex: 1 1 auto;
+        justify-content: center;
+      }
+
+      .tooltip-box {
+        width: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="mobile-topbar">
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="mobile-logo">
+      Prol<span class="mobile-logo-dots"><span class="dot dot-teal"></span><span class="dot dot-pink"></span><span class="dot dot-orange"></span><span class="dot dot-blue"></span></span><span class="orange">uno.</span>
+    </div>
+  </header>
+
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <div class="app">
+
+    <aside class="sidebar">
+      <button class="sidebar-close" id="sidebar-close" aria-label="Fechar menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <a class="back-link" href="../../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Voltar
+      </a>
+
+      <h1 class="sidebar-title">Hub de Questões</h1>
+      <p class="sidebar-subtitle">Crie e venda suas questões</p>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item" href="../01-biblioteca/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h9"/></svg>
+          Biblioteca
+        </a>
+        <a class="nav-item" href="../02-banco-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>
+          Banco de questões
+        </a>
+        <a class="nav-item" href="../03-questoes-externas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-5Z"/><path d="M14 3v6h6"/></svg>
+          Questões externas
+        </a>
+        <a class="nav-item" href="../04-estatisticas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Estatísticas
+        </a>
+        <a class="nav-item" href="../05-pagamentos/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+          Pagamentos
+        </a>
+        <a class="nav-item" href="../06-plano-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          Plano de Questões
+        </a>
+        <a class="nav-item active" href="../07-simulados/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 3.5h6a1 1 0 0 1 1 1V6H8V4.5a1 1 0 0 1 1-1Z"/><path d="M9 12.5l2 2 4-4"/></svg>
+          Simulados
+        </a>
+      </nav>
+    </aside>
+
+    <div class="content-col">
+      <header class="topbar"></header>
+
+      <main class="main">
+        <div class="title-row">
+          <svg class="title-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          <h2 class="page-title" id="page-title">Criação de simulado</h2>
+        </div>
+
+        <p class="page-subtitle">Defina as configurações do simulado para finalizar a criação.</p>
+
+        <div class="wizard-card">
+          <div class="stepper">
+            <div class="step-item">
+              <div class="step-circle">1</div>
+              <span class="step-label">Questões</span>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step-item">
+              <div class="step-circle active">2</div>
+              <span class="step-label active">Configurações</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Nome do simulado <span class="required-mark">*</span></label>
+            <input class="form-input" id="nome-input" type="text" placeholder="Ex: Simulado Direito Constitucional - Bloco 1">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tempo do simulado (em horas) <span class="required-mark">*</span></label>
+              <input class="form-input" id="tempo-input" type="text" inputmode="numeric" maxlength="5" placeholder="00:00">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Cronômetro <span class="required-mark">*</span></label>
+              <div class="custom-select" id="cronometro-select">
+                <div class="form-select" id="cronometro-trigger">
+                  <span class="select-value" id="cronometro-value">Selecione o tipo de cronômetro</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                </div>
+                <div class="select-menu" id="cronometro-menu">
+                  <div class="select-option" data-value="Crescente">Crescente</div>
+                  <div class="select-option" data-value="Decrescente">Decrescente</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Status <span class="required-mark">*</span></label>
+            <div class="custom-select" id="status-select">
+              <div class="form-select" id="status-trigger">
+                <span class="select-value" id="status-value">Selecione o status</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+              <div class="select-menu" id="status-menu">
+                <div class="select-option" data-value="Ativo"><span class="status-badge status-badge-ativo"><span class="status-badge-dot"></span>Ativo</span></div>
+                <div class="select-option" data-value="Rascunho"><span class="status-badge status-badge-rascunho"><span class="status-badge-dot"></span>Rascunho</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="switch-row">
+            <span class="switch-row-label">Baixar simulado em PDF:</span>
+            <span class="switch" id="pdf-switch"></span>
+          </div>
+
+          <div class="switch-row">
+            <span class="switch-row-label">Ranking de alunos:</span>
+            <span class="tooltip-wrap">
+              <svg class="tooltip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>
+              <span class="tooltip-box">Se marcado, a página de detalhes do simulado exibirá um ranking dos alunos por nota no simulado.</span>
+            </span>
+            <span class="switch" id="ranking-switch"></span>
+          </div>
+
+          <div class="wizard-footer">
+            <a class="btn-voltar" href="criacao-simulado-questoes.html">Voltar</a>
+            <button class="btn-next" id="btn-next" disabled>
+              <span id="btn-next-label">Criar</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+  </div>
+
+  <script>
+    const nomeInput = document.getElementById('nome-input');
+    const tempoInput = document.getElementById('tempo-input');
+    const cronometroValue = document.getElementById('cronometro-value');
+    const statusValue = document.getElementById('status-value');
+    const btnNext = document.getElementById('btn-next');
+
+    function checkFormValidity() {
+      const nomeValid = nomeInput.value.trim().length > 0;
+      const tempoValid = /^\d{2}:\d{2}$/.test(tempoInput.value);
+      const cronometroValid = cronometroValue.classList.contains('filled');
+      const statusValid = statusValue.classList.contains('filled');
+      const allValid = nomeValid && tempoValid && cronometroValid && statusValid;
+
+      btnNext.disabled = !allValid;
+      btnNext.classList.toggle('enabled', allValid);
+    }
+
+    // Nome do simulado
+    nomeInput.addEventListener('input', checkFormValidity);
+
+    // Máscara de horário (00:00) no campo Tempo do simulado
+    tempoInput.addEventListener('input', () => {
+      let digits = tempoInput.value.replace(/\D/g, '').slice(0, 4);
+      if (digits.length > 2) {
+        tempoInput.value = digits.slice(0, 2) + ':' + digits.slice(2);
+      } else {
+        tempoInput.value = digits;
+      }
+      checkFormValidity();
+    });
+
+    // Dropdown do Cronômetro
+    const cronometroTrigger = document.getElementById('cronometro-trigger');
+    const cronometroMenu = document.getElementById('cronometro-menu');
+
+    cronometroTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      cronometroMenu.classList.toggle('open');
+      cronometroTrigger.classList.toggle('open');
+    });
+
+    cronometroMenu.querySelectorAll('.select-option').forEach((option) => {
+      option.addEventListener('click', () => {
+        cronometroValue.textContent = option.dataset.value;
+        cronometroValue.classList.add('filled');
+        cronometroMenu.querySelectorAll('.select-option').forEach((o) => o.classList.remove('selected'));
+        option.classList.add('selected');
+        cronometroMenu.classList.remove('open');
+        cronometroTrigger.classList.remove('open');
+        checkFormValidity();
+      });
+    });
+
+    // Dropdown do Status
+    const statusTrigger = document.getElementById('status-trigger');
+    const statusMenu = document.getElementById('status-menu');
+
+    statusTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      statusMenu.classList.toggle('open');
+      statusTrigger.classList.toggle('open');
+    });
+
+    function statusBadgeHTML(value) {
+      const cls = value === 'Ativo' ? 'status-badge-ativo' : 'status-badge-rascunho';
+      return `<span class="status-badge ${cls}"><span class="status-badge-dot"></span>${value}</span>`;
+    }
+
+    function selectStatusOption(value) {
+      statusValue.innerHTML = statusBadgeHTML(value);
+      statusValue.dataset.value = value;
+      statusValue.classList.add('filled');
+      statusMenu.querySelectorAll('.select-option').forEach((o) => {
+        o.classList.toggle('selected', o.dataset.value === value);
+      });
+    }
+
+    statusMenu.querySelectorAll('.select-option').forEach((option) => {
+      option.addEventListener('click', () => {
+        selectStatusOption(option.dataset.value);
+        statusMenu.classList.remove('open');
+        statusTrigger.classList.remove('open');
+        checkFormValidity();
+      });
+    });
+
+    document.addEventListener('click', () => {
+      cronometroMenu.classList.remove('open');
+      cronometroTrigger.classList.remove('open');
+      statusMenu.classList.remove('open');
+      statusTrigger.classList.remove('open');
+    });
+
+    // Toggle de Baixar simulado em PDF
+    const pdfSwitch = document.getElementById('pdf-switch');
+    pdfSwitch.addEventListener('click', () => {
+      pdfSwitch.classList.toggle('on');
+    });
+
+    // Toggle de Ranking de alunos
+    const rankingSwitch = document.getElementById('ranking-switch');
+    rankingSwitch.addEventListener('click', () => {
+      rankingSwitch.classList.toggle('on');
+    });
+
+    // Se veio da opção "Editar", pré-preenche o formulário com os dados existentes
+    const EDIT_INDEX_KEY = 'editingSimuladoIndex';
+    const editingIndexRaw = localStorage.getItem(EDIT_INDEX_KEY);
+    const editingIndex = editingIndexRaw !== null ? Number(editingIndexRaw) : null;
+
+    function selectOption(menu, valueEl, value) {
+      valueEl.textContent = value;
+      valueEl.classList.add('filled');
+      menu.querySelectorAll('.select-option').forEach((o) => {
+        o.classList.toggle('selected', o.dataset.value === value);
+      });
+    }
+
+    if (editingIndex !== null) {
+      const simulados = JSON.parse(localStorage.getItem('simulados') || '[]');
+      const simulado = simulados[editingIndex];
+
+      if (simulado) {
+        document.getElementById('page-title').textContent = 'Editar simulado';
+        document.getElementById('btn-next-label').textContent = 'Salvar';
+
+        nomeInput.value = simulado.nome || '';
+        tempoInput.value = simulado.tempo || '';
+        if (simulado.cronometro) selectOption(cronometroMenu, cronometroValue, simulado.cronometro);
+        if (simulado.status) selectStatusOption(simulado.status);
+        if (simulado.pdf) pdfSwitch.classList.add('on');
+        if (simulado.ranking) rankingSwitch.classList.add('on');
+
+        if (simulado.questoes) {
+          const placeholderQuestoes = Array.from({ length: simulado.questoes }, (_, i) => `#Q${i + 1}`);
+          localStorage.setItem('simuladoQuestoes', JSON.stringify(placeholderQuestoes));
+        }
+
+        checkFormValidity();
+      }
+    }
+
+    // Concluir a criação (ou edição) do simulado
+    btnNext.addEventListener('click', () => {
+      if (btnNext.classList.contains('enabled')) {
+        const STORAGE_KEY = 'simulados';
+        const simulados = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        const questoes = JSON.parse(localStorage.getItem('simuladoQuestoes') || '[]');
+
+        const dadosSimulado = {
+          nome: nomeInput.value.trim(),
+          tempo: tempoInput.value,
+          cronometro: cronometroValue.textContent,
+          status: statusValue.dataset.value,
+          questoes: questoes.length,
+          pdf: pdfSwitch.classList.contains('on'),
+          ranking: rankingSwitch.classList.contains('on'),
+        };
+
+        if (editingIndex !== null && simulados[editingIndex]) {
+          simulados[editingIndex] = dadosSimulado;
+        } else {
+          simulados.push(dadosSimulado);
+        }
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(simulados));
+        localStorage.removeItem('simuladoQuestoes');
+        localStorage.removeItem(EDIT_INDEX_KEY);
+
+        window.location.href = 'index.html';
+      }
+    });
+
+    // Menu mobile
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebarEl = document.querySelector('.sidebar');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+    const sidebarClose = document.getElementById('sidebar-close');
+
+    function openMobileMenu() {
+      sidebarEl.classList.add('open');
+      sidebarBackdrop.classList.add('open');
+    }
+
+    function closeMobileMenu() {
+      sidebarEl.classList.remove('open');
+      sidebarBackdrop.classList.remove('open');
+    }
+
+    mobileMenuToggle.addEventListener('click', openMobileMenu);
+    sidebarClose.addEventListener('click', closeMobileMenu);
+    sidebarBackdrop.addEventListener('click', closeMobileMenu);
+  </script>
+
+</body>
+</html>

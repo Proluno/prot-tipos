@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Relatório do simulado</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #ffffff;
+    color: #1a1a1a;
+  }
+
+  .app {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ---------- Sidebar ---------- */
+
+  .sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background-color: #F1F1F1;
+    padding: 28px 20px;
+  }
+
+  .content-col {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* ---------- Topbar ---------- */
+
+  .topbar {
+    width: 100%;
+    height: 56px;
+    flex-shrink: 0;
+    background-color: #F1F1F1;
+  }
+
+  .back-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #6b7280;
+    text-decoration: none;
+    margin-bottom: 18px;
+  }
+
+  .back-link svg { width: 14px; height: 14px; }
+
+  .sidebar-title { font-size: 19px; font-weight: 700; color: #18181b; margin-bottom: 4px; }
+  .sidebar-subtitle { font-size: 13px; font-weight: 400; color: #9a9a9f; margin-bottom: 26px; }
+
+  .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #3f3f46;
+    text-decoration: none;
+  }
+
+  .nav-item svg { width: 17px; height: 17px; flex-shrink: 0; }
+
+  .nav-item.active { background-color: #ffffff; color: #E8761A; font-weight: 600; }
+
+  /* ---------- Main ---------- */
+
+  .main { flex: 1 1 auto; background-color: #ffffff; padding: 44px 48px 60px; }
+
+  .title-row { display: flex; align-items: center; gap: 14px; }
+
+  .title-back-icon { width: 22px; height: 22px; color: #18181b; flex-shrink: 0; }
+
+  .page-title { font-size: 24px; font-weight: 700; color: #18181b; }
+
+  .page-subtitle {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: #20212380;
+    width: 100%;
+    line-height: 1.5;
+    margin: 20px 0 30px;
+  }
+
+  .page-subtitle strong { color: #1a1a1a; font-weight: 600; }
+
+  /* ─── CARDS ─── */
+  .cards { display: flex; flex-direction: column; gap: 24px; }
+
+  .card {
+    background-color: #ffffff;
+    border: 1px solid #e4e4e7;
+    border-radius: 16px;
+    padding: 28px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .card-title { font-size: 18px; font-weight: 700; color: #18181b; }
+
+  /* ─── STATS ─── */
+  .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
+
+  .stat-card { background-color: #F6F6F7; border-radius: 12px; padding: 20px; }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .stat-icon svg { width: 20px; height: 20px; }
+
+  .stat-icon.orange { background-color: rgba(232, 118, 26, 0.15); color: #E8761A; }
+  .stat-icon.green { background-color: rgba(34, 197, 94, 0.15); color: #16803D; }
+  .stat-icon.red { background-color: rgba(239, 68, 68, 0.15); color: #DC2626; }
+  .stat-icon.blue { background-color: rgba(59, 130, 246, 0.15); color: #2563EB; }
+  .stat-icon.gray { background-color: #ECECEE; color: #71717a; }
+
+  .stat-value { font-size: 26px; font-weight: 700; color: #18181b; margin-bottom: 4px; }
+  .stat-label { display: flex; align-items: center; gap: 5px; font-size: 13.5px; font-weight: 400; color: #71717a; }
+
+  /* ─── GABARITO GRID ─── */
+  .gabarito-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+
+  .gabarito-cell {
+    background-color: #F6F6F7;
+    border: 1.5px solid #e4e4e7;
+    border-radius: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .gabarito-cell:hover { border-color: #c4c4ca; }
+
+  .cell-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: #71717a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 6px;
+  }
+
+  .cell-answer {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #27272a;
+    white-space: nowrap;
+  }
+
+  .cell-answer svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .cell-answer .dash { color: #a1a1aa; font-weight: 500; }
+  .cell-answer .correta-letra { color: #a1a1aa; font-weight: 500; }
+
+  .gabarito-cell.correta { border-color: rgba(34, 197, 94, 0.45); background-color: rgba(34, 197, 94, 0.08); }
+  .gabarito-cell.correta .cell-answer { color: #16803D; }
+  .gabarito-cell.correta .cell-answer svg { color: #16803D; }
+
+  .gabarito-cell.errada { border-color: rgba(239, 68, 68, 0.45); background-color: rgba(239, 68, 68, 0.08); }
+  .gabarito-cell.errada .cell-answer { color: #DC2626; }
+  .gabarito-cell.errada .cell-answer svg { color: #DC2626; }
+
+  .gabarito-cell.nao-respondida .cell-answer { color: #a1a1aa; }
+
+  .gabarito-legend {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid #ececee;
+  }
+
+  .legend-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .legend-chip svg { width: 12px; height: 12px; }
+
+  .legend-chip.correta { background-color: rgba(34, 197, 94, 0.15); color: #16803D; }
+  .legend-chip.errada { background-color: rgba(239, 68, 68, 0.15); color: #DC2626; }
+  .legend-chip.nao-respondida { background-color: #ECECEE; color: #71717a; }
+
+  .card-subtitle { font-size: 13.5px; font-weight: 400; color: #71717a; margin-top: -14px; margin-bottom: 24px; }
+
+  /* ─── QUESTION MODAL ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 100;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal-box {
+    width: 100%;
+    max-width: 720px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border: 1px solid #e4e4e7;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid #ececee;
+    padding: 0 20px;
+    flex-shrink: 0;
+  }
+
+  .modal-tabs { display: flex; gap: 28px; overflow-x: auto; }
+
+  .modal-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #71717a;
+    padding: 16px 0;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .modal-tab svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  .modal-tab.active { color: #E8761A; border-bottom-color: #E8761A; }
+
+  .modal-close { background: none; border: none; color: #71717a; cursor: pointer; flex-shrink: 0; padding: 8px; }
+  .modal-close:hover { color: #18181b; }
+  .modal-close svg { width: 18px; height: 18px; }
+
+  .modal-body { padding: 24px; overflow-y: auto; }
+
+  .modal-pane { display: none; }
+  .modal-pane.active { display: block; }
+
+  /* Comentários */
+  .comment-item { background-color: #F6F6F7; border-radius: 10px; padding: 16px; margin-bottom: 14px; }
+
+  .comment-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+
+  .comment-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #E8761A;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .comment-avatar.professor { background-color: #2563EB; }
+
+  .comment-item.from-professor {
+    border: 1px solid rgba(37, 99, 235, 0.3);
+    background-color: rgba(37, 99, 235, 0.05);
+  }
+
+  .comment-badge {
+    background-color: rgba(37, 99, 235, 0.15);
+    color: #2563EB;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+
+  .comment-name { font-size: 14px; font-weight: 700; color: #18181b; }
+  .comment-time { font-size: 12px; color: #a1a1aa; margin-left: 6px; font-weight: 400; }
+
+  .comment-text { font-size: 14px; color: #27272a; line-height: 1.5; margin-bottom: 10px; }
+
+  .comment-actions { display: flex; align-items: center; gap: 18px; }
+
+  .comment-actions button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #71717a;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .comment-actions button svg { width: 13px; height: 13px; }
+  .comment-actions button:hover { color: #18181b; }
+  .comment-actions button.danger { color: #DC2626; }
+  .comment-actions button.danger:hover { color: #EF4444; }
+
+  .comment-empty { font-size: 14px; color: #a1a1aa; text-align: center; padding: 24px 0; }
+
+  .comment-form { display: flex; gap: 12px; align-items: flex-start; }
+
+  .comment-form textarea {
+    flex: 1 1 auto;
+    background-color: #ffffff;
+    border: 1px solid #e4e4e7;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #1a1a1a;
+    resize: vertical;
+    min-height: 44px;
+  }
+
+  .comment-form textarea::placeholder { color: #a1a1aa; }
+
+  .comment-form-footer { display: flex; justify-content: flex-end; margin-top: 10px; }
+
+  .btn-comentar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ffffff;
+    background-color: #E8761A;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 18px;
+    cursor: pointer;
+  }
+
+  .btn-comentar:disabled { background-color: #F3C6A0; cursor: not-allowed; }
+  .btn-comentar svg { width: 14px; height: 14px; }
+
+  /* Professor */
+  .professor-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+
+  .professor-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #2563EB;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .professor-name { font-size: 14px; font-weight: 700; color: #18181b; }
+  .professor-role { font-size: 12px; color: #71717a; }
+
+  .professor-line { font-size: 14.5px; color: #27272a; line-height: 1.7; padding: 4px 0; }
+  .professor-line.gabarito { color: #16803D; font-weight: 700; }
+
+  /* Estatísticas */
+  .stats-section-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #18181b;
+    margin-bottom: 12px;
+  }
+
+  .info-icon { display: inline-flex; color: #a1a1aa; cursor: help; }
+  .info-icon svg { width: 13px; height: 13px; }
+
+  .rendimento-legend { display: flex; gap: 20px; font-size: 13px; font-weight: 600; color: #27272a; margin-bottom: 10px; }
+  .rendimento-legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+  .legend-dot.green { background-color: #16803D; }
+  .legend-dot.red { background-color: #DC2626; }
+
+  .rendimento-bar {
+    display: flex;
+    width: 100%;
+    height: 14px;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 28px;
+    background-color: #F0F0F1;
+  }
+
+  .rendimento-bar .seg-green { background-color: #16803D; }
+  .rendimento-bar .seg-red { background-color: #DC2626; }
+
+  .alt-bar-row { display: grid; grid-template-columns: 56px 1fr; align-items: center; gap: 12px; margin-bottom: 10px; }
+
+  .alt-bar-label { font-size: 13px; font-weight: 600; color: #71717a; }
+
+  .alt-bar-track { position: relative; height: 22px; background-color: #F0F0F1; border-radius: 6px; overflow: hidden; }
+  .alt-bar-fill { height: 100%; background-color: #E8761A; border-radius: 6px; }
+
+  .alt-bar-axis { display: grid; grid-template-columns: 56px 1fr; gap: 12px; margin-bottom: 24px; }
+  .alt-bar-axis-labels { display: flex; justify-content: space-between; font-size: 11px; color: #a1a1aa; }
+
+  .historico-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #ececee;
+    font-size: 13.5px;
+    color: #27272a;
+  }
+
+  .historico-row:last-child { border-bottom: none; }
+  .historico-row .legend-dot { flex-shrink: 0; }
+  .historico-row .historico-text { flex: 1 1 auto; }
+  .historico-row .historico-date { color: #a1a1aa; font-size: 12.5px; flex-shrink: 0; }
+
+  /* Aula */
+  .aula-title { font-size: 15px; font-weight: 700; color: #18181b; margin-bottom: 16px; }
+
+  .aula-player {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #F6F6F7, #ececee);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .aula-play-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.06);
+    border: 1.5px solid rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3f3f46;
+    cursor: pointer;
+  }
+
+  .aula-play-btn svg { width: 22px; height: 22px; margin-left: 3px; }
+
+  /* ---------- Menu mobile (topbar + drawer) ---------- */
+
+  .mobile-topbar {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 56px;
+    background-color: #F1F1F1;
+    padding: 0 16px;
+  }
+
+  .mobile-menu-toggle {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    color: #18181b;
+    cursor: pointer;
+  }
+
+  .mobile-menu-toggle svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .mobile-logo {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: #18181b;
+    white-space: nowrap;
+  }
+
+  .mobile-logo .orange {
+    color: #E8761A;
+  }
+
+  .mobile-logo-dots {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .mobile-logo-dots .dot {
+    position: absolute;
+    border-radius: 50%;
+  }
+
+  .mobile-logo-dots .dot-teal { width: 5px; height: 5px; background-color: #35C6C1; top: 0; left: 5px; }
+  .mobile-logo-dots .dot-pink { width: 5px; height: 5px; background-color: #E85AA0; top: 7px; left: 0; }
+  .mobile-logo-dots .dot-orange { width: 5px; height: 5px; background-color: #E8761A; top: 8px; left: 13px; }
+  .mobile-logo-dots .dot-blue { width: 4px; height: 4px; background-color: #4C6FE0; top: 14px; left: 7px; }
+
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    z-index: 250;
+  }
+
+  .sidebar-backdrop.open {
+    display: block;
+  }
+
+  .sidebar-close {
+    display: none;
+    position: absolute;
+    top: 22px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #18181b;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .sidebar-close svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* ---------- Responsivo ---------- */
+
+  @media (max-width: 768px) {
+    .mobile-topbar {
+      display: flex;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 85vw;
+      max-width: 320px;
+      height: 100vh;
+      padding: 24px 20px;
+      z-index: 300;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+      overflow-y: auto;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .sidebar.open {
+      transform: translateX(0);
+    }
+
+    .sidebar-close {
+      display: flex;
+    }
+
+    .topbar {
+      display: none;
+    }
+
+    .main {
+      padding: 24px 20px 40px;
+    }
+
+    .page-title {
+      font-size: 20px;
+    }
+
+    .page-subtitle {
+      font-size: 15px;
+    }
+
+    .card {
+      padding: 20px;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .gabarito-grid {
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    }
+
+    .modal-box {
+      max-height: 92vh;
+    }
+
+    .modal-tabs {
+      gap: 18px;
+    }
+
+    .modal-body {
+      padding: 18px;
+    }
+
+    .comment-form {
+      flex-direction: column;
+    }
+
+    .alt-bar-row,
+    .alt-bar-axis {
+      grid-template-columns: 44px 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <header class="mobile-topbar">
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="mobile-logo">
+      Prol<span class="mobile-logo-dots"><span class="dot dot-teal"></span><span class="dot dot-pink"></span><span class="dot dot-orange"></span><span class="dot dot-blue"></span></span><span class="orange">uno.</span>
+    </div>
+  </header>
+
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <div class="app">
+
+    <aside class="sidebar">
+      <button class="sidebar-close" id="sidebar-close" aria-label="Fechar menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <a class="back-link" href="../../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Voltar
+      </a>
+
+      <h1 class="sidebar-title">Hub de Questões</h1>
+      <p class="sidebar-subtitle">Crie e venda suas questões</p>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item" href="../01-biblioteca/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h9"/></svg>
+          Biblioteca
+        </a>
+        <a class="nav-item" href="../02-banco-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>
+          Banco de questões
+        </a>
+        <a class="nav-item" href="../03-questoes-externas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-5Z"/><path d="M14 3v6h6"/></svg>
+          Questões externas
+        </a>
+        <a class="nav-item" href="../04-estatisticas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Estatísticas
+        </a>
+        <a class="nav-item" href="../05-pagamentos/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+          Pagamentos
+        </a>
+        <a class="nav-item" href="../06-plano-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          Plano de Questões
+        </a>
+        <a class="nav-item active" href="../07-simulados/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 3.5h6a1 1 0 0 1 1 1V6H8V4.5a1 1 0 0 1 1-1Z"/><path d="M9 12.5l2 2 4-4"/></svg>
+          Simulados
+        </a>
+      </nav>
+    </aside>
+
+    <div class="content-col">
+      <header class="topbar"></header>
+
+      <main class="main">
+        <div class="title-row">
+          <a href="estatisticas-simulado.html">
+            <svg class="title-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </a>
+          <h2 class="page-title">Relatório do simulado</h2>
+        </div>
+
+        <p class="page-subtitle" id="page-subtitle">Resultado do aluno neste simulado.</p>
+
+        <div class="cards">
+
+          <!-- CARD: DESEMPENHO -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Desempenho</span>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon orange">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-5Z"/><path d="M14 3v6h6"/></svg>
+                </div>
+                <div class="stat-value" id="stat-respondidas">—</div>
+                <div class="stat-label">Questões respondidas</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon green">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+                <div class="stat-value" id="stat-corretas">—</div>
+                <div class="stat-label">Questões certas</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon red">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </div>
+                <div class="stat-value" id="stat-erradas">—</div>
+                <div class="stat-label">Questões erradas</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon gray">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                </div>
+                <div class="stat-value" id="stat-nao-respondidas">—</div>
+                <div class="stat-label">Não respondida</div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon blue">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                </div>
+                <div class="stat-value" id="stat-taxa">—</div>
+                <div class="stat-label">
+                  Taxa de acertos
+                  <span class="info-icon" title="Calculada sobre o total de questões do simulado: as que ficaram sem resposta entram na conta como erradas.">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="16" x2="12" y2="11"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD: GABARITO -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Gabarito por questão</span>
+            </div>
+            <p class="card-subtitle">Clique em uma questão para ver comentários, a explicação do professor, estatísticas e a aula relacionada.</p>
+
+            <div class="gabarito-grid" id="report-list"></div>
+
+            <div class="gabarito-legend">
+              <span class="legend-chip correta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                Acertou
+              </span>
+              <span class="legend-chip errada">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                Errou
+              </span>
+              <span class="legend-chip nao-respondida">Não respondida</span>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+
+  </div>
+
+  <!-- QUESTION MODAL -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-tabs">
+          <button class="modal-tab" data-tab="comentarios" onclick="switchModalTab('comentarios')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <span id="tab-label-comentarios">Comentários (0)</span>
+          </button>
+          <button class="modal-tab" data-tab="professor" onclick="switchModalTab('professor')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5Z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            Professor
+          </button>
+          <button class="modal-tab" data-tab="estatisticas" onclick="switchModalTab('estatisticas')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            Estatísticas
+          </button>
+          <button class="modal-tab" data-tab="aula" onclick="switchModalTab('aula')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+            Aula (1)
+          </button>
+        </div>
+        <button class="modal-close" onclick="closeQuestionModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- COMENTÁRIOS -->
+        <div class="modal-pane" data-pane="comentarios">
+          <div id="comment-list"></div>
+          <div class="comment-form">
+            <div class="comment-avatar">JT</div>
+            <div style="flex:1 1 auto;">
+              <textarea id="comment-input" placeholder="Adicione um comentário..." oninput="onCommentInput()"></textarea>
+              <div class="comment-form-footer">
+                <button class="btn-comentar" id="btn-comentar" disabled onclick="submitComment()">
+                  Comentar
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROFESSOR -->
+        <div class="modal-pane" data-pane="professor" id="pane-professor"></div>
+
+        <!-- ESTATÍSTICAS -->
+        <div class="modal-pane" data-pane="estatisticas" id="pane-estatisticas"></div>
+
+        <!-- AULA -->
+        <div class="modal-pane" data-pane="aula" id="pane-aula"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function formatTime(s) {
+      const h = Math.floor(s / 3600).toString().padStart(2, '0');
+      const m = Math.floor((s % 3600) / 60).toString().padStart(2, '0');
+      const sec = (s % 60).toString().padStart(2, '0');
+      return `${h}:${m}:${sec}`;
+    }
+
+    const STATUS_ICON = {
+      correta: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+      errada: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+      'nao-respondida': ''
+    };
+
+    const alunoInfo = JSON.parse(localStorage.getItem('relatorioAluno') || '{}');
+    const nomeSimuladoAtual = localStorage.getItem('statsSimuladoNome');
+
+    function letterFor(i) { return String.fromCharCode(65 + i); }
+
+    const ALTERNATIVAS_PADRAO = ['Alternativa A', 'Alternativa B', 'Alternativa C', 'Alternativa D', 'Alternativa E'];
+
+    const STATUS_SEQUENCIA = ['correta', 'correta', 'errada', 'correta', 'correta', 'nao-respondida', 'correta', 'errada', 'correta', 'correta'];
+
+    const resultado = {
+      nome: alunoInfo.nome || 'Aluno',
+      tempoSegundos: 5040,
+      total: STATUS_SEQUENCIA.length,
+      respondidas: STATUS_SEQUENCIA.filter((s) => s !== 'nao-respondida').length,
+      corretas: STATUS_SEQUENCIA.filter((s) => s === 'correta').length,
+      erradas: STATUS_SEQUENCIA.filter((s) => s === 'errada').length,
+      detalhe: STATUS_SEQUENCIA.map((status, i) => {
+        const correctIndex = i % ALTERNATIVAS_PADRAO.length;
+        const erradaIndex = (correctIndex + 1) % ALTERNATIVAS_PADRAO.length;
+        return {
+          numero: i + 1,
+          id: 500 + i,
+          status,
+          selecionada: status === 'nao-respondida' ? null : letterFor(status === 'correta' ? correctIndex : erradaIndex),
+          correta: letterFor(correctIndex),
+          correctIndex,
+          alternativas: ALTERNATIVAS_PADRAO,
+          assunto: 'Assunto',
+          materia: 'Disciplina',
+        };
+      }),
+    };
+
+    document.getElementById('page-subtitle').innerHTML = nomeSimuladoAtual
+      ? `Resultado de <strong>${resultado.nome}</strong> no simulado "${nomeSimuladoAtual}", tempo total de ${formatTime(resultado.tempoSegundos)}.`
+      : `Resultado de <strong>${resultado.nome}</strong>, tempo total de ${formatTime(resultado.tempoSegundos)}.`;
+
+    const naoRespondidas = resultado.total - resultado.respondidas;
+
+    document.getElementById('stat-respondidas').textContent = `${resultado.respondidas}/${resultado.total}`;
+    document.getElementById('stat-corretas').textContent = resultado.corretas;
+    document.getElementById('stat-erradas').textContent = resultado.erradas;
+    document.getElementById('stat-nao-respondidas').textContent = naoRespondidas;
+
+    const taxa = resultado.total > 0 ? Math.round((resultado.corretas / resultado.total) * 100) : 0;
+    document.getElementById('stat-taxa').textContent = `${taxa}%`;
+
+    document.getElementById('report-list').innerHTML = resultado.detalhe.map((q, i) => `
+      <div class="gabarito-cell ${q.status}" onclick="openQuestionModal(${i})">
+        <div class="cell-header">${q.numero}: ID${q.id}</div>
+        <div class="cell-answer">
+          ${q.selecionada ? q.selecionada : '<span class="dash">---</span>'}
+          ${STATUS_ICON[q.status]}
+          <span class="correta-letra">(${q.correta})</span>
+        </div>
+      </div>
+    `).join('');
+
+    /* ─── QUESTION MODAL ─── */
+    const commentsStore = {};
+    const historicoStore = {};
+    let currentQuestionIndex = null;
+
+    function getCurrentQuestion() {
+      return resultado.detalhe[currentQuestionIndex];
+    }
+
+    function openQuestionModal(index) {
+      currentQuestionIndex = index;
+      document.getElementById('modal-overlay').classList.add('open');
+      switchModalTab('comentarios');
+    }
+
+    function closeQuestionModal() {
+      document.getElementById('modal-overlay').classList.remove('open');
+    }
+
+    document.getElementById('modal-overlay').addEventListener('click', (e) => {
+      if (e.target.id === 'modal-overlay') closeQuestionModal();
+    });
+
+    function switchModalTab(tab) {
+      document.querySelectorAll('.modal-tab').forEach((btn) => btn.classList.toggle('active', btn.dataset.tab === tab));
+      document.querySelectorAll('.modal-pane').forEach((p) => p.classList.toggle('active', p.dataset.pane === tab));
+
+      if (tab === 'comentarios') renderComments();
+      if (tab === 'professor') renderProfessor();
+      if (tab === 'estatisticas') renderEstatisticas();
+      if (tab === 'aula') renderAula();
+    }
+
+    const TESTIMONIAL_POOL = [
+      { name: 'Marina Costa', avatar: 'MC', time: '2 dias atrás', text: 'Questão excelente para fixar o conteúdo! O comentário do professor deixou tudo muito claro.' },
+      { name: 'Thiago Ramalho', avatar: 'TR', time: '5 dias atrás', text: 'Caiu praticamente igual na minha prova. Muito boa pra treinar esse assunto, ajudou demais.' },
+      { name: 'Aline Ferreira', avatar: 'AF', time: '1 semana atrás', text: 'Depois de errar essa questão duas vezes, finalmente entendi o raciocínio da banca. Excelente pra revisão!' }
+    ];
+
+    const PROFESSOR_COMMENT_Q1 = {
+      name: 'Prof. Ricardo Almeida',
+      avatar: 'RA',
+      time: '3 dias atrás',
+      isProfessor: true,
+      text: 'Essa é uma das questões que mais gera dúvida em sala! Qualquer dúvida, comentem aqui que eu respondo.'
+    };
+
+    function seedComments(q) {
+      if (!commentsStore[q.numero]) {
+        commentsStore[q.numero] = TESTIMONIAL_POOL.map((c) => ({ ...c }));
+      }
+    }
+
+    function renderComments() {
+      const q = getCurrentQuestion();
+      seedComments(q);
+      const list = commentsStore[q.numero] || [];
+      document.getElementById('tab-label-comentarios').textContent = `Comentários (${list.length})`;
+
+      const container = document.getElementById('comment-list');
+      container.innerHTML = list.length === 0
+        ? '<p class="comment-empty">Nenhum comentário ainda. Seja o primeiro a comentar!</p>'
+        : list.map((c, i) => `
+          <div class="comment-item ${c.isProfessor ? 'from-professor' : ''}">
+            <div class="comment-header">
+              <div class="comment-avatar ${c.isProfessor ? 'professor' : ''}">${c.avatar}</div>
+              <span class="comment-name">${c.name}</span>
+              ${c.isProfessor ? '<span class="comment-badge">Professor</span>' : ''}
+              <span class="comment-time">${c.time}</span>
+            </div>
+            <p class="comment-text">${c.text}</p>
+            <div class="comment-actions">
+              <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14Z"/></svg>Útil</button>
+              <button><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17l-5-5 5-5M4 12h11a4 4 0 0 1 4 4v1"/></svg>Responder</button>
+              <button class="danger" onclick="deleteComment(${i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg>Excluir</button>
+            </div>
+          </div>
+        `).join('');
+
+      document.getElementById('comment-input').value = '';
+      document.getElementById('btn-comentar').disabled = true;
+    }
+
+    function onCommentInput() {
+      const val = document.getElementById('comment-input').value.trim();
+      document.getElementById('btn-comentar').disabled = val.length === 0;
+    }
+
+    function submitComment() {
+      const input = document.getElementById('comment-input');
+      const text = input.value.trim();
+      if (!text) return;
+      const q = getCurrentQuestion();
+      if (!commentsStore[q.numero]) commentsStore[q.numero] = [];
+      commentsStore[q.numero].push({ name: 'Você', avatar: 'JT', time: 'agora', text });
+      renderComments();
+    }
+
+    function deleteComment(i) {
+      const q = getCurrentQuestion();
+      commentsStore[q.numero].splice(i, 1);
+      renderComments();
+    }
+
+    function renderProfessor() {
+      const q = getCurrentQuestion();
+      const lines = q.alternativas.map((alt, i) => {
+        const isCorrect = i === q.correctIndex;
+        return `<p class="professor-line ${isCorrect ? 'gabarito' : ''}">${letterFor(i).toLowerCase()}) ${alt}${isCorrect ? ' - alternativa correta.' : ''}</p>`;
+      }).join('');
+
+      const extraTip = q.id === 500 ? `
+        <div class="comment-item from-professor" style="margin-top:20px;">
+          <div class="comment-header">
+            <div class="comment-avatar professor">${PROFESSOR_COMMENT_Q1.avatar}</div>
+            <span class="comment-name">${PROFESSOR_COMMENT_Q1.name}</span>
+            <span class="comment-badge">Professor</span>
+            <span class="comment-time">${PROFESSOR_COMMENT_Q1.time}</span>
+          </div>
+          <p class="comment-text">${PROFESSOR_COMMENT_Q1.text}</p>
+        </div>
+      ` : '';
+
+      document.getElementById('pane-professor').innerHTML = `
+        <div class="professor-header">
+          <div class="professor-avatar">RA</div>
+          <div>
+            <p class="professor-name">Prof. Ricardo Almeida</p>
+            <p class="professor-role">${q.materia}</p>
+          </div>
+        </div>
+        <p class="professor-line" style="margin-bottom:14px;">
+          Essa questão exige atenção ao conteúdo sobre "${q.assunto}". A alternativa correta é a
+          <strong style="color:#16803D;">${q.correta}</strong> porque reproduz fielmente o que foi cobrado,
+          sem extrapolações ou interpretações equivocadas. As demais alternativas trazem afirmações que,
+          embora pareçam plausíveis à primeira vista, contrariam o gabarito ou generalizam indevidamente
+          o conteúdo cobrado.
+        </p>
+        ${lines}
+        ${extraTip}
+      `;
+    }
+
+    function buildHistorico(q) {
+      if (historicoStore[q.numero]) return historicoStore[q.numero];
+      const count = 2 + Math.floor((q.numero * 37) % 3);
+      const entries = [];
+      for (let i = 0; i < count; i++) {
+        const isCorrect = (q.numero + i) % 3 !== 0;
+        const idx = isCorrect ? q.correctIndex : (q.correctIndex + 1) % q.alternativas.length;
+        const daysAgo = (i + 1) * (18 + ((q.numero * 13) % 45));
+        const d = new Date(Date.parse('2026-08-20') - daysAgo * 86400000);
+        entries.push({
+          correct: isCorrect,
+          letter: letterFor(idx),
+          timestamp: d.getTime(),
+          date: `${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+        });
+      }
+      entries.sort((a, b) => a.timestamp - b.timestamp);
+      historicoStore[q.numero] = entries;
+      return entries;
+    }
+
+    function renderEstatisticas() {
+      const q = getCurrentQuestion();
+      const historico = buildHistorico(q);
+      const acertos = historico.filter((h) => h.correct).length;
+      const erros = historico.length - acertos;
+      const total = historico.length;
+      const pctGreen = total ? (acertos / total) * 100 : 0;
+      const pctRed = 100 - pctGreen;
+
+      const counts = q.alternativas.map(() => 0);
+      historico.forEach((h) => { counts[h.letter.charCodeAt(0) - 65]++; });
+
+      const altBars = q.alternativas.map((alt, i) => {
+        const pct = total ? Math.round((counts[i] / total) * 100) : 0;
+        return `
+          <div class="alt-bar-row">
+            <span class="alt-bar-label">Item ${letterFor(i)}</span>
+            <div class="alt-bar-track"><div class="alt-bar-fill" style="width:${pct}%"></div></div>
+          </div>`;
+      }).join('');
+
+      const historicoRows = historico.slice().reverse().map((h) => `
+        <div class="historico-row">
+          <span class="legend-dot ${h.correct ? 'green' : 'red'}"></span>
+          <span class="historico-text">Respondeu ${h.correct ? 'corretamente' : 'incorretamente'}, selecionou o item ${h.letter}</span>
+          <span class="historico-date">${h.date}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('pane-estatisticas').innerHTML = `
+        <p class="stats-section-title">Rendimento</p>
+        <div class="rendimento-legend">
+          <span><span class="legend-dot green"></span>Acertos: ${acertos}</span>
+          <span><span class="legend-dot red"></span>Erros: ${erros}</span>
+        </div>
+        <div class="rendimento-bar">
+          <div class="seg-green" style="width:${pctGreen}%"></div>
+          <div class="seg-red" style="width:${pctRed}%"></div>
+        </div>
+
+        <p class="stats-section-title">
+          Respostas por alternativa
+          <span class="info-icon" title="Percentual de vezes que essa alternativa foi selecionada nas tentativas anteriores desta questão.">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="16" x2="12" y2="11"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </span>
+        </p>
+        ${altBars}
+        <div class="alt-bar-axis">
+          <span></span>
+          <div class="alt-bar-axis-labels"><span>0%</span><span>20%</span><span>40%</span><span>60%</span><span>80%</span><span>100%</span></div>
+        </div>
+
+        <p class="stats-section-title">Histórico de respostas</p>
+        ${historicoRows}
+      `;
+    }
+
+    function renderAula() {
+      const q = getCurrentQuestion();
+      const titulo = `${q.materia} - ${q.assunto} - Aula 01.mp4`;
+      document.getElementById('pane-aula').innerHTML = `
+        <p class="aula-title">${titulo}</p>
+        <div class="aula-player">
+          <div class="aula-play-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+          </div>
+        </div>
+      `;
+    }
+
+    // Menu mobile
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebarEl = document.querySelector('.sidebar');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+    const sidebarClose = document.getElementById('sidebar-close');
+
+    function openMobileMenu() {
+      sidebarEl.classList.add('open');
+      sidebarBackdrop.classList.add('open');
+    }
+
+    function closeMobileMenu() {
+      sidebarEl.classList.remove('open');
+      sidebarBackdrop.classList.remove('open');
+    }
+
+    mobileMenuToggle.addEventListener('click', openMobileMenu);
+    sidebarClose.addEventListener('click', closeMobileMenu);
+    sidebarBackdrop.addEventListener('click', closeMobileMenu);
+  </script>
+
+</body>
+</html>

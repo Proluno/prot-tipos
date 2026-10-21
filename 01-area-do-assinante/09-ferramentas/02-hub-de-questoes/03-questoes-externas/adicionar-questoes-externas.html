@@ -1,0 +1,1946 @@
+<!DOCTYPE html>
+<!-- Adicionar questões — fluxo de Questões externas (cópia adaptada de 07-simulados/adicionar-questoes-simulado.html) -->
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adicionar questões · Questões externas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #ffffff;
+      color: #1a1a1a;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ---------- Sidebar ---------- */
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background-color: #F1F1F1;
+      padding: 28px 20px;
+    }
+
+    .content-col {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* ---------- Topbar ---------- */
+
+    .topbar {
+      width: 100%;
+      height: 56px;
+      flex-shrink: 0;
+      background-color: #F1F1F1;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #6b7280;
+      text-decoration: none;
+      margin-bottom: 18px;
+    }
+
+    .back-link svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .sidebar-title {
+      font-size: 19px;
+      font-weight: 700;
+      color: #18181b;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-subtitle {
+      font-size: 13px;
+      font-weight: 400;
+      color: #9a9a9f;
+      margin-bottom: 26px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #3f3f46;
+      text-decoration: none;
+    }
+
+    .nav-item svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+
+    .nav-item.active {
+      background-color: #ffffff;
+      color: #E8761A;
+      font-weight: 600;
+    }
+
+    /* ---------- Main ---------- */
+
+    .main {
+      flex: 1 1 auto;
+      background-color: #ffffff;
+      padding: 44px 48px 60px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .title-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .title-back-icon {
+      width: 22px;
+      height: 22px;
+      color: #18181b;
+      flex-shrink: 0;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #18181b;
+    }
+
+    .title-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      color: #3f3f46;
+      font-family: 'Inter', sans-serif;
+      font-size: 14.5px;
+      font-weight: 600;
+      padding: 11px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-filter svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .btn-confirm-add {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #F3C6A0;
+      border: none;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-size: 14.5px;
+      font-weight: 600;
+      padding: 12px 22px;
+      border-radius: 8px;
+      cursor: not-allowed;
+      white-space: nowrap;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-confirm-add.enabled {
+      background-color: #E8761A;
+      cursor: pointer;
+    }
+
+    /* ---------- Filter card ---------- */
+
+    .filter-panel {
+      background-color: #fafafa;
+      border: 1px solid #e4e4e7;
+      border-radius: 14px;
+      padding: 26px 28px 24px;
+      margin-bottom: 20px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px 24px;
+      margin-bottom: 32px;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field > label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 400;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .input-with-icon,
+    .select {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13.5px;
+      color: #a1a1aa;
+    }
+
+    .input-with-icon svg,
+    .select svg {
+      width: 15px;
+      height: 15px;
+      color: #a1a1aa;
+      flex-shrink: 0;
+    }
+
+    .select svg {
+      margin-left: auto;
+    }
+
+    .input-with-icon input {
+      border: none;
+      outline: none;
+      background: none;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      color: #1a1a1a;
+      width: 100%;
+    }
+
+    .input-with-icon input::placeholder {
+      color: #a1a1aa;
+    }
+
+    .select span {
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    button.select {
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .select svg {
+      transition: transform 0.15s ease;
+    }
+
+    .multiselect {
+      position: relative;
+    }
+
+    .multiselect.open .select svg {
+      transform: rotate(180deg);
+    }
+
+    .select .multiselect-label.has-value {
+      color: #52525b;
+      font-weight: 400;
+    }
+
+    .multiselect-panel {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+      z-index: 60;
+    }
+
+    .multiselect.open .multiselect-panel {
+      display: block;
+    }
+
+    .multiselect-search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #e4e4e7;
+      background-color: #fafafa;
+    }
+
+    .multiselect-search svg {
+      width: 15px;
+      height: 15px;
+      color: #a1a1aa;
+      flex-shrink: 0;
+    }
+
+    .multiselect-search input {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      outline: none;
+      background: none;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      color: #1a1a1a;
+    }
+
+    .multiselect-search input::placeholder {
+      color: #a1a1aa;
+    }
+
+    .multiselect-options {
+      max-height: 220px;
+      overflow-y: auto;
+      padding: 4px 0;
+    }
+
+    .multiselect-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      font-size: 13.5px;
+      line-height: 1.3;
+      color: #3f3f46;
+      cursor: pointer;
+      transition: background-color 0.12s ease;
+    }
+
+    .multiselect-option:nth-child(even) {
+      background-color: #fafafa;
+    }
+
+    .multiselect-option:hover {
+      background-color: #FFF4EC;
+    }
+
+    .multiselect-option span {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .multiselect-option input {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1.5px solid #d4d4d8;
+      accent-color: #E8761A;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ---------- Filter footer ---------- */
+
+    .filter-footer-row {
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .active-filters {
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .active-filters.has-tags {
+      display: flex;
+    }
+
+    .active-filters-label {
+      flex-shrink: 0;
+      padding-top: 6px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #27272a;
+      white-space: nowrap;
+    }
+
+    .active-filters-tags {
+      display: flex;
+      flex: 1 1 auto;
+      min-width: 0;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-tag {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+      gap: 7px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background-color: #F4F4F5;
+      border: 1px solid #e4e4e7;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12.5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.12s ease, border-color 0.12s ease;
+    }
+
+    .filter-tag:hover {
+      background-color: #FFF4EC;
+      border-color: #F3C79A;
+    }
+
+    .filter-tag .tag-remove {
+      width: 14px;
+      height: 14px;
+      color: #E8761A;
+      flex-shrink: 0;
+    }
+
+    .filter-tag .tag-category {
+      color: #71717a;
+      font-weight: 500;
+    }
+
+    .filter-tag .tag-value {
+      color: #27272a;
+      font-weight: 600;
+    }
+
+    .filter-tag-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      padding: 4px 4px 4px 12px;
+      border-radius: 999px;
+      background-color: #F4F4F5;
+      border: 1px solid #e4e4e7;
+    }
+
+    .filter-tag-group-clear {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #71717a;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .filter-tag-group-clear .tag-remove {
+      width: 14px;
+      height: 14px;
+      color: #E8761A;
+      flex-shrink: 0;
+    }
+
+    .filter-tag-value-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #27272a;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.12s ease, border-color 0.12s ease;
+    }
+
+    .filter-tag-value-chip:hover {
+      background-color: #FFF4EC;
+      border-color: #F3C79A;
+    }
+
+    .filter-tag-value-chip .tag-remove {
+      width: 12px;
+      height: 12px;
+      color: #E8761A;
+      flex-shrink: 0;
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+    .btn-filtrar {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: #E8761A;
+      border: none;
+      border-radius: 6px;
+      padding: 11px 32px;
+      cursor: pointer;
+    }
+
+    .btn-limpar-filtro {
+      display: none;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #71717a;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-limpar-filtro:hover {
+      color: #3f3f46;
+      text-decoration: underline;
+    }
+
+    .btn-limpar-filtro.visible {
+      display: inline-flex;
+    }
+
+    /* ---------- Pill filters ---------- */
+
+    .pill-filters {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .pill-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .pill-filter-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #27272a;
+      white-space: nowrap;
+    }
+
+    .switch-options {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip-option {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      border: 1.5px solid #e4e4e7;
+      background-color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #3f3f46;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+    }
+
+    .chip-option input {
+      display: none;
+    }
+
+    .chip-option .chip-check {
+      display: none;
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+
+    .chip-option:not(:has(input:checked)):hover {
+      border-color: #d4d4d8;
+      background-color: #fafafa;
+    }
+
+    .chip-option:has(input:checked) {
+      background-color: #FFF4EC;
+      border-color: #E8761A;
+      color: #E8761A;
+    }
+
+    .chip-option:has(input:checked) .chip-check {
+      display: inline-flex;
+    }
+
+    .btn-filter.active {
+      background-color: #FFF4EC;
+      border-color: #E8761A;
+      color: #E8761A;
+    }
+
+    .filter-panel[hidden] {
+      display: none;
+    }
+
+    .filter-empty {
+      display: none;
+      padding: 28px 0;
+      text-align: center;
+      font-size: 14.5px;
+      color: #71717a;
+    }
+
+    .filter-empty.visible {
+      display: block;
+    }
+
+    /* ---------- Select-all row ---------- */
+
+    .select-all-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14.5px;
+      color: #27272a;
+      cursor: pointer;
+    }
+
+    .select-all-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .checkbox-label input,
+    .question-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1.5px solid #d4d4d8;
+      accent-color: #E8761A;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .selected-count {
+      font-size: 14.5px;
+      color: #71717a;
+    }
+
+    .selected-count strong {
+      color: #1a1a1a;
+      font-weight: 700;
+    }
+
+    /* ---------- Question cards ---------- */
+
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .question-card {
+      border: 1px solid #ececee;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .question-card-band {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 20px;
+      background-color: #fafafa;
+      border-bottom: 1px solid #ececee;
+    }
+
+    .band-breadcrumb {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-width: 0;
+      font-size: 13.5px;
+    }
+
+    .breadcrumb-item {
+      color: #E8761A;
+      font-weight: 400;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .breadcrumb-item:hover {
+      text-decoration: underline;
+    }
+
+    .breadcrumb-chevron {
+      width: 13px;
+      height: 13px;
+      color: #c4c4c9;
+      flex-shrink: 0;
+    }
+
+    .question-card-body {
+      padding: 18px 20px 20px;
+    }
+
+    .question-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: 22px;
+      row-gap: 4px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .meta-label {
+      color: #1a1a1a;
+      font-weight: 700;
+    }
+
+    .meta-value {
+      color: #E8761A;
+      font-weight: 400;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .tag-id {
+      background-color: #FCE4CC;
+      color: #B4600F;
+      flex-shrink: 0;
+    }
+
+
+    .question-preview {
+      font-size: 15px;
+      color: #3459AD;
+      margin-bottom: 4px;
+    }
+
+    /* ---------- Pagination ---------- */
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .page-btn {
+      min-width: 40px;
+      height: 40px;
+      padding: 0 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #3f3f46;
+      cursor: pointer;
+    }
+
+    .page-btn.active {
+      background-color: #E8761A;
+      border-color: #E8761A;
+      color: #ffffff;
+    }
+
+    .page-btn.page-nav {
+      color: #E8761A;
+      border-color: transparent;
+    }
+
+    .page-ellipsis {
+      color: #a1a1aa;
+      font-size: 14.5px;
+      padding: 0 4px;
+    }
+
+    /* ---------- Menu mobile (topbar + drawer) ---------- */
+
+    .mobile-topbar {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      height: 56px;
+      background-color: #F1F1F1;
+      padding: 0 16px;
+    }
+
+    .mobile-menu-toggle {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: none;
+      border: none;
+      color: #18181b;
+      cursor: pointer;
+    }
+
+    .mobile-menu-toggle svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .mobile-logo {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      color: #18181b;
+      white-space: nowrap;
+    }
+
+    .mobile-logo .orange {
+      color: #E8761A;
+    }
+
+    .mobile-logo-dots {
+      position: relative;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .mobile-logo-dots .dot {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .mobile-logo-dots .dot-teal { width: 5px; height: 5px; background-color: #35C6C1; top: 0; left: 5px; }
+    .mobile-logo-dots .dot-pink { width: 5px; height: 5px; background-color: #E85AA0; top: 7px; left: 0; }
+    .mobile-logo-dots .dot-orange { width: 5px; height: 5px; background-color: #E8761A; top: 8px; left: 13px; }
+    .mobile-logo-dots .dot-blue { width: 4px; height: 4px; background-color: #4C6FE0; top: 14px; left: 7px; }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.45);
+      z-index: 250;
+    }
+
+    .sidebar-backdrop.open {
+      display: block;
+    }
+
+    .sidebar-close {
+      display: none;
+      position: absolute;
+      top: 22px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: #18181b;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .sidebar-close svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ---------- Responsivo ---------- */
+
+    @media (max-width: 768px) {
+      .mobile-topbar {
+        display: flex;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 85vw;
+        max-width: 320px;
+        height: 100vh;
+        padding: 24px 20px;
+        z-index: 300;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        overflow-y: auto;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-close {
+        display: flex;
+      }
+
+      .topbar {
+        display: none;
+      }
+
+      .main {
+        padding: 24px 20px 40px;
+      }
+
+      .title-row {
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      .page-title {
+        font-size: 20px;
+      }
+
+      .title-actions {
+        width: 100%;
+      }
+
+      .btn-filter,
+      .btn-confirm-add {
+        flex: 1 1 auto;
+        justify-content: center;
+      }
+
+      .filter-panel {
+        padding: 20px;
+      }
+
+      .filter-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pill-filter-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .filter-actions {
+        width: 100%;
+      }
+
+      .filter-actions .btn-filtrar {
+        flex: 1 1 auto;
+        justify-content: center;
+      }
+
+      .select-all-row {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .select-all-left {
+        flex-wrap: wrap;
+        row-gap: 6px;
+      }
+
+      .question-card-band {
+        padding: 10px 16px;
+      }
+
+      .question-card-body {
+        padding: 14px 16px 16px;
+      }
+
+      .pagination {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="mobile-topbar">
+    <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Abrir menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="mobile-logo">
+      Prol<span class="mobile-logo-dots"><span class="dot dot-teal"></span><span class="dot dot-pink"></span><span class="dot dot-orange"></span><span class="dot dot-blue"></span></span><span class="orange">uno.</span>
+    </div>
+  </header>
+
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <div class="app">
+
+    <aside class="sidebar">
+      <button class="sidebar-close" id="sidebar-close" aria-label="Fechar menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <a class="back-link" href="../../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Voltar
+      </a>
+
+      <h1 class="sidebar-title">Hub de Questões</h1>
+      <p class="sidebar-subtitle">Crie e venda suas questões</p>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item" href="../01-biblioteca/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h9"/></svg>
+          Biblioteca
+        </a>
+        <a class="nav-item" href="../02-banco-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>
+          Banco de questões
+        </a>
+        <a class="nav-item active" href="../03-questoes-externas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-5Z"/><path d="M14 3v6h6"/></svg>
+          Questões externas
+        </a>
+        <a class="nav-item" href="../04-estatisticas/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Estatísticas
+        </a>
+        <a class="nav-item" href="../05-pagamentos/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>
+          Pagamentos
+        </a>
+        <a class="nav-item" href="../06-plano-de-questoes/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+          Plano de Questões
+        </a>
+        <a class="nav-item" href="../07-simulados/index.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 3.5h6a1 1 0 0 1 1 1V6H8V4.5a1 1 0 0 1 1-1Z"/><path d="M9 12.5l2 2 4-4"/></svg>
+          Simulados
+        </a>
+      </nav>
+    </aside>
+
+    <div class="content-col">
+      <header class="topbar"></header>
+
+      <main class="main">
+        <div class="title-row">
+          <div class="title-left">
+            <a href="index.html">
+              <svg class="title-back-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </a>
+            <h2 class="page-title">Adicionar questões</h2>
+          </div>
+          <div class="title-actions">
+            <button type="button" class="btn-filter" id="btn-filter-toggle" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3Z"/></svg>
+              Filtrar
+            </button>
+            <button class="btn-confirm-add" id="btn-confirm-add">Adicionar questões</button>
+          </div>
+        </div>
+
+        <div class="filter-panel" id="filter-panel" hidden>
+          <div class="filter-grid">
+            <div class="field">
+              <label>Pesquisa</label>
+              <div class="input-with-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" id="filter-search" placeholder="Busque pelo título da questão">
+              </div>
+            </div>
+            <div class="field">
+              <label>Disciplina</label>
+              <div class="multiselect">
+                <button type="button" class="select">
+                  <span class="multiselect-label">Disciplina</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="multiselect-panel">
+                  <div class="multiselect-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                  </div>
+                  <div class="multiselect-options">
+                    <label class="multiselect-option"><input type="checkbox" value="Direito"><span>Direito</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Direito Administrativo"><span>Direito Administrativo</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Direito Constitucional"><span>Direito Constitucional</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Direito Tributário"><span>Direito Tributário</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Português"><span>Português</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Matemática"><span>Matemática</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Matemática Financeira"><span>Matemática Financeira</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Raciocínio Lógico"><span>Raciocínio Lógico</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Farmacologia"><span>Farmacologia</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Informática"><span>Informática</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Atualidades"><span>Atualidades</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Contabilidade"><span>Contabilidade</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Administração Pública"><span>Administração Pública</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Assunto</label>
+              <div class="multiselect">
+                <button type="button" class="select">
+                  <span class="multiselect-label">Assunto</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="multiselect-panel">
+                  <div class="multiselect-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                  </div>
+                  <div class="multiselect-options">
+                    <label class="multiselect-option"><input type="checkbox" value="Atos administrativos"><span>Atos administrativos</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Controle de constitucionalidade"><span>Controle de constitucionalidade</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Interpretação de texto"><span>Interpretação de texto</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Proposições"><span>Proposições</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Proposições lógicas"><span>Proposições lógicas</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Juros compostos"><span>Juros compostos</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Obrigação tributária"><span>Obrigação tributária</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Metabolização de fármacos"><span>Metabolização de fármacos</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Licitações e contratos"><span>Licitações e contratos</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Concordância verbal"><span>Concordância verbal</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Banca</label>
+              <div class="multiselect">
+                <button type="button" class="select">
+                  <span class="multiselect-label">Banca</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="multiselect-panel">
+                  <div class="multiselect-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                  </div>
+                  <div class="multiselect-options">
+                    <label class="multiselect-option"><input type="checkbox" value="CEBRASPE"><span>CEBRASPE</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="FGV"><span>FGV</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="FCC"><span>FCC</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="CESGRANRIO"><span>CESGRANRIO</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="VUNESP"><span>VUNESP</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="IBFC"><span>IBFC</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="AOCP"><span>AOCP</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="IADES"><span>IADES</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Instituição</label>
+              <div class="multiselect">
+                <button type="button" class="select">
+                  <span class="multiselect-label">Instituição</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="multiselect-panel">
+                  <div class="multiselect-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                  </div>
+                  <div class="multiselect-options">
+                    <label class="multiselect-option"><input type="checkbox" value="INSS"><span>INSS</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Receita Federal"><span>Receita Federal</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Polícia Federal"><span>Polícia Federal</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Tribunal de Justiça"><span>Tribunal de Justiça</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="TRF"><span>TRF</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="TRT"><span>TRT</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="TCU"><span>TCU</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Prefeitura Municipal"><span>Prefeitura Municipal</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Ano</label>
+              <div class="multiselect">
+                <button type="button" class="select">
+                  <span class="multiselect-label">Ano</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="multiselect-panel">
+                  <div class="multiselect-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                  </div>
+                  <div class="multiselect-options">
+                    <label class="multiselect-option"><input type="checkbox" value="2026"><span>2026</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="2025"><span>2025</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="2024"><span>2024</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="2023"><span>2023</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="2022"><span>2022</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="2021"><span>2021</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="2020"><span>2020</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Cargo</label>
+              <div class="multiselect">
+                <button type="button" class="select">
+                  <span class="multiselect-label">Cargo</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="multiselect-panel">
+                  <div class="multiselect-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                  </div>
+                  <div class="multiselect-options">
+                    <label class="multiselect-option"><input type="checkbox" value="Analista"><span>Analista</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Técnico"><span>Técnico</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Auditor"><span>Auditor</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Escrivão"><span>Escrivão</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Agente"><span>Agente</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Perito"><span>Perito</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Procurador"><span>Procurador</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Área de Formação</label>
+              <div class="multiselect">
+                <button type="button" class="select">
+                  <span class="multiselect-label">Área de Formação</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="multiselect-panel">
+                  <div class="multiselect-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                  </div>
+                  <div class="multiselect-options">
+                    <label class="multiselect-option"><input type="checkbox" value="Direito"><span>Direito</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Administração"><span>Administração</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Contabilidade"><span>Contabilidade</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Tecnologia da Informação"><span>Tecnologia da Informação</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Engenharia"><span>Engenharia</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Saúde"><span>Saúde</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Educação"><span>Educação</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Carreiras</label>
+              <div class="multiselect">
+                <button type="button" class="select">
+                  <span class="multiselect-label">Carreira</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="multiselect-panel">
+                  <div class="multiselect-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                  </div>
+                  <div class="multiselect-options">
+                    <label class="multiselect-option"><input type="checkbox" value="Carreira Fiscal"><span>Carreira Fiscal</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Carreira Policial"><span>Carreira Policial</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Carreira Jurídica"><span>Carreira Jurídica</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Carreira Administrativa"><span>Carreira Administrativa</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Carreira de Controle"><span>Carreira de Controle</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Escolaridade</label>
+              <div class="multiselect">
+                <button type="button" class="select">
+                  <span class="multiselect-label">Escolaridade</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="multiselect-panel">
+                  <div class="multiselect-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                  </div>
+                  <div class="multiselect-options">
+                    <label class="multiselect-option"><input type="checkbox" value="Fundamental"><span>Fundamental</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Médio"><span>Médio</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Superior"><span>Superior</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Dificuldade</label>
+              <div class="multiselect">
+                <button type="button" class="select">
+                  <span class="multiselect-label">Dificuldade</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="multiselect-panel">
+                  <div class="multiselect-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                  </div>
+                  <div class="multiselect-options">
+                    <label class="multiselect-option"><input type="checkbox" value="Fácil"><span>Fácil</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Médio"><span>Médio</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Difícil"><span>Difícil</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Tipo de Questão</label>
+              <div class="multiselect">
+                <button type="button" class="select">
+                  <span class="multiselect-label">Tipo de Questão</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div class="multiselect-panel">
+                  <div class="multiselect-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" class="multiselect-search-input" placeholder="Busca rápida">
+                  </div>
+                  <div class="multiselect-options">
+                    <label class="multiselect-option"><input type="checkbox" value="Múltipla escolha"><span>Múltipla escolha</span></label>
+                    <label class="multiselect-option"><input type="checkbox" value="Certo e errado"><span>Certo e errado</span></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pill-filters">
+            <div class="pill-filter-row">
+              <span class="pill-filter-label">Status</span>
+              <div class="switch-options" data-mode="multi">
+                <label class="chip-option">
+                  <input type="checkbox" checked>
+                  <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span>Ativas</span>
+                </label>
+                <label class="chip-option">
+                  <input type="checkbox" checked>
+                  <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span>Rascunhos</span>
+                </label>
+                <label class="chip-option">
+                  <input type="checkbox" checked>
+                  <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span>Bloqueadas</span>
+                </label>
+              </div>
+            </div>
+            <div class="pill-filter-row">
+              <span class="pill-filter-label">Incluir questões</span>
+              <div class="switch-options" data-mode="multi">
+                <label class="chip-option">
+                  <input type="checkbox" checked>
+                  <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span>Inéditas</span>
+                </label>
+                <label class="chip-option">
+                  <input type="checkbox">
+                  <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span>Anuladas</span>
+                </label>
+                <label class="chip-option">
+                  <input type="checkbox">
+                  <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span>Desatualizadas</span>
+                </label>
+              </div>
+            </div>
+            <div class="pill-filter-row">
+              <span class="pill-filter-label">Questões com</span>
+              <div class="switch-options" data-mode="multi">
+                <label class="chip-option">
+                  <input type="checkbox">
+                  <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span>Gabarito comentado</span>
+                </label>
+                <label class="chip-option">
+                  <input type="checkbox">
+                  <svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span>Aula</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-footer-row">
+            <div class="active-filters" id="active-filters">
+              <span class="active-filters-label">Filtrar por:</span>
+              <div class="active-filters-tags" id="active-filters-tags"></div>
+            </div>
+
+            <div class="filter-actions">
+              <button type="button" class="btn-limpar-filtro" id="btn-limpar-filtro">Limpar Filtro</button>
+              <button type="button" class="btn-filtrar" id="btn-apply-filters">Filtrar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="select-all-row">
+          <div class="select-all-left">
+            <label class="checkbox-label">
+              <input type="checkbox" id="select-all">
+              Selecionar página
+            </label>
+          </div>
+          <span class="selected-count"><strong id="selected-count-num">0</strong> questões selecionadas</span>
+        </div>
+
+        <div class="question-list">
+          <div class="question-card">
+            <div class="question-card-band">
+              <div class="band-breadcrumb">
+                <input type="checkbox" class="question-check" aria-label="Selecionar questão">
+                <span class="tag tag-id">#612</span>
+                <a class="breadcrumb-item" href="#" data-field="disciplina">Direito Administrativo</a>
+                <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+                <a class="breadcrumb-item" href="#" data-field="assunto">Atos administrativos</a>
+              </div>
+            </div>
+            <div class="question-card-body">
+              <div class="question-meta-row">
+                <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">2023</span></span>
+                <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">CEBRASPE</span></span>
+                <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">CEBRASPE - 2023 - PF - Agente Administrativo</span></span>
+              </div>
+              <p class="question-preview">Acerca dos atos administrativos, julgue o item: os atos vinculados não admitem apreciação de conveniência e oportunidade por parte do administrador.</p>
+            </div>
+          </div>
+
+          <div class="question-card">
+            <div class="question-card-band">
+              <div class="band-breadcrumb">
+                <input type="checkbox" class="question-check" aria-label="Selecionar questão">
+                <span class="tag tag-id">#611</span>
+                <a class="breadcrumb-item" href="#" data-field="disciplina">Direito Constitucional</a>
+                <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+                <a class="breadcrumb-item" href="#" data-field="assunto">Controle de constitucionalidade</a>
+              </div>
+            </div>
+            <div class="question-card-body">
+              <div class="question-meta-row">
+                <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">2022</span></span>
+                <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">CEBRASPE</span></span>
+                <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">CEBRASPE - 2022 - TCU - Auditor Federal de Controle Externo</span></span>
+              </div>
+              <p class="question-preview">No que se refere ao controle de constitucionalidade, assinale a alternativa que apresenta corretamente a diferença entre controle difuso e concentrado.</p>
+            </div>
+          </div>
+
+          <div class="question-card">
+            <div class="question-card-band">
+              <div class="band-breadcrumb">
+                <input type="checkbox" class="question-check" aria-label="Selecionar questão">
+                <span class="tag tag-id">#609</span>
+                <a class="breadcrumb-item" href="#" data-field="disciplina">Português</a>
+                <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+                <a class="breadcrumb-item" href="#" data-field="assunto">Interpretação de texto</a>
+              </div>
+            </div>
+            <div class="question-card-body">
+              <div class="question-meta-row">
+                <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">2024</span></span>
+                <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">FGV</span></span>
+                <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">FGV - 2024 - TJ-SP - Analista Judiciário</span></span>
+              </div>
+              <p class="question-preview">Com base no texto apresentado, é correto afirmar que o autor defende a tese de que a linguagem escrita reflete diretamente o pensamento do falante.</p>
+            </div>
+          </div>
+
+          <div class="question-card">
+            <div class="question-card-band">
+              <div class="band-breadcrumb">
+                <input type="checkbox" class="question-check" aria-label="Selecionar questão">
+                <span class="tag tag-id">#607</span>
+                <a class="breadcrumb-item" href="#" data-field="disciplina">Raciocínio Lógico</a>
+                <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+                <a class="breadcrumb-item" href="#" data-field="assunto">Proposições</a>
+              </div>
+            </div>
+            <div class="question-card-body">
+              <div class="question-meta-row">
+                <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">2021</span></span>
+                <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">CEBRASPE</span></span>
+                <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">CEBRASPE - 2021 - PF - Escrivão</span></span>
+              </div>
+              <p class="question-preview">Considere a proposição &quot;Se chove, então a rua fica molhada&quot;. Assinale a alternativa que apresenta corretamente sua negação lógica.</p>
+            </div>
+          </div>
+
+          <div class="question-card">
+            <div class="question-card-band">
+              <div class="band-breadcrumb">
+                <input type="checkbox" class="question-check" aria-label="Selecionar questão">
+                <span class="tag tag-id">#605</span>
+                <a class="breadcrumb-item" href="#" data-field="disciplina">Direito Tributário</a>
+                <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+                <a class="breadcrumb-item" href="#" data-field="assunto">Obrigação tributária</a>
+              </div>
+            </div>
+            <div class="question-card-body">
+              <div class="question-meta-row">
+                <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">2023</span></span>
+                <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">FCC</span></span>
+                <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">FCC - 2023 - TRF-3 - Técnico Judiciário</span></span>
+              </div>
+              <p class="question-preview">Em relação à obrigação tributária principal e acessória, julgue o item a seguir quanto ao fato gerador e ao sujeito passivo.</p>
+            </div>
+          </div>
+
+          <div class="question-card">
+            <div class="question-card-band">
+              <div class="band-breadcrumb">
+                <input type="checkbox" class="question-check" aria-label="Selecionar questão">
+                <span class="tag tag-id">#603</span>
+                <a class="breadcrumb-item" href="#" data-field="disciplina">Matemática Financeira</a>
+                <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+                <a class="breadcrumb-item" href="#" data-field="assunto">Juros compostos</a>
+              </div>
+            </div>
+            <div class="question-card-body">
+              <div class="question-meta-row">
+                <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">2022</span></span>
+                <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">FGV</span></span>
+                <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">FGV - 2022 - Receita Federal - Auditor Fiscal</span></span>
+              </div>
+              <p class="question-preview">Um capital de R$ 10.000,00 foi aplicado a juros compostos de 2% ao mês. Calcule o montante ao final de 6 meses de aplicação.</p>
+            </div>
+          </div>
+
+          <div class="question-card">
+            <div class="question-card-band">
+              <div class="band-breadcrumb">
+                <input type="checkbox" class="question-check" aria-label="Selecionar questão">
+                <span class="tag tag-id">#601</span>
+                <a class="breadcrumb-item" href="#" data-field="disciplina">Farmacologia</a>
+                <svg class="breadcrumb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+                <a class="breadcrumb-item" href="#" data-field="assunto">Metabolização de fármacos</a>
+              </div>
+            </div>
+            <div class="question-card-body">
+              <div class="question-meta-row">
+                <span><span class="meta-label">Ano:</span> <span class="meta-value" data-field="ano">2024</span></span>
+                <span><span class="meta-label">Banca:</span> <span class="meta-value" data-field="banca">FGV</span></span>
+                <span><span class="meta-label">Prova:</span> <span class="meta-value" data-field="prova">FGV - 2024 - Ministério da Saúde - Farmacêutico</span></span>
+              </div>
+              <p class="question-preview">Os fármacos são eliminados do organismo após sofrerem uma série de reações químicas chamadas, de maneira geral, de metabolização de fármacos.</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="filter-empty" id="filter-empty">Nenhuma questão encontrada para os filtros selecionados.</p>
+
+        <div class="pagination">
+          <button class="page-btn page-nav">‹</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <span class="page-ellipsis">...</span>
+          <button class="page-btn">18</button>
+          <button class="page-btn page-nav">›</button>
+        </div>
+      </main>
+    </div>
+
+  </div>
+
+  <script>
+    const questionChecks = document.querySelectorAll('.question-check');
+    const selectAll = document.getElementById('select-all');
+    const countEl = document.getElementById('selected-count-num');
+    const confirmBtn = document.getElementById('btn-confirm-add');
+    function visibleChecks() {
+      return Array.from(questionChecks).filter((cb) => !cb.closest('.question-card').hidden);
+    }
+
+    function updateSelection() {
+      const checkedCount = document.querySelectorAll('.question-check:checked').length;
+      const visible = visibleChecks();
+      const allPageChecked = visible.length > 0 && visible.every((cb) => cb.checked);
+
+      countEl.textContent = checkedCount;
+      confirmBtn.classList.toggle('enabled', checkedCount > 0);
+      selectAll.checked = allPageChecked;
+    }
+
+    questionChecks.forEach((cb) => cb.addEventListener('change', updateSelection));
+
+    selectAll.addEventListener('change', () => {
+      visibleChecks().forEach((cb) => { cb.checked = selectAll.checked; });
+      updateSelection();
+    });
+
+    // Envia as questões selecionadas de volta para Questões externas
+    confirmBtn.addEventListener('click', () => {
+      if (!confirmBtn.classList.contains('enabled')) return;
+
+      const selectedIds = Array.from(document.querySelectorAll('.question-check:checked'))
+        .map((cb) => cb.closest('.question-card').querySelector('.tag-id').textContent);
+
+      const STORAGE_KEY = 'questoesExternasAdicionadas';
+      const existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(existing.concat(selectedIds)));
+
+      window.location.href = 'index.html';
+    });
+
+    // Mostrar/ocultar painel de filtros
+    const btnFilterToggle = document.getElementById('btn-filter-toggle');
+    const filterPanelEl = document.getElementById('filter-panel');
+
+    btnFilterToggle.addEventListener('click', () => {
+      const willShow = filterPanelEl.hidden;
+      filterPanelEl.hidden = !willShow;
+      btnFilterToggle.classList.toggle('active', willShow);
+      btnFilterToggle.setAttribute('aria-expanded', String(willShow));
+    });
+
+    // Limpar filtro
+    const btnLimparFiltro = document.getElementById('btn-limpar-filtro');
+    const filterInputs = Array.from(filterPanelEl.querySelectorAll('.filter-grid input[type="checkbox"], .pill-filters input[type="checkbox"]'));
+    const filterBaseline = filterInputs.map((el) => el.checked);
+
+    function hasActiveFilters() {
+      return filterInputs.some((el, i) => el.checked !== filterBaseline[i]);
+    }
+
+    function updateClearFilterVisibility() {
+      btnLimparFiltro.classList.toggle('visible', hasActiveFilters());
+    }
+
+    filterPanelEl.addEventListener('change', (e) => {
+      if (e.target.matches('input[type="checkbox"]')) updateClearFilterVisibility();
+    });
+
+    btnLimparFiltro.addEventListener('click', () => {
+      filterInputs.forEach((el, i) => {
+        if (el.checked !== filterBaseline[i]) {
+          el.checked = filterBaseline[i];
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+      updateClearFilterVisibility();
+    });
+
+    // Filtros multi-seleção (dropdowns de checkbox)
+    document.querySelectorAll('.multiselect').forEach((ms) => {
+      const trigger = ms.querySelector('.select');
+      const label = ms.querySelector('.multiselect-label');
+      const placeholder = label.textContent;
+      ms.dataset.category = placeholder;
+      const panel = ms.querySelector('.multiselect-panel');
+      const searchInput = ms.querySelector('.multiselect-search-input');
+      const options = ms.querySelectorAll('.multiselect-option');
+      const checkboxes = ms.querySelectorAll('input[type="checkbox"]');
+
+      function updateLabel() {
+        const checked = Array.from(checkboxes).filter((cb) => cb.checked);
+        if (checked.length === 0) {
+          label.textContent = placeholder;
+          label.classList.remove('has-value');
+        } else if (checked.length === 1) {
+          label.textContent = checked[0].value;
+          label.classList.add('has-value');
+        } else {
+          label.textContent = `${checked[0].value} +${checked.length - 1}`;
+          label.classList.add('has-value');
+        }
+      }
+
+      function resetSearch() {
+        searchInput.value = '';
+        options.forEach((opt) => { opt.style.display = ''; });
+      }
+
+      function closePanel() {
+        ms.classList.remove('open');
+        resetSearch();
+      }
+
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = ms.classList.contains('open');
+        document.querySelectorAll('.multiselect.open').forEach((other) => {
+          if (other !== ms) other.classList.remove('open');
+        });
+        if (isOpen) {
+          closePanel();
+        } else {
+          ms.classList.add('open');
+          searchInput.focus();
+        }
+      });
+
+      panel.addEventListener('click', (e) => e.stopPropagation());
+
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim().toLowerCase();
+        options.forEach((opt) => {
+          const matches = opt.textContent.trim().toLowerCase().includes(query);
+          opt.style.display = matches ? '' : 'none';
+        });
+      });
+
+      checkboxes.forEach((cb) => cb.addEventListener('change', () => {
+        updateLabel();
+        renderActiveFilters();
+      }));
+
+      document.addEventListener('click', () => {
+        if (ms.classList.contains('open')) closePanel();
+      });
+    });
+
+    // Filtros em switch (seleção única ou múltipla)
+    document.querySelectorAll('.switch-options').forEach((group) => {
+      const mode = group.dataset.mode;
+      const inputs = group.querySelectorAll('input[type="checkbox"]');
+      inputs.forEach((input) => {
+        input.addEventListener('change', () => {
+          if (mode === 'single' && input.checked) {
+            inputs.forEach((other) => {
+              if (other !== input) other.checked = false;
+            });
+          }
+        });
+      });
+    });
+
+    // Chips "Filtrar por:" com os filtros ativos
+    const activeFiltersEl = document.getElementById('active-filters');
+    const activeFiltersTags = document.getElementById('active-filters-tags');
+
+    function createFilterTag(category, value, onRemove) {
+      const tag = document.createElement('button');
+      tag.type = 'button';
+      tag.className = 'filter-tag';
+      tag.innerHTML = `
+        <svg class="tag-remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+        <span class="tag-category">${category}</span>
+        <span class="tag-value">${value}</span>
+      `;
+      tag.addEventListener('click', onRemove);
+      return tag;
+    }
+
+    function createGroupClearButton(category, onClearAll) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'filter-tag-group-clear';
+      btn.innerHTML = `
+        <svg class="tag-remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+        <span class="tag-category">${category}</span>
+      `;
+      btn.addEventListener('click', onClearAll);
+      return btn;
+    }
+
+    function createValueChip(value, onRemove) {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'filter-tag-value-chip';
+      chip.innerHTML = `
+        <span class="tag-value">${value}</span>
+        <svg class="tag-remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+      `;
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        onRemove();
+      });
+      return chip;
+    }
+
+    function appendFilterGroup(category, items, onClearAll) {
+      if (items.length === 0) return;
+      if (items.length === 1) {
+        activeFiltersTags.appendChild(createFilterTag(category, items[0].value, items[0].onRemove));
+        return;
+      }
+      const group = document.createElement('div');
+      group.className = 'filter-tag-group';
+      group.appendChild(createGroupClearButton(category, onClearAll));
+      items.forEach((item) => group.appendChild(createValueChip(item.value, item.onRemove)));
+      activeFiltersTags.appendChild(group);
+    }
+
+    function removeMultiselectFilter(checkbox) {
+      checkbox.checked = false;
+      checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function clearMultiselectFilter(ms) {
+      const checkboxes = ms.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach((cb) => { cb.checked = false; });
+      checkboxes[0].dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function renderActiveFilters() {
+      activeFiltersTags.innerHTML = '';
+
+      document.querySelectorAll('.multiselect').forEach((ms) => {
+        const category = ms.dataset.category;
+        const checked = Array.from(ms.querySelectorAll('input[type="checkbox"]:checked'));
+        appendFilterGroup(category, checked.map((cb) => ({
+          value: cb.value,
+          onRemove: () => removeMultiselectFilter(cb),
+        })), () => clearMultiselectFilter(ms));
+      });
+
+      activeFiltersEl.classList.toggle('has-tags', activeFiltersTags.children.length > 0);
+    }
+
+    renderActiveFilters();
+
+    // Aplica os filtros (pesquisa, disciplina, assunto, banca e ano) aos cards
+    const filterSearch = document.getElementById('filter-search');
+    const filterEmpty = document.getElementById('filter-empty');
+    const FILTERABLE_FIELDS = { Disciplina: 'disciplina', Assunto: 'assunto', Banca: 'banca', Ano: 'ano' };
+
+    function applyFilters() {
+      const query = filterSearch.value.trim().toLowerCase();
+      const selected = {};
+      document.querySelectorAll('.multiselect').forEach((ms) => {
+        const field = FILTERABLE_FIELDS[ms.dataset.category];
+        const values = Array.from(ms.querySelectorAll('input[type="checkbox"]:checked')).map((cb) => cb.value);
+        if (field && values.length) selected[field] = values;
+      });
+
+      let visibleCount = 0;
+      document.querySelectorAll('.question-card').forEach((card) => {
+        const matchesQuery = !query || card.querySelector('.question-preview').textContent.toLowerCase().includes(query);
+        const matchesFields = Object.entries(selected).every(([field, values]) => {
+          const el = card.querySelector(`[data-field="${field}"]`);
+          return el && values.includes(el.textContent.trim());
+        });
+        const visible = matchesQuery && matchesFields;
+        card.hidden = !visible;
+        if (!visible) card.querySelector('.question-check').checked = false;
+        if (visible) visibleCount += 1;
+      });
+
+      filterEmpty.classList.toggle('visible', visibleCount === 0);
+      updateSelection();
+    }
+
+    document.getElementById('btn-apply-filters').addEventListener('click', applyFilters);
+    filterSearch.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') applyFilters();
+    });
+    btnLimparFiltro.addEventListener('click', () => {
+      filterSearch.value = '';
+      applyFilters();
+    });
+
+    // Menu mobile
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const sidebarEl = document.querySelector('.sidebar');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+    const sidebarClose = document.getElementById('sidebar-close');
+
+    function openMobileMenu() {
+      sidebarEl.classList.add('open');
+      sidebarBackdrop.classList.add('open');
+    }
+
+    function closeMobileMenu() {
+      sidebarEl.classList.remove('open');
+      sidebarBackdrop.classList.remove('open');
+    }
+
+    mobileMenuToggle.addEventListener('click', openMobileMenu);
+    sidebarClose.addEventListener('click', closeMobileMenu);
+    sidebarBackdrop.addEventListener('click', closeMobileMenu);
+  </script>
+
+</body>
+</html>
