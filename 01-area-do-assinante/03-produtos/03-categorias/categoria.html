@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Categoria · Proluno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../../../04-design-system/proluno.css">
+<style>
+  .cat-back { display: inline-flex; align-items: center; gap: var(--space-6); margin-bottom: 14px; font-size: 13.5px; font-weight: 500; color: var(--ink-muted); text-decoration: none; }
+  .cat-back:hover { color: var(--ink-strong); }
+  .cat-back svg { width: 16px; height: 16px; }
+  .cat-fields { display: flex; flex-direction: column; gap: 22px; }
+  .cat-products-text { margin: -2px 0 12px; font-size: 13px; line-height: 1.45; color: var(--ink-muted); }
+  .cat-actions { display: flex; align-items: center; gap: var(--space-12); margin-top: 28px; }
+  .cat-actions-end { display: flex; gap: var(--space-12); margin-left: auto; }
+
+  /* Seleção de produtos: caixa que abre a lista, e os escolhidos entram logo abaixo */
+  .cat-pick { position: relative; }
+  .cat-pick-trigger { gap: var(--space-10); color: var(--ink-muted); }
+  .cat-pick-trigger > svg:first-child { width: 18px; height: 18px; margin: 0; color: var(--primary); transform: none !important; }
+  .cat-pick-trigger:hover { border-color: var(--line-strong); }
+  .cat-pick-trigger.is-open { border-color: var(--primary); }
+  .cat-pick-trigger .cat-pick-badge { flex: 0 0 auto; padding: 2px 9px; border-radius: var(--radius-full); background: var(--primary-tint); color: var(--primary-ink); font-size: 12.5px; font-weight: 700; }
+  .cat-pick-panel { margin-top: 6px; box-shadow: var(--shadow-menu); }
+  .cat-pick-panel .pl-multiselect-options { max-height: 228px; padding: 4px 0; overscroll-behavior: contain; }
+  .cat-pick-option { display: flex; align-items: center; gap: var(--space-12); width: 100%; min-height: 44px; padding: 6px 14px; border: 0; background: none; font-family: var(--font-sans); text-align: left; cursor: pointer; transition: background-color 0.12s ease; }
+  .cat-pick-option:hover, .cat-pick-option:focus-visible { background: var(--primary-row-hover); outline: 0; }
+  .cat-pick-option-body { flex: 1 1 auto; min-width: 0; }
+  .cat-pick-name { display: block; overflow: hidden; font-size: 14px; font-weight: 500; color: var(--ink-body); white-space: nowrap; text-overflow: ellipsis; }
+  .cat-pick-meta { display: block; margin-top: 2px; font-size: 12px; color: var(--ink-faint); }
+  .cat-pick-mark { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border: 1.5px solid var(--line-strong); border-radius: var(--radius-5); background: var(--bg); color: transparent; flex-shrink: 0; transition: background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease; }
+  .cat-pick-mark svg { width: 13px; height: 13px; }
+  .cat-pick-option:hover .cat-pick-mark { border-color: var(--primary); }
+  .cat-pick-option.is-added .cat-pick-mark { border-color: var(--primary); background: var(--primary); color: var(--on-primary); }
+  .cat-pick-option.is-added .cat-pick-name { color: var(--ink-heading); font-weight: 600; }
+  .cat-pick-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-12); padding: 10px 14px; border-top: 1px solid var(--line-soft); background: var(--bg-subtle); font-size: 12.5px; color: var(--ink-muted); }
+  .cat-pick-foot strong { color: var(--ink-heading); }
+  .cat-pick-empty { padding: 22px 14px; font-size: 13px; color: var(--ink-faint); text-align: center; }
+
+  .cat-picked { margin-top: 16px; }
+  .cat-picked-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-12); margin-bottom: 10px; }
+  .cat-picked-title { margin: 0; font-size: 14px; font-weight: 600; color: var(--ink-heading); }
+  .cat-picked-title span { color: var(--ink-faint); font-weight: 500; }
+  .cat-picked-list { margin: 0; padding: 0; list-style: none; border: 1px solid var(--line-soft); border-radius: var(--radius-10); }
+  .cat-picked-item { display: flex; align-items: center; gap: var(--space-14); min-height: 52px; padding: 8px 10px 8px 14px; border-bottom: 1px solid var(--line-soft); }
+  .cat-picked-item:last-child { border-bottom: 0; }
+  .cat-picked-item.is-new { animation: cat-new 1.4s ease; }
+  @keyframes cat-new { from { background: var(--primary-tint); } to { background: transparent; } }
+  .cat-picked-name { flex: 1 1 auto; min-width: 0; overflow: hidden; font-size: 14px; color: var(--ink-body); white-space: nowrap; text-overflow: ellipsis; }
+  .cat-picked .pl-empty--dashed { padding: 28px 20px; font-size: 13.5px; }
+
+  @media (max-width: 768px) {
+    #catForm { padding: 20px 16px; }
+    .cat-actions { margin-top: 20px; }
+    .cat-actions-end { display: none; }
+    .cat-actions .pl-link { min-height: 40px; }
+    .cat-pick-panel .pl-multiselect-options { max-height: 220px; }
+    .cat-pick-badge-word { display: none; }
+    .cat-picked-item .pl-icon-btn { width: 40px; height: 40px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .cat-picked-item.is-new { animation: none; } }
+</style>
+</head>
+<body>
+
+<div class="pl-app">
+  <!-- Menu principal (vira gaveta abaixo de 768px) -->
+  <aside class="pl-app-sidebar" id="appNav" aria-label="Menu principal">
+    <div class="pl-app-brand">
+      <a href="../../01-inicio/" aria-label="Proluno — Início"><span class="pl-logo">Prol<span class="pl-logo-dots"><i class="d-teal"></i><i class="d-pink"></i><i class="d-orange"></i><i class="d-blue"></i></span><span class="pl-logo-accent">uno.</span></span></a>
+      <button class="pl-icon-btn pl-icon-btn--close pl-drawer-close" type="button" data-nav-close aria-label="Fechar menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-x"/></svg></button>
+    </div>
+    <nav class="pl-nav" id="appNavList"></nav>
+  </aside>
+  <div class="pl-backdrop" id="navBackdrop" data-nav-close></div>
+
+  <div class="pl-app-main">
+    <header class="pl-mobile-topbar">
+      <button class="pl-menu-toggle" type="button" id="navOpen" aria-label="Abrir menu" aria-controls="appNav" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-menu"/></svg></button>
+      <span class="pl-logo">Prol<span class="pl-logo-dots"><i class="d-teal"></i><i class="d-pink"></i><i class="d-orange"></i><i class="d-blue"></i></span><span class="pl-logo-accent">uno.</span></span>
+      <button class="pl-header-btn" type="button" aria-label="Notificações, 10 novas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-bell"/></svg><span class="pl-count-dot">10</span></button>
+    </header>
+    <header class="pl-app-header">
+      <button class="pl-header-btn" type="button" aria-label="Notificações, 10 novas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><use href="#i-bell"/></svg><span class="pl-count-dot">10</span></button>
+      <a class="pl-user-btn" href="../../08-configuracoes/01-editar-perfil/" aria-label="Meu perfil"><span class="pl-avatar pl-avatar--sm pl-avatar--orange">JF</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-chevron-down"/></svg></a>
+    </header>
+
+    <main class="pl-page pl-app-content pl-has-action-bar">
+      <div id="page">
+        <a class="cat-back" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron-left"/></svg>Voltar para categorias</a>
+        <h1 class="pl-page-title" id="pageTitle">Criar categoria</h1>
+        <p class="pl-page-lead" id="pageLead">Dê um nome e escolha os produtos que fazem parte dela.</p>
+
+        <form class="pl-card pl-card--section" id="catForm" novalidate>
+          <div class="cat-fields">
+            <div class="pl-field pl-field--lg">
+              <div class="pl-field-head"><label for="fName">Nome da categoria <span class="pl-required">*</span></label><span class="pl-counter" id="cName">0/60</span></div>
+              <div class="pl-input pl-input--lg" id="fNameBox"><input id="fName" name="name" maxlength="60" placeholder="Digite o nome da categoria" autocomplete="off" aria-describedby="eName"></div>
+              <p class="pl-error" id="eName" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-alert"/></svg><span></span></p>
+            </div>
+            <div class="pl-field pl-field--lg">
+              <div class="pl-field-head"><label for="fDesc">Descrição da categoria</label><span class="pl-counter" id="cDesc">0/240</span></div>
+              <textarea class="pl-textarea" id="fDesc" name="description" rows="4" maxlength="240" placeholder="Digite a descrição da categoria"></textarea>
+            </div>
+
+            <div class="pl-field pl-field--lg">
+              <label id="pLabel">Produtos da categoria</label>
+              <p class="cat-products-text">Apenas produtos com o status <span class="pl-status pl-status--ativo">Ativo</span> são listados aqui.</p>
+
+              <div class="cat-pick" id="pick">
+                <button class="pl-select pl-select--lg cat-pick-trigger" type="button" id="pickBtn" aria-haspopup="listbox" aria-expanded="false" aria-controls="pickPanel" aria-labelledby="pLabel pickText">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-plus"/></svg>
+                  <span id="pickText">Escolha os produtos</span>
+                  <span class="cat-pick-badge" id="pickBadge" hidden></span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+                </button>
+                <div class="pl-multiselect-panel cat-pick-panel" id="pickPanel" hidden>
+                  <label class="pl-multiselect-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-search"/></svg>
+                    <input type="search" id="pSearch" placeholder="Buscar produto" autocomplete="off" aria-label="Buscar produto">
+                  </label>
+                  <div class="pl-multiselect-options" id="pList" role="listbox" aria-multiselectable="true" aria-label="Produtos ativos"></div>
+                  <div class="cat-pick-foot"><span id="pickCount"></span><button class="pl-link" type="button" id="pickDone" style="font-size:13.5px">Concluir</button></div>
+                </div>
+              </div>
+
+              <div class="cat-picked" id="picked"></div>
+            </div>
+          </div>
+
+          <div class="cat-actions">
+            <button class="pl-link pl-link--muted is-danger" type="button" id="deleteBtn" hidden>Excluir categoria</button>
+            <div class="cat-actions-end">
+              <a class="pl-btn pl-btn--secondary" href="index.html">Cancelar</a>
+              <button class="pl-btn pl-btn--primary" type="submit" data-save>Criar categoria</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Ações no mobile -->
+<div class="pl-action-bar" style="gap:10px">
+  <a class="pl-btn pl-btn--secondary" href="index.html" style="flex:1">Cancelar</a>
+  <button class="pl-btn pl-btn--primary" type="submit" form="catForm" data-save style="flex:1.5">Criar categoria</button>
+</div>
+
+<!-- Confirmar exclusão -->
+<div class="pl-dialog-layer" id="confirm" aria-hidden="true">
+  <div class="pl-dialog" role="alertdialog" aria-modal="true" aria-labelledby="cTitle" aria-describedby="cText">
+    <span class="pl-dialog-icon pl-dialog-icon--danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><use href="#i-trash"/></svg></span>
+    <h2 class="pl-dialog-title" id="cTitle">Excluir categoria?</h2>
+    <p class="pl-dialog-text" id="cText"></p>
+    <div class="pl-modal-actions">
+      <button class="pl-btn pl-btn--secondary pl-btn--modal" type="button" data-confirm-close>Cancelar</button>
+      <button class="pl-btn pl-btn--danger pl-btn--modal" type="button" id="cOk">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<div class="pl-toast-region" id="toasts" role="status" aria-live="polite"></div>
+
+<script src="categorias.js"></script>
+<script>
+(function () {
+  var C = window.Categorias, icon = C.icon, esc = C.esc, norm = C.norm, plural = C.plural;
+  var LIST = 'index.html';
+  var cats = C.load();
+  var id = new URLSearchParams(location.search).get('id');
+  var editing = null;
+  if (id) for (var i = 0; i < cats.length; i++) if (cats[i].id === id) editing = cats[i];
+
+  if (id && !editing) {
+    document.getElementById('page').innerHTML = '<a class="cat-back" href="' + LIST + '">' + icon('chevron-left') + 'Voltar para categorias</a>' +
+      '<div class="pl-empty pl-empty--dashed"><div class="pl-empty-icon">' + icon('folder', '', 1.8) + '</div><h1 class="pl-empty-title">Categoria não encontrada</h1>' +
+      '<p class="pl-empty-text">Ela pode ter sido excluída. Volte para a lista e escolha outra categoria.</p></div>';
+    document.querySelector('.pl-action-bar').hidden = true;
+    return;
+  }
+
+  var form = document.getElementById('catForm'), fName = document.getElementById('fName'), fDesc = document.getElementById('fDesc');
+  var picked = editing ? editing.products.slice() : [];
+
+  if (editing) {
+    document.title = 'Editar categoria · Proluno';
+    document.getElementById('pageTitle').textContent = 'Editar categoria';
+    document.getElementById('pageLead').textContent = 'Altere o nome, a descrição ou os produtos de "' + editing.name + '".';
+    document.querySelectorAll('[data-save]').forEach(function (b) { b.textContent = 'Salvar alterações'; });
+    document.getElementById('deleteBtn').hidden = false;
+    fName.value = editing.name; fDesc.value = editing.desc;
+  } else {
+    document.title = 'Criar categoria · Proluno';
+  }
+
+  function counters() {
+    document.getElementById('cName').textContent = fName.value.length + '/60';
+    document.getElementById('cDesc').textContent = fDesc.value.length + '/240';
+  }
+  function showError(msg) {
+    var e = document.getElementById('eName'); e.hidden = !msg; e.querySelector('span').textContent = msg;
+    document.getElementById('fNameBox').classList.toggle('is-invalid', !!msg); fName.setAttribute('aria-invalid', !!msg);
+  }
+  fName.addEventListener('input', function () { counters(); showError(''); });
+  fDesc.addEventListener('input', counters);
+
+  /* ---------- Seleção de produtos ---------- */
+  var pick = document.getElementById('pick'), pickBtn = document.getElementById('pickBtn'), panel = document.getElementById('pickPanel');
+  var pSearch = document.getElementById('pSearch'), pList = document.getElementById('pList'), pickedEl = document.getElementById('picked');
+  var justAdded = null;
+
+  function catsOf(pid) { return cats.filter(function (c) { return c !== editing && c.products.indexOf(pid) >= 0; }).length; }
+
+  function renderOptions() {
+    var q = norm(pSearch.value);
+    var list = C.PRODUCTS.filter(function (p) { return !q || norm(p.name).indexOf(q) >= 0; });
+    pList.innerHTML = list.length ? list.map(function (p) {
+      var on = picked.indexOf(p.id) >= 0, n = catsOf(p.id);
+      return '<button class="cat-pick-option' + (on ? ' is-added' : '') + '" type="button" role="option" aria-selected="' + on + '" data-pid="' + p.id + '"><span class="cat-pick-mark">' + icon('check', '', 3) + '</span>' +
+        '<span class="cat-pick-option-body"><span class="cat-pick-name">' + esc(p.name) + '</span><span class="cat-pick-meta">' + (on ? 'Adicionado' : n ? 'Também em ' + plural(n, 'outra categoria', 'outras categorias') : 'Sem outra categoria') + '</span></span>' +
+        '</button>';
+    }).join('') : '<div class="cat-pick-empty">Nenhum produto ativo com esse nome.</div>';
+  }
+
+  function renderPicked() {
+    var n = picked.length;
+    document.getElementById('pickText').textContent = n ? 'Adicionar produtos' : 'Escolha os produtos';
+    var badge = document.getElementById('pickBadge'); badge.hidden = !n; badge.innerHTML = n + '<span class="cat-pick-badge-word"> ' + (n === 1 ? 'adicionado' : 'adicionados') + '</span>';
+    document.getElementById('pickCount').innerHTML = '<strong>' + n + '</strong> ' + (n === 1 ? 'produto adicionado' : 'produtos adicionados');
+    if (!n) {
+      pickedEl.innerHTML = '<div class="pl-empty--dashed">Nenhum produto adicionado ainda. Clique em "Escolha os produtos" e vá selecionando os que fazem parte desta categoria.</div>';
+      return;
+    }
+    pickedEl.innerHTML = '<div class="cat-picked-head"><h3 class="cat-picked-title">Produtos adicionados <span>· ' + n + '</span></h3>' +
+      '<button class="pl-link pl-link--muted is-danger" type="button" data-clear>Remover todos</button></div>' +
+      '<ol class="cat-picked-list">' + picked.map(function (pid, i) {
+        var p = C.product(pid);
+        return '<li class="cat-picked-item' + (pid === justAdded ? ' is-new' : '') + '"><span class="pl-index">' + (i + 1) + '</span><span class="cat-picked-name">' + esc(p.name) + '</span>' +
+          '<button class="pl-icon-btn pl-icon-btn--danger" type="button" data-remove="' + pid + '" aria-label="Remover ' + esc(p.name) + '">' + icon('x') + '</button></li>';
+      }).join('') + '</ol>';
+    justAdded = null;
+  }
+
+  function setOpen(open) {
+    panel.hidden = !open; pickBtn.classList.toggle('is-open', open); pickBtn.setAttribute('aria-expanded', open);
+    if (open) {
+      pSearch.value = ''; renderOptions(); pSearch.focus({ preventScroll: true });
+      /* Rola só o necessário para a lista aparecer inteira (no mobile, acima da barra de botões) */
+      var bar = document.querySelector('.pl-action-bar'), limit = window.innerHeight - (bar && bar.offsetHeight ? bar.offsetHeight + 12 : 16);
+      var over = panel.getBoundingClientRect().bottom - limit;
+      if (over > 0) window.scrollBy({ top: over, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    }
+  }
+  pickBtn.addEventListener('click', function () { setOpen(panel.hidden); });
+  document.getElementById('pickDone').addEventListener('click', function () { setOpen(false); pickBtn.focus(); });
+  document.addEventListener('click', function (e) { if (!panel.hidden && e.target.isConnected && !pick.contains(e.target)) setOpen(false); });
+  pSearch.addEventListener('input', renderOptions);
+  pSearch.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); var first = pList.querySelector('.cat-pick-option'); if (first) first.click(); }
+    if (e.key === 'ArrowDown') { e.preventDefault(); var f = pList.querySelector('.cat-pick-option'); if (f) f.focus(); }
+  });
+  pList.addEventListener('keydown', function (e) {
+    var opts = Array.prototype.slice.call(pList.querySelectorAll('.cat-pick-option')), i = opts.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown' && i < opts.length - 1) { e.preventDefault(); opts[i + 1].focus(); }
+    if (e.key === 'ArrowUp') { e.preventDefault(); if (i > 0) opts[i - 1].focus(); else pSearch.focus(); }
+  });
+  pList.addEventListener('click', function (e) {
+    var o = e.target.closest('[data-pid]'); if (!o) return;
+    var pid = o.getAttribute('data-pid'), at = picked.indexOf(pid);
+    if (at < 0) { picked.push(pid); justAdded = pid; } else picked.splice(at, 1);
+    renderOptions(); renderPicked();
+    var again = pList.querySelector('[data-pid="' + pid + '"]'); if (again) again.focus({ preventScroll: true });
+  });
+  pickedEl.addEventListener('click', function (e) {
+    var r = e.target.closest('[data-remove]');
+    if (r) { picked.splice(picked.indexOf(r.getAttribute('data-remove')), 1); renderPicked(); if (!panel.hidden) renderOptions(); return; }
+    if (e.target.closest('[data-clear]')) { picked = []; renderPicked(); if (!panel.hidden) renderOptions(); pickBtn.focus(); }
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = fName.value.trim();
+    if (!name) { showError('Digite o nome da categoria.'); fName.focus(); return; }
+    if (cats.some(function (c) { return c !== editing && norm(c.name) === norm(name); })) { showError('Já existe uma categoria com esse nome.'); fName.focus(); return; }
+    var data = { name: name, desc: fDesc.value.trim(), products: picked.slice() };
+    if (editing) { Object.assign(editing, data); C.flash('Alterações salvas!'); }
+    else { data.id = C.newId(cats); cats.unshift(data); C.flash('Categoria criada!'); }
+    C.save(cats);
+    location.href = LIST;
+  });
+
+  /* Excluir (só na edição) */
+  var confirmEl = document.getElementById('confirm');
+  document.getElementById('deleteBtn').addEventListener('click', function () {
+    var n = editing.products.length;
+    document.getElementById('cText').textContent = '"' + editing.name + '" deixa de existir. ' +
+      (n === 0 ? '' : n === 1 ? 'O produto dela continua publicado.' : 'Os ' + n + ' produtos dela continuam publicados.');
+    confirmEl.classList.add('is-open'); confirmEl.setAttribute('aria-hidden', 'false'); document.getElementById('cOk').focus();
+  });
+  function closeConfirm() { confirmEl.classList.remove('is-open'); confirmEl.setAttribute('aria-hidden', 'true'); document.getElementById('deleteBtn').focus(); }
+  confirmEl.addEventListener('click', function (e) { if (e.target === confirmEl || e.target.closest('[data-confirm-close]')) closeConfirm(); });
+  document.getElementById('cOk').addEventListener('click', function () {
+    cats.splice(cats.indexOf(editing), 1); C.save(cats); C.flash('Categoria excluída!'); location.href = LIST;
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (confirmEl.classList.contains('is-open')) { closeConfirm(); return; }
+    if (!panel.hidden) { setOpen(false); pickBtn.focus(); }
+  });
+
+  counters(); renderPicked();
+  if (!editing) fName.focus({ preventScroll: true });
+})();
+</script>
+</body>
+</html>
