@@ -15,3 +15,6 @@ Endereço de cada página: `https://<usuario>.github.io/<repositorio>/<caminho-d
 — por exemplo `.../01-area-do-assinante/05-financeiro/04-extrato/`.
 
 Estilo compartilhado das páginas-índice: `assets/style.css`.
+
+Visual das telas (tokens e componentes do Design System): `04-design-system/proluno.css`. Telas novas carregam esse arquivo
+em vez de copiar estilos; componente novo entra nele e ganha uma seção em `04-design-system/index.html`.
